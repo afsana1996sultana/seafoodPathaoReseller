@@ -9,6 +9,9 @@ use App\Models\Vendor;
 use App\Models\User;
 use App\Models\Upazilla;
 use App\Models\Order;
+use App\Models\Staff;
+use App\Models\OrderDetail;
+use App\Models\Withdraw;
 use Auth;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
@@ -36,7 +39,6 @@ class AdminController extends Controller
     public function Dashboard()
     {
         $vendor = Vendor::where('user_id', Auth::guard('admin')->user()->id)->first();
-
         $userCount = DB::table('users')
             ->select(DB::raw('count(*) as total_users'))
             ->where('status', 1)
@@ -82,6 +84,18 @@ class AdminController extends Controller
         $orderCount = DB::table('orders')
             ->select(DB::raw('count(*) as total_orders, sum(grand_total) as total_sell'))
             ->first();
+
+        $orderDetails = OrderDetail::where('vendor_id', '!=', 0)
+            ->where('vendor_id', Auth::guard('admin')->user()->id)
+            ->select('order_id', 'vendor_id')
+            ->get();
+
+        $orderIds = $orderDetails->pluck('order_id');
+        if ($orderIds->isNotEmpty()) {
+            $vendorOrderCount = $orderIds->count();
+        } else {
+            $vendorOrderCount = 0;
+        }
 
         $lowStockCount = DB::table('product_stocks as s')
             ->leftjoin('products as p', 's.product_id', '=', 'p.id')
@@ -130,26 +144,23 @@ class AdminController extends Controller
             }
         }
 
+        //vendor wallet
+        $wallet = OrderDetail::where('vendor_id', Auth::guard('admin')->user()->id)->sum('price');
+        $commissionValue = OrderDetail::where('vendor_id', Auth::guard('admin')->user()->id)->where('payment_status', 'paid')->sum('v_comission');
+        //vendor wallet Value
+        $vendorWalletValue = $wallet - $commissionValue;
+
+        //cash withdraw Value
+        $withdraw = Withdraw::where('user_id', Auth::guard('admin')->user()->id)->get();
+        $withdraw_ammount = $withdraw->where('status', 1)->sum('amount');
+
         return view('admin.index', compact(
             'userCount', 'productCount', 'categoryCount',
             'brandCount', 'vendorCount', 'orderCount',
-            'lowStockCount', 'orderData'
+            'lowStockCount', 'orderData', 'vendorWalletValue', 'withdraw_ammount', 'vendorOrderCount'
         ));
     }
     /*=================== End Dashboard Methoed ===================*/
-
-    // private function getLocationDetail($locationData, $id, $key)
-    // {
-    //     $locations = $locationData->data->data ?? [];
-
-    //     foreach ($locations as $location) {
-    //         if ($location->{$key} == $id) {
-    //             return $location;
-    //         }
-    //     }
-
-    //     return null;
-    // }
 
     /*=================== Start Admin Login Methoed ===================*/
     public function Login(Request $request){

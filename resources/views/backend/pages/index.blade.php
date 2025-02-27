@@ -3,9 +3,11 @@
 <section class="content-main">
     <div class="content-header">
         <h3 class="content-title">Page list <span class="badge rounded-pill alert-success"> {{ count($pages) }} </span></h3>
-        <div>
-            <a href="{{ route('page.create') }}" class="btn btn-primary"><i class="material-icons md-plus"></i>Page Create</a>
-        </div>
+        @if (Auth::guard('admin')->user()->role == '1' || in_array('50', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+            <div>
+                <a href="{{ route('page.create') }}" class="btn btn-primary"><i class="material-icons md-plus"></i>Page Create</a>
+            </div>
+        @endif
     </div>
     </div>
     <div class="card mb-4">
@@ -20,7 +22,9 @@
                             <th scope="col">Description</th>
                             <th scope="col">Position</th>
                             <th scope="col">Status</th>
-                            <th scope="col" class="text-end">Action</th>
+                            @if (Auth::guard('admin')->user()->role == '1' || in_array('51', json_decode(Auth::guard('admin')->user()->staff->role->permissions)) || in_array('52', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                <th scope="col" class="text-end">Action</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -43,18 +47,25 @@
                                   <a href="{{ route('page.active',['id'=>$page->id]) }}" > <span class="badge rounded-pill alert-danger">Disable</span></a>
                                 @endif
                             </td>
-                            <td class="text-end">
-                                <div class="dropdown">
-                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="{{ route('page.edit',$page->id) }}">Edit info</a>
-                                        @if(Auth::guard('admin')->user()->role == '1' || in_array('52', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
-                                            <a class="dropdown-item text-danger" href="{{ route('page.delete',$page->id) }}" id="delete">Delete</a>
-                                        @endif
-                                    </div>
-                                </div>
-                                <!-- dropdown //end -->
-                            </td>
+                            @if(Auth::guard('admin')->user()->role != '2')
+                                @if (Auth::guard('admin')->user()->role == '1' || in_array('51', json_decode(Auth::guard('admin')->user()->staff->role->permissions)) || in_array('52', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                    <td class="text-end">
+                                        <div class="dropdown">
+                                            <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                            <div class="dropdown-menu">
+                                                @if(Auth::guard('admin')->user()->role == '1' || in_array('51', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                                    <a class="dropdown-item" href="{{ route('page.edit',$page->id) }}">Edit info</a>
+                                                @endif
+
+                                                @if(Auth::guard('admin')->user()->role == '1' || in_array('52', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                                    <a class="dropdown-item text-danger" href="{{ route('page.delete',$page->id) }}" id="delete">Delete</a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <!-- dropdown //end -->
+                                    </td>
+                                @endif
+                            @endif
                         </tr>
                         @endforeach
 

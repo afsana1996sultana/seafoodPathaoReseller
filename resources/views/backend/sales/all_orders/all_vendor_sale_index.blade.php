@@ -30,47 +30,47 @@
                         <form class="" action="" method="GET">
                             <div class="form-group row mb-3">
                                 <div class="col-md-2">
-                                    <label class="col-form-label"><span>All Orders :</span></label>
+                                    <label class="col-form-label"><span>All Vendor Orders :</span></label>
                                 </div>
                                 <div class="col-md-2 mt-2">
                                     <div class="custom_select">
-                                        <select
-                                            class="form-select d-inline-block select-active select-nice mb-lg-0 mr-5 mw-200"
-                                            name="delivery_status" id="delivery_status">
+                                        <select class=" select-active select-nice form-select d-inline-block mb-lg-0 mr-5 mw-200" name="note_status" id="note_status">
+                                            <option value="" selected="">Note Status</option>
+                                            @foreach($ordernotes as $ordernote)
+                                                <option value="{{ $ordernote->name }}" @if($note_status == $ordernote->name) selected @endif>
+                                                    {{ $ordernote->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-2 mt-2">
+                                    <div class="custom_select">
+                                        <select class="form-select d-inline-block select-active select-nice mb-lg-0 mr-5 mw-200" name="delivery_status" id="delivery_status">
                                             <option value="" selected="">Delivery Status</option>
-                                            <option value="pending" @if ($delivery_status == 'pending') selected @endif>
-                                                Pending</option>
-                                            <option value="holding" @if ($delivery_status == 'holding') selected @endif>
-                                                Holding</option>
-                                            <option value="processing" @if ($delivery_status == 'processing') selected @endif>
-                                                Processing</option>
-                                            <option value="shipped" @if ($delivery_status == 'shipped') selected @endif>
-                                                Shipped</option>
-                                            <option value="delivered" @if ($delivery_status == 'delivered') selected @endif>
-                                                Delivered</option>
-                                            <option value="cancelled" @if ($delivery_status == 'cancelled') selected @endif>
-                                                Cancelled</option>
+                                            <option value="pending" @if ($delivery_status == 'pending') selected @endif>Pending</option>
+                                            <option value="confirmed" @if ($delivery_status == 'confirmed') selected @endif>Confirmed</option>
+                                            <option value="processing" @if ($delivery_status == 'processing') selected @endif>Processing</option>
+                                            <option value="picked_up" @if ($delivery_status == 'picked_up') selected @endif>Picked Up</option>
+                                            <option value="shipped" @if ($delivery_status =='shipped') selected @endif>Shipped</option>
+                                            <option value="delivered" @if ($delivery_status == 'delivered') selected @endif>Delivered</option>
+                                            <option value="cancelled" @if ($delivery_status == 'cancelled') selected @endif>Cancel</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-2 mt-2">
                                     <div class="custom_select">
-                                        <select
-                                            class=" select-active select-nice form-select d-inline-block mb-lg-0 mr-5 mw-200"
-                                            name="payment_status" id="payment_status">
+                                        <select class=" select-active select-nice form-select d-inline-block mb-lg-0 mr-5 mw-200" name="payment_status" id="payment_status">
                                             <option value="" selected="">Payment Status</option>
-                                            <option value="unpaid" @if ($payment_status == 'unpaid') selected @endif>Unpaid
-                                            </option>
-                                            <option value="paid" @if ($payment_status == 'paid') selected @endif>Paid
-                                            </option>
+                                            <option value="unpaid" @if ($payment_status == 'unpaid') selected @endif>Unpaid</option>
+                                            <option value="paid" @if ($payment_status == 'paid') selected @endif>Paid</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-2 mt-2">
                                     <div class="custom_select">
-                                        <input type="text" id="reportrange" class="form-control" name="date"
-                                            placeholder="Filter by date" data-format="DD-MM-Y" value="Filter by date"
-                                            data-separator=" - " autocomplete="off">
+                                        <input type="text" name="date_range" class="form-control" placeholder="Select date" id="date" value="">
                                     </div>
                                 </div>
                                 <div class="col-md-2 mt-2">
@@ -81,24 +81,24 @@
                                 <table class="table table-bordered table-hover" id="example" width="100%">
                                     <thead>
                                         <tr>
-                                            {{-- <th style="width: 5%">No.</th> --}}
-                                            <th style="width: 5%">Order Code</th>
-                                            <th style="width: 10%">Customer name</th>
-                                            <th style="width: 10%">Vendor name</th>
-                                            <th style="width: 5%" class="text-center">Amount</th>
-                                            <th style="width: 5%" class="text-center">Paid</th>
-                                            <th style="width: 5%" class="text-center">Due</th>
-                                            <th style="width: 5%" class="text-center">Payment Status</th>
-                                            <th style="width: 5%" class="text-center">Vendor Comission</th>
-                                            <th style="width: 5%" class="text-center">Delivery Status</th>
-                                            <th style="width: 5%" class="text-center">Vendor Show Status</th>
-                                            <th style="width: 10%" class="text-end">Options</th>
+                                            <th>Order Code</th>
+                                            <th>Customer name</th>
+                                            <th>Vendor name</th>
+                                            <th>Amount</th>
+                                            <th>Profit</th>
+                                            <th>Shipping</th>
+                                            <th>Vendor Comission</th>
+                                            <th>Payment Status</th>
+                                            <th>Delivery Status</th>
+                                            <th>Note Status</th>
+                                            <th>Created Date</th>
+                                            <th>Assign To</th>
+                                            <th class="text-end">Options</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($orders as $key => $order)
                                             <tr>
-                                                {{-- <td>{{ $key+1 }}</td> --}}
                                                 <td>{{ $order->invoice_no }}</td>
                                                 <td><b>{{ $order->name }}</b></td>
                                                 <td>
@@ -118,43 +118,9 @@
                                                         {{ $vendorName }}
                                                     @endforeach
                                                 </td>
-                                                <td class="text-center">{{ $order->grand_total }}</td>
-                                                <td class="text-center">
-                                                    @if ($order->payment_status == 'partial paid')
-                                                        {{ $order->shipping_charge ?? '' }}
-                                                    @elseif($order->payment_status == 'paid')
-                                                        {{ $order->grand_total ?? '' }}
-                                                    @else
-                                                        0.00
-                                                    @endif
-                                                </td>
-
-                                                <td class="text-center">
-                                                    @if ($order->payment_status == 'partial paid')
-                                                        {{ $order->grand_total - $order->shipping_charge }}
-                                                    @elseif($order->payment_status == 'unpaid')
-                                                        {{ $order->grand_total ?? '' }}
-                                                    @else
-                                                        0.00
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @php
-                                                        $status = $order->payment_status;
-                                                        if ($order->payment_status == 'unpaid') {
-                                                            $status =
-                                                                '<span class="badge rounded-pill alert-danger">Unpaid</span>';
-                                                        } elseif ($order->payment_status == 'paid') {
-                                                            $status =
-                                                                '<span class="badge rounded-pill alert-success">Paid</span>';
-                                                        } else {
-                                                            $status =
-                                                                '<span class="badge rounded-pill alert-warning">Partial Paid</span>';
-                                                        }
-
-                                                    @endphp
-                                                    {!! $status !!}
-                                                </td>
+                                                <td>{{ $order->grand_total }}</td>
+                                                <td>{{ $order->grand_total - ($order->shipping_charge + $order->pur_sub_total) }}</td>
+                                                <td>{{ $order->shipping_charge }}</td>
                                                 <td class="text-center">
                                                     @if ($order->payment_status == 'paid')
                                                         @php
@@ -176,6 +142,23 @@
                                                 </td>
                                                 <td class="text-center">
                                                     @php
+                                                        $status = $order->payment_status;
+                                                        if ($order->payment_status == 'unpaid') {
+                                                            $status =
+                                                                '<span class="badge rounded-pill alert-danger">Unpaid</span>';
+                                                        } elseif ($order->payment_status == 'paid') {
+                                                            $status =
+                                                                '<span class="badge rounded-pill alert-success">Paid</span>';
+                                                        } else {
+                                                            $status =
+                                                                '<span class="badge rounded-pill alert-warning">Partial Paid</span>';
+                                                        }
+
+                                                    @endphp
+                                                    {!! $status !!}
+                                                </td>
+                                                <td class="text-center">
+                                                    @php
                                                         $status = $order->delivery_status;
                                                         if ($order->delivery_status == 'Delivered') {
                                                             $status =
@@ -189,33 +172,65 @@
                                                     @endphp
                                                     {!! $status !!}
                                                 </td>
-
+                                                <td>{{ $order->note_status }}</td>
+                                                <td>{{ $order->created_at ? $order->created_at->format('Y-m-d g:i:s A') : '' }}</td>
+                                                <td>{{ $order->staff->user->name ?? 'Admin' }}</td>
                                                 <td class="text-center">
-                                                    @if ($order->vendor_show_status == 0)
-                                                        <a href="{{ route('vendor.showStatus',$order->id) }}" class="badge rounded-pill alert-danger">hide</a>
-                                                    @else
-                                                        <a href="{{ route('vendor.showStatus',$order->id) }}" class="badge rounded-pill alert-success">Show</a>
-                                                    @endif
-                                                </td>
-
-                                                <td class="text-end">
-                                                    @if (Auth::guard('admin')->user()->role == '1' ||
-                                                            in_array('18', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
-                                                        <a class="btn btn-primary btn-icon btn-circle btn-sm btn-xs"
-                                                            href="{{ route('all_orders.show', $order->id) }}">
-                                                            <i class="fa-solid fa-eye"></i>
+                                                    <div class="dropdown">
+                                                        <a type="button" class="btn btn-block" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                                            aria-haspopup="true" aria-expanded="false">
+                                                            <i class="fa fa-ellipsis-v"></i>
                                                         </a>
-                                                    @endif
-                                                    <a class="btn btn-primary btn-icon btn-circle btn-sm btn-xs"
-                                                        href="{{ route('print.invoice.download', $order->id) }}">
-                                                        <i class="fa-solid fa-print"></i>
-                                                    </a>
-                                                    <!--<a href="{{ route('delete.orders', $order->id) }}" id="delete" class="btn btn-primary btn-icon btn-circle btn-sm btn-xs" data-href="#" >-->
-                                                    <!--    <i class="fa-solid fa-trash"></i>-->
-                                                    <!--</a>-->
-                                                    <a  class="btn btn-danger btn-icon btn-circle btn-sm btn-xs" href="{{route('delete.orders',$order->id) }}" id="delete" style="background-color: #DD1D21;">
-            			                                <i class="fa-solid fa-trash"></i>
-            			                            </a>
+                                                        <ul class="dropdown-menu order__action" aria-labelledby="dropdownMenuButton">
+                                                            @if($order->staff_id)
+                                                                @if($order->send_pathao == 0)
+                                                                    <li>
+                                                                        <a class="dropdown-item" id="send_courier_and_print" 
+                                                                        data-order-id="{{ $order->id }}" 
+                                                                        data-invoice-url="{{ route('print.invoice.download', $order->id) }}">
+                                                                            <i class="fa-solid fa-print" style="color:#3BB77E"></i>Invoice Pathao
+                                                                        </a>
+                                                                    </li>
+                                                                @endif
+
+                                                                <li>
+                                                                    <a class="dropdown-item" target="blank"
+                                                                        href="{{ route('print.invoice.download', $order->id) }}"><i
+                                                                            class="fa-solid fa-print" style="color:#3BB77E"></i>Invoice Print</a>
+                                                                </li>
+                                                                @if (Auth::guard('admin')->user()->role == '1' ||
+                                                                        in_array('18', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                                                    <li>
+                                                                        <a target="_blank" class="dropdown-item"
+                                                                            href="{{ route('all_orders.show', $order->id) }}">
+                                                                            <i class="fa-solid fa-eye" style="color:#3BB77E"></i>Details
+                                                                        </a>
+                                                                    </li>
+                                                                @endif
+                                                                <li>
+                                                                    <a title="Download" href="{{ route('invoice.download', $order->id) }}"
+                                                                        class="dropdown-item">
+                                                                        <i class="fa-solid fa-download" style="color:#3BB77E"></i> Invoice Download
+                                                                    </a>
+                                                                </li>
+                                                                @if (Auth::guard('admin')->user()->role == '1' ||
+                                                                        in_array('20', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                                                    <li>
+                                                                        <a title="Delete" style="color:#ff0000" href="{{ route('delete.orders',$order->id) }}" class="dropdown-item "
+                                                                            id="delete">
+                                                                            <i class="fa-solid fa-trash" style="color:#ff0000"></i> Delete
+                                                                        </a>
+                                                                    </li>
+                                                                @endif
+                                                            @else
+                                                                <li>
+                                                                    <a href="javascript:void(0)" class="dropdown-item" onclick="assignOrder({{ $order->id }})">
+                                                                        <i class="fa-solid fa-print" style="color:#3BB77E"></i> Assign To
+                                                                    </a>
+                                                                </li>
+                                                            @endif
+                                                        </ul>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -232,39 +247,79 @@
         </div>
     </section>
 
-    @push('footer-script')
-        <script type="text/javascript">
-            $(function() {
-                var start = moment();
-                var end = moment();
+@push('footer-script')
+<script type="text/javascript">
+    $(function() {
+        $('input[name="date_range"]').daterangepicker({
+            timePicker: true,
+            timePicker24Hour: false,
+            locale: {
+                format: 'YYYY-MM-DD h:mm A'
+            }
+        });
+    });
+</script>
+<script>
+    $(function () {
+        $("#send_courier_and_print").click(function (e) {
+            e.preventDefault();
 
-                $('input[name="date"]').daterangepicker({
-                    autoUpdateInput: false,
-                    locale: {
-                        cancelLabel: 'Clear'
+            // Get the single order ID from a data attribute
+            var orderId = $(this).data('order-id');
+            var invoiceUrl = $(this).data('invoice-url');
+
+            if (!orderId) {
+                toastr.error('Order ID is missing.', 'Error');
+                return;
+            }
+
+            $.ajax({
+                url: "{{ route('order.product.packaged') }}",
+                type: "GET",
+                data: {
+                    ids: [orderId], // Pass the single order ID as an array
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function (response) {
+                    if (response.status === 'success') {
+                        toastr.success(response.message, 'Success');
+
+                        // Open the invoice URL in a new tab
+                        window.open(invoiceUrl, '_blank');
+
+                        // Reload the page after a slight delay for user feedback
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000); // Adjust delay time if needed
+                    } else {
+                        toastr.error(response.error, 'Error');
                     }
-                });
-
-                function cb(start, end) {
-                    $('#reportrange').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                },
+                error: function (xhr) {
+                    toastr.error('An error occurred while processing the request.', 'Error');
                 }
-
-                $('#reportrange').daterangepicker({
-                    startDate: start,
-                    endDate: end,
-                    ranges: {
-                        'Today': [moment(), moment()],
-                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                        'This Month': [moment().startOf('month'), moment().endOf('month')],
-                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
-                            'month').endOf('month')]
-                    }
-                }, cb);
-
-                cb(start, end);
             });
-        </script>
-    @endpush
+        });
+    });
+</script>
+<script>
+    function assignOrder(orderId) {
+        $.ajax({
+            url: '{{ route("orders.assign") }}',
+            type: 'POST',
+            data: {
+                order_id: orderId,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                toastr.success(response.success);
+                location.reload();
+            },
+            error: function(response) {
+                toastr.error('Error: ' + response.responseJSON.message); 
+            }
+        });
+    }
+</script>
+@endpush
 @endsection

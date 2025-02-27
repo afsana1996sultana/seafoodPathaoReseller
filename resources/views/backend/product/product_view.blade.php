@@ -50,19 +50,20 @@
                 <div class="table-responsive table-responsive" >
                     <table class="table table-bordered user_datatable  mb-5 user__table" style="min-width:100%">
                         <thead>
-                        <tr>
-                            <th scope="col">Sl</th>
-                            <th scope="col">Product Image</th>
-                            <th scope="col">Name (English)</th>
-                            <th scope="col">Name (Bangla)</th>
-                            <th scope="col">Category</th>
-                            <th scope="col">Product Price </th>
-                            <th scope="col">Quantity </th>
-                            <th scope="col">Discount </th>
-                            <th scope="col">Featured</th>
-                            <th scope="col">Status</th>
-                            <th scope="col" class="text-end">Action</th>
-                        </tr>
+                            <tr>
+                                <th scope="col">Sl</th>
+                                <th scope="col">Product Image</th>
+                                <th scope="col">Name (English)</th>
+                                <th scope="col">Name (Bangla)</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Product Price </th>
+                                <th scope="col">Quantity </th>
+                                <th scope="col">Is Vendor</th>
+                                <th scope="col">Is Reseller</th>
+                                <th scope="col">Featured</th>
+                                <th scope="col">Status</th>
+                                <th scope="col" class="text-end">Action</th>
+                            </tr>
                         </thead>
                         <tbody>
                         </tbody>
@@ -120,7 +121,8 @@ $(document).ready(function(){
                 {data: 'category', name: 'category', searchable: true, orderable: true,},
                 {data: 'regular_price', name: 'regular_price', searchable: true, orderable: true,},
                 {data: 'quantity', name: 'quantity', searchable: true, orderable: true,},
-                {data: 'discount', name: 'discount', searchable: true, orderable: true,},
+                {data: 'vendor_type', name: 'vendor_type', searchable: true, orderable: true,},
+                {data: 'seller_type', name: 'seller_type', searchable: true, orderable: true,},
                 {data: 'featured', name: 'featured', searchable: true, orderable: true,},
                 {data: 'status', name: 'status', searchable: true, orderable: true,},
                 {data: 'action', name: 'action', orderable: false, searchable: false},

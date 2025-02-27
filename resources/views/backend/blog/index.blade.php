@@ -3,9 +3,12 @@
 <section class="content-main">
     <div class="content-header">
         <h3 class="content-title">Blog list <span class="badge rounded-pill alert-success"> {{ count($blogs) }} </span></h3>
-        <div>
-            <a href="{{ route('blog.create') }}" class="btn btn-primary"><i class="material-icons md-plus"></i>Blog Create</a>
-        </div>
+
+        @if (Auth::guard('admin')->user()->role == '1' || in_array('22', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+            <div>
+                <a href="{{ route('blog.create') }}" class="btn btn-primary"><i class="material-icons md-plus"></i>Blog Create</a>
+            </div>
+        @endif
     </div>
     </div>
     <div class="card mb-4">
@@ -19,7 +22,9 @@
                             <th scope="col">Title (English)</th>
                             <th scope="col">Title (Bangla)</th>
                             <th scope="col">Status</th>
-                            <th scope="col" class="text-end">Action</th>
+                            @if (Auth::guard('admin')->user()->role == '1' || in_array('23', json_decode(Auth::guard('admin')->user()->staff->role->permissions)) || in_array('24', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                <th scope="col" class="text-end">Action</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -44,16 +49,24 @@
                                   <a href="{{ route('blog.active',['id'=>$blog->id]) }}" > <span class="badge rounded-pill alert-danger">Disable</span></a>
                                 @endif
                             </td>
-                            <td class="text-end">
-                                <div class="dropdown">
-                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="{{ route('blog.edit',$blog->id) }}">Edit info</a>
-                                        <a class="dropdown-item text-danger" href="{{ route('blog.delete',$blog->id) }}" id="delete">Delete</a>
-                                    </div>
-                                </div>
-                                <!-- dropdown //end -->
-                            </td>
+                            @if(Auth::guard('admin')->user()->role != '2')
+                                @if (Auth::guard('admin')->user()->role == '1' || in_array('23', json_decode(Auth::guard('admin')->user()->staff->role->permissions)) || in_array('24', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                    <td class="text-end">
+                                        <div class="dropdown">
+                                            <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                            <div class="dropdown-menu">
+                                                @if (Auth::guard('admin')->user()->role == '1' || in_array('23', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                                    <a class="dropdown-item" href="{{ route('blog.edit',$blog->id) }}">Edit info</a>
+                                                @endif
+                                                @if (Auth::guard('admin')->user()->role == '1' || in_array('24', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                                    <a class="dropdown-item text-danger" href="{{ route('blog.delete',$blog->id) }}" id="delete">Delete</a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <!-- dropdown //end -->
+                                    </td>
+                                @endif
+                            @endif
                         </tr>
                         @endforeach
                     </tbody>

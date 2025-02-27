@@ -156,11 +156,11 @@
                                                     @foreach ($staffs as $staff)
                                                         @if (Auth::guard('admin')->user()->role == '5')
                                                             @if (Auth::guard('admin')->user()->id == $staff->user_id)
-                                                                <option value="{{ $staff->id }}" selected>
+                                                                <option value="{{ $staff->user_id }}" selected>
                                                                     {{ $staff->user->name }}</option>
                                                             @endif
                                                         @elseif(Auth::guard('admin')->user()->role == '1')
-                                                            <option value="{{ $staff->id }}">{{ $staff->user->name }}</option>
+                                                            <option value="{{ $staff->user_id }}">{{ $staff->user->name }}</option>
                                                         @endif
                                                     @endforeach
                                                 </select>

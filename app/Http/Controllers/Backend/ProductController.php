@@ -61,15 +61,7 @@ class ProductController extends Controller
                 ->addColumn('quantity', function ($product) {
                     return $product->is_varient ? 'Variant Product' : ($product->stock_qty ?? 'NULL');
                 })
-                ->addColumn('discount', function ($product) {
-                    if ($product->discount_price > 0) {
-                        return $product->discount_type == 1
-                            ? '<span style="font-size: 12px" class="badge rounded-pill alert-info">৳' . $product->discount_price . '</span>'
-                            : '<span style="font-size: 12px" class="badge rounded-pill alert-success">' . $product->discount_price . '% off</span>';
-                    } else {
-                        return '<span style="font-size: 12px" class="badge rounded-pill alert-danger">No Discount</span>';
-                    }
-                })
+                
                 ->addColumn('featured', function ($product) {
                     return '<a href="' . route('product.featured', ['id' => $product->id]) . '"> 
                         <span style="font-size: 12px" class="badge rounded-pill ' . ($product->is_featured == 1 ? 'alert-success' : 'alert-danger') . '">' 
@@ -85,11 +77,27 @@ class ProductController extends Controller
                         . ($product->status == 1 ? 'Active' : 'Disable') . '</span> 
                     </a>';
                 })
+            
+                // Show "Is Vendor" badge only if vendor_id is not null
+                ->addColumn('vendor_type', function ($product) {
+                    return $product->vendor_id !== 0 
+                        ? '<span style="font-size: 12px" class="badge rounded-pill alert-success">Yes</span>' 
+                        : '<span style="font-size: 12px" class="badge rounded-pill alert-danger">No</span>';
+                })
+            
+                // Show "Is Reseller" badge only if is_resell == 1
+                ->addColumn('seller_type', function ($product) {
+                    return $product->is_resell == 1 
+                        ? '<span style="font-size: 12px" class="badge rounded-pill alert-success">Yes</span>' 
+                        : '<span style="font-size: 12px" class="badge rounded-pill alert-danger">No</span>';
+                })
+            
                 ->addColumn('action', function ($product) {
                     return view('backend.product.action_button', compact('product'));
                 })
-                ->rawColumns(['status', 'action', 'name_en', 'name_bn', 'product_image', 'regular_price', 'category', 'quantity', 'discount', 'featured'])
+                ->rawColumns(['status', 'action', 'name_en', 'name_bn', 'product_image', 'regular_price', 'category', 'quantity', 'featured', 'seller_type', 'vendor_type'])
                 ->toJson();
+        
         }
 
         return view('backend.product.product_view');

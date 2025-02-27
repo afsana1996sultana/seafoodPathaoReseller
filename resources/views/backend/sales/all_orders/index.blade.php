@@ -86,6 +86,7 @@
                                         <th>Payment Status</th>
                                         <th>Note Status</th>
                                         <th>Created Date</th>
+                                        <th>Assign To</th>
                                         <th class="text-end">Options</th>
                                     </tr>
                                 </thead>
@@ -125,6 +126,7 @@
                                         </td>
                                         <td>{{ $order->note_status }}</td>
                                         <td>{{ $order->created_at ? $order->created_at->format('Y-m-d g:i:s A') : '' }}</td>
+                                        <td>{{ $order->staff->user->name ?? 'Admin' }}</td>
                                         <td class="text-center">
                                             <div class="dropdown">
                                                 <a type="button" class="btn btn-block" id="dropdownMenuButton" data-bs-toggle="dropdown"
@@ -132,42 +134,50 @@
                                                     <i class="fa fa-ellipsis-v"></i>
                                                 </a>
                                                 <ul class="dropdown-menu order__action" aria-labelledby="dropdownMenuButton">
-                                                    @if($order->send_pathao == 0)
-                                                        <li>
-                                                            <a class="dropdown-item" id="send_courier_and_print" 
-                                                            data-order-id="{{ $order->id }}" 
-                                                            data-invoice-url="{{ route('print.invoice.download', $order->id) }}">
-                                                                <i class="fa-solid fa-print" style="color:#3BB77E"></i>Invoice Pathao
-                                                            </a>
-                                                        </li>
-                                                    @endif
+                                                    @if($order->staff_id)
+                                                        @if($order->send_pathao == 0)
+                                                            <li>
+                                                                <a class="dropdown-item" id="send_courier_and_print" 
+                                                                data-order-id="{{ $order->id }}" 
+                                                                data-invoice-url="{{ route('print.invoice.download', $order->id) }}">
+                                                                    <i class="fa-solid fa-print" style="color:#3BB77E"></i>Invoice Pathao
+                                                                </a>
+                                                            </li>
+                                                        @endif
 
-                                                    <li>
-                                                        <a class="dropdown-item" target="blank"
-                                                            href="{{ route('print.invoice.download', $order->id) }}"><i
-                                                                class="fa-solid fa-print" style="color:#3BB77E"></i>Invoice Print</a>
-                                                    </li>
-                                                    @if (Auth::guard('admin')->user()->role == '1' ||
-                                                            in_array('18', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
                                                         <li>
-                                                            <a target="_blank" class="dropdown-item"
-                                                                href="{{ route('all_orders.show', $order->id) }}">
-                                                                <i class="fa-solid fa-eye" style="color:#3BB77E"></i>Details
+                                                            <a class="dropdown-item" target="blank"
+                                                                href="{{ route('print.invoice.download', $order->id) }}"><i
+                                                                    class="fa-solid fa-print" style="color:#3BB77E"></i>Invoice Print</a>
+                                                        </li>
+                                                        @if (Auth::guard('admin')->user()->role == '1' ||
+                                                                in_array('18', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                                            <li>
+                                                                <a target="_blank" class="dropdown-item"
+                                                                    href="{{ route('all_orders.show', $order->id) }}">
+                                                                    <i class="fa-solid fa-eye" style="color:#3BB77E"></i>Details
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                                        <li>
+                                                            <a title="Download" href="{{ route('invoice.download', $order->id) }}"
+                                                                class="dropdown-item">
+                                                                <i class="fa-solid fa-download" style="color:#3BB77E"></i> Invoice Download
                                                             </a>
                                                         </li>
-                                                    @endif
-                                                    <li>
-                                                        <a title="Download" href="{{ route('invoice.download', $order->id) }}"
-                                                            class="dropdown-item">
-                                                            <i class="fa-solid fa-download" style="color:#3BB77E"></i> Invoice Download
-                                                        </a>
-                                                    </li>
-                                                    @if (Auth::guard('admin')->user()->role == '1' ||
-                                                            in_array('20', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                                        @if (Auth::guard('admin')->user()->role == '1' ||
+                                                                in_array('20', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                                            <li>
+                                                                <a title="Delete" style="color:#ff0000" href="{{ route('delete.orders',$order->id) }}" class="dropdown-item "
+                                                                    id="delete">
+                                                                    <i class="fa-solid fa-trash" style="color:#ff0000"></i> Delete
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                                    @else
                                                         <li>
-                                                            <a title="Delete" style="color:#ff0000" href="{{ route('delete.orders',$order->id) }}" class="dropdown-item "
-                                                                id="delete">
-                                                                <i class="fa-solid fa-trash" style="color:#ff0000"></i> Delete
+                                                            <a href="javascript:void(0)" class="dropdown-item" onclick="assignOrder({{ $order->id }})">
+                                                                <i class="fa-solid fa-print" style="color:#3BB77E"></i> Assign To
                                                             </a>
                                                         </li>
                                                     @endif
@@ -250,6 +260,25 @@
             });
         });
     });
+</script>
+<script>
+    function assignOrder(orderId) {
+        $.ajax({
+            url: '{{ route("orders.assign") }}',
+            type: 'POST',
+            data: {
+                order_id: orderId,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                toastr.success(response.success);
+                location.reload();
+            },
+            error: function(response) {
+                toastr.error('Error: ' + response.responseJSON.message); 
+            }
+        });
+    }
 </script>
 @endpush
 @endsection

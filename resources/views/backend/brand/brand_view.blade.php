@@ -4,9 +4,11 @@
 <section class="content-main">
     <div class="content-header">
         <h3 class="content-title">Brand list <span class="badge rounded-pill alert-success"> {{ count($brands) }} </span></h3>
-        <div>
-            <a href="{{ route('brand.add') }}" class="btn btn-primary"><i class="material-icons md-plus"></i>Brand Create</a>
-        </div>
+        @if (Auth::guard('admin')->user()->role == '1' || in_array('10', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+            <div>
+                <a href="{{ route('brand.add') }}" class="btn btn-primary"><i class="material-icons md-plus"></i>Brand Create</a>
+            </div>
+        @endif
     </div>
     </div>
     <div class="card mb-4">
@@ -21,7 +23,9 @@
                             <th scope="col">Name (Bangla)</th>
                             <th scope="col">Status</th>
                             @if(Auth::guard('admin')->user()->role != '2')
-                                <th scope="col" class="text-end">Action</th>
+                                @if (Auth::guard('admin')->user()->role == '1' || in_array('11', json_decode(Auth::guard('admin')->user()->staff->role->permissions)) || in_array('12', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                    <th scope="col" class="text-end">Action</th>
+                                @endif
                             @endif
                         </tr>
                     </thead>
@@ -48,16 +52,24 @@
                                 @endif
                             </td>
                             @if(Auth::guard('admin')->user()->role != '2')
-                                <td class="text-end">
-                                    <div class="dropdown">
-                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="{{ route('brand.edit',$brand->id) }}">Edit info</a>
-                                            <a class="dropdown-item text-danger" href="{{ route('brand.delete',$brand->id) }}" id="delete">Delete</a>
+                                @if (Auth::guard('admin')->user()->role == '1' || in_array('11', json_decode(Auth::guard('admin')->user()->staff->role->permissions)) || in_array('12', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                    <td class="text-end">
+                                        <div class="dropdown">
+                                            <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                            <div class="dropdown-menu">
+                                                @if (Auth::guard('admin')->user()->role == '1' || in_array('11', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                                    <a class="dropdown-item" href="{{ route('brand.edit',$brand->id) }}">Edit info</a>
+                                                @endif
+
+                                                @if (Auth::guard('admin')->user()->role == '1' || in_array('12', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                                    <a class="dropdown-item text-danger" href="{{ route('brand.delete',$brand->id) }}" id="delete">Delete</a>
+                                                @endif
+
+                                            </div>
                                         </div>
-                                    </div>
-                                    <!-- dropdown //end -->
-                                </td>
+                                        <!-- dropdown //end -->
+                                    </td>
+                                @endif
                             @endif
                         </tr>
                         @endforeach

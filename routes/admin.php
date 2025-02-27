@@ -283,6 +283,7 @@ Route::prefix('admin')->middleware('admin')->group(function(){
         Route::get('/all_orders/vendor_sale_index', [OrderController::class, 'vendorSellView'])->name('all_orders.vendor_sale_index');
 		Route::get('/reseller/print/invoice/{order}', [OrderController::class, 'reseller_invoice_print_download'])->name('reseller.print.invoice.download');
 		Route::get('/vendor/show_status/{id}', [OrderController::class, 'vendor_show_status'])->name('vendor.showStatus');
+		Route::post('/orders/assign', [OrderController::class, 'assignTo'])->name('orders.assign');
 	});
 
 	// payment status
