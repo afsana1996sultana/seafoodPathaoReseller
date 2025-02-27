@@ -18,11 +18,14 @@ use App\Models\OrderDetail;
 use App\Models\Order;
 use App\Models\Vendor;
 use Auth;
-use Illuminate\Support\Facades\Hash;
+use Image;
 use Session;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Utility\CategoryUtility;
+use Illuminate\Validation\Rules;
+use Illuminate\Auth\Events\Registered;
 
 class FrontendController extends Controller
 {
@@ -494,4 +497,61 @@ class FrontendController extends Controller
         return view('frontend.deals.hot_deals',compact('attributes','products','sort_by','brand_id'));
 
     } // end method
+
+
+    // ---------- Reseller Apply Page------------ //
+    public function resellerApplyPage(){
+
+        return view('frontend.settings.page.applyreseller');
+    }
+
+
+    // ---------- Reseller Apply ------------ //
+    public function resellerApply(Request $request)
+    {
+        //dd($request);
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'phone' => ['required', 'string', 'max:255', 'unique:users'],
+            'password' => ['required', Rules\Password::defaults()],
+        ]);
+
+        if($request->hasfile('nid')){
+            $image = $request->file('nid');
+            $name_gen = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();
+            Image::make($image)->resize(300,300)->save('upload/reseller/'.$name_gen);
+            $nid = 'upload/reseller/'.$name_gen;
+        }else{
+            $nid = '';
+        }
+
+        $userEmail = User::where('email', $request->email)->first();
+        $userPhone = User::where('phone', $request->phone)->first();
+        if($userPhone){
+            $notification = array(
+                'message' => 'User Phone already Created',
+                'alert-type' => 'error'
+            );
+            return redirect()->back()->with($notification);
+        }else{
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'fb_web_url' => $request->fb_web_url,
+                'nid' => $nid,
+                'password' => Hash::make($request->password),
+                'role' => 7,
+                'status' => 0,
+                'is_approved' => 0,
+            ]);
+        }
+        event(new Registered($user));
+        $notification = array(
+            'message' => 'Application submitted successfully! Please wait for admin approval',
+            'alert-type' => 'success'
+        );
+        return redirect()->back()->with($notification);
+    }
 }

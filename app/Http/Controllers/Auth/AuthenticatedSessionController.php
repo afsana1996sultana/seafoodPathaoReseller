@@ -25,7 +25,6 @@ class AuthenticatedSessionController extends Controller
     public function create()
     {
         $categories = Category::orderBy('name_en','DESC')->where('status','=',1)->limit(5)->get();
-
         if(get_setting('otp_system')->value){
             return view('auth.otp.otp_login',compact('categories'));
         }
@@ -50,7 +49,7 @@ class AuthenticatedSessionController extends Controller
         $check = $request->all();
         if(Auth::guard('web')->attempt(['email' => $check['email'], 'password'=> $check['password'] ])){
 
-            if(Auth::guard('web')->user()->role == "3"){
+            if(Auth::guard('web')->user()->role == "3" || Auth::guard('web')->user()->role == "7"){
                 $notification = array(
                     'message' => 'User Login Successfully.', 
                     'alert-type' => 'success'
@@ -75,15 +74,10 @@ class AuthenticatedSessionController extends Controller
             );
             return back()->with($notification);
         }
-
-        // $request->authenticate();
-        // $request->session()->regenerate();
-        // return redirect()->route('dashboard');
     }
 
     public function otp_login(Request $request)
     {
-        //dd($request);
         $this->validate($request,[
             'phone' =>'required',
         ]);
@@ -112,21 +106,6 @@ class AuthenticatedSessionController extends Controller
                     }
                     //dd($phone);
                     SendSMSUtility::sendSMS($phone, $sms_body);
-
-                    // $sms_body = str_replace('আপনার', 'নতুন', $sms_body);
-                    // $setting = Setting::where('name', 'phone')->first();
-                    // if($setting->value != null){
-                    //     $admin_phone=$setting->value;
-
-                    //     if(substr($admin_phone,0,3)=="+88"){
-                    //         $phone = $admin_phone;
-                    //     }elseif(substr($admin_phone,0,2)=="88"){
-                    //         $phone = '+'.$admin_phone;
-                    //     }else{
-                    //         $phone = '+88'.$admin_phone;
-                    //     }
-                    //     SendSMSUtility::sendSMS($admin_phone, $sms_body);
-                    // }
                     $notification = array(
                         'message' => 'Code sent to your number', 
                         'alert-type' => 'success'
@@ -214,11 +193,8 @@ class AuthenticatedSessionController extends Controller
     public function destroy(Request $request)
     {
         Auth::guard('web')->logout();
-
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
-
         $notification = array(
                 'message' => 'User Logout Successfully.', 
                 'alert-type' => 'success'

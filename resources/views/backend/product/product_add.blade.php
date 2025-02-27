@@ -22,15 +22,6 @@
         </div>
     </div> 
 	<div class="row">
-		{{-- @if ($errors->any())
-		    <div class="alert alert-danger">
-		        <ul>
-		            @foreach ($errors->all() as $error)
-		                <li>{{ $error }}</li>
-		            @endforeach
-		        </ul>
-		    </div>
-		@endif --}}
         <div class="col-md-10 mx-auto">
 			<form method="post" action="{{ route('product.store') }}" enctype="multipart/form-data">
 				@csrf
@@ -94,18 +85,18 @@
                                 </div>
 	                        </div>
 		        		
-		        			{{-- @if(get_setting('multi_vendor')->value)
+		        			@if(get_setting('multi_vendor')->value)
 		        			    @if(Auth::guard('admin')->user()->role == '2')
 		        			        <input type="hidden" name="vendor_id" id="vendor_id" value="{{ Auth::guard('admin')->user()->id }}" />
 		        			    @else
 								<div class="col-md-6 mb-4">
-									<label for="vendor_id" class="col-form-label" style="font-weight: bold;">Vendor: <span class="text-danger">*</span></label>
+									<label for="vendor_id" class="col-form-label" style="font-weight: bold;">Vendor: </label>
 									<div class="custom_select">
 										<select class="form-control select-active w-100 form-select select-nice" name="vendor_id" id="vendor_id">
 											<!--<option selected="">Select Vendor</option>-->
 											<option {{old('vendor_id') ? '' : 'selected'}} readonly value="">--Select Vendor--</option>
 											@foreach($vendors as $vendor)
-												<option value="{{ $vendor->id }}">{{ $vendor->shop_name }}</option>
+												<option value="{{ $vendor->user_id }}">{{ $vendor->shop_name }}</option>
 											@endforeach
 										</select>
 										@error('vendor_id')
@@ -114,7 +105,7 @@
 									</div>
 								</div>
 								@endif
-							@endif --}}
+							@endif
 
 	                        <div class="col-md-6 mb-4">
 								<label for="supplier_id" class="col-form-label" style="font-weight: bold;">Supplier:</label>
@@ -142,14 +133,6 @@
 								<label for="unit_weight" class="col-form-label" style="font-weight: bold;">Unit Weight (e.g. 10 mg, 1 Carton, 15 Pcs)</label>
 								<input class="form-control" id="unit_weight" type="number" name="unit_weight" placeholder="Write unit weight" value="{{old('unit_weight')}}">
 						   	</div>
-							{{-- <div class="col-md-6 mb-4">
-								<label for="campaing_id" class="col-form-label" style="font-weight: bold;">Campaing:</label>
-								<div class="custom_select">
-									<select class="form-control select-active w-100 form-select select-nice" name="campaing_id" id="campaing_id">
-										<option disabled hidden {{old('campaing_id') ? '' : 'selected'}} readonly value="">Select Campaing</option>
-									</select>
-								</div>
-						   	</div> --}}
 							<div class="col-md-6 mb-4">
 		                        <label for="" class="col-form-label" style="font-weight: bold;">Tags:</label>
 			                    <input class="form-control tags-input" type="text"name="tags[]"placeholder="Type and hit enter to add a tag" value="{{old('tags[]')}}">
@@ -197,14 +180,25 @@
 					</div>
 		        	<div class="card-body">
 		        		<div class="row">
-		        			<div class="col-md-12 mb-4">
+		        			<div class="col-md-6 mb-4">
 	                          	<label for="purchase_price" class="col-form-label" style="font-weight: bold;">Product Buying Price: <span class="text-danger">*</span></label>
 	                            <input class="form-control" id="purchase_price" type="number" name="purchase_price" placeholder="Write product bying price" value="{{old('purchase_price')}}">
 		                        @error('purchase_price')
                                     <p class="text-danger">{{$message}}</p>
                                 @enderror
 		                    </div>
-		                    <div class="col-md-6 mb-4">
+
+							<div class="col-md-6 mb-4">
+	                          	<label for="regular_price" class="col-form-label" style="font-weight: bold;">Regular Price: <span class="text-danger">*</span></label>
+	                            <input class="form-control" id="regular_price" type="number" name="regular_price" placeholder="Write product regular price" min="0" value="{{old('regular_price')}}">
+		                        @error('regular_price')
+	                                <p class="text-danger">{{$message}}</p>
+	                            @enderror
+	                        </div>
+		        		</div>
+
+						<div class="row">
+							<div class="col-md-6 mb-4">
 	                          	<label for="whole_sell_price" class="col-form-label" style="font-weight: bold;">Whole Sell Price:</label>
 	                            <input class="form-control" id="whole_sell_price" type="number" name="wholesell_price" placeholder="Write product whole sell price" min="0" value="{{old('wholesell_price', 0)}}" >
 	                        </div>
@@ -212,21 +206,16 @@
 	                          	<label for="whole_sell_qty" class="col-form-label" style="font-weight: bold;">Whole Sell Minimum Quantity:</label>
 	                            <input class="form-control" id="whole_sell_qty" type="number" name="wholesell_minimum_qty" placeholder="Write product whole sell qty" value="{{old('wholesell_minimum_qty', 0)}}">
 	                        </div>
-		        		</div>
+						</div>
+
 		        		<!-- Row //-->
 		        		<div class="row">
-			        		<div class="col-md-4 mb-4">
-	                          	<label for="regular_price" class="col-form-label" style="font-weight: bold;">Regular Price: <span class="text-danger">*</span></label>
-	                            <input class="form-control" id="regular_price" type="number" name="regular_price" placeholder="Write product regular price" min="0" value="{{old('regular_price')}}">
-		                        @error('regular_price')
-	                                <p class="text-danger">{{$message}}</p>
-	                            @enderror
-	                        </div>
-	                        <div class="col-md-4 mb-4">
+	                        <div class="col-md-6 mb-4">
 	                          	<label for="discount_price" class="col-form-label" style="font-weight: bold;">Discount Price:</label>
 	                            <input class="form-control" id="discount_price" type="number" name="discount_price" value="{{old('discount_price', 0)}}" min="0" placeholder="Write product discount price">
 	                        </div>
-	                        <div class="col-md-4 mb-4">
+
+	                        <div class="col-md-6 mb-4">
 	                         	<label for="discount_type" class="col-form-label" style="font-weight: bold;">Discount Type:</label>
 				                <div class="custom_select">
                                     <select class="form-control select-active w-100 form-select select-nice" name="discount_type" id="discount_type">
@@ -235,13 +224,15 @@
                                     </select>
                                 </div>
 	                        </div>
-	                        <div class="col-md-4 mb-4">
+
+	                        <div class="col-md-6 mb-4">
 								<label for="minimum_buy_qty" class="col-form-label" style="font-weight: bold;">Minimum Buy Quantity:</label>
 								<input class="form-control" id="minimum_buy_qty" type="number" name="minimum_buy_qty" placeholder="Write product qty" value="{{old('minimum_buy_qty', 1)}}" min="1">
 								@error('minimum_buy_qty')
 									<p class="text-danger">{{$message}}</p>
 								@enderror
 							</div>
+
 							<div class="col-md-6 mb-4">
 								<label for="stock_qty" class="col-form-label" style="font-weight: bold;">Stock Quantity: <span class="text-danger">*</span></label>
 								<input class="form-control" id="stock_qty" type="number" name="stock_qty" value="{{old('stock_qty', 0)}}" min="0" placeholder="Write product stock  qty">
@@ -249,6 +240,14 @@
 								   <p class="text-danger">{{$message}}</p>
 							   	@enderror
 							</div>
+
+							<div class="col-md-6 mb-4">
+								<label for="reseller_price" class="col-form-label" style="font-weight: bold;">Reseller Price: </label>
+								<input class="form-control" id="reseller_price" type="number" name="reseller_price" placeholder="Write product regular price" min="0" value="{{old('reseller_price')}}">
+								@error('reseller_price')
+									<p class="text-danger">{{$message}}</p>
+								@enderror
+						  	</div>
 
 							<!-- Product Attribute Price combination Starts -->
 							<div class="col-12 mt-2 mb-2" id="variation_wrapper">
@@ -349,8 +348,8 @@
                           	</div>
                           	<div class="row">
                           		<div class="custom-control custom-switch">
-                                    <input type="checkbox" class="form-check-input me-2 cursor" name="is_digital" id="is_digital" value="1">
-                                    <label class="form-check-label cursor" for="is_digital">Digital</label>
+                                    <input type="checkbox" class="form-check-input me-2 cursor" name="	is_resell" id="	is_resell" value="1">
+                                    <label class="form-check-label cursor" for="is_resell">Reselling</label>
                                 </div>
                           	</div>
                           	<div class="row">
@@ -378,23 +377,6 @@
 				</div>
 		    </form>  
 		</div>
-		<!-- col-6 //-->
-		{{-- <div class="col-md-4">
-	        <div class="card">
-				<div class="card-header">
-					<h3>Product Meta</h3>
-				</div>
-				<div class="card-body">
-					<div class="row">
-						<div class="col-md-12 mb-4">
-	                        <label for="product_meta_title" class="col-form-label" style="font-weight: bold;">Meta Title</label>
-	                        <input class="form-control" id="product_meta_title" type="text" name="product_meta_title" placeholder="Write Product Meta Title" required>
-		                </div>
-					</div>
-				</div>
-			</div>
-		</div> --}}
-		<!-- col-6 //-->
 	</div>
 </section>
 

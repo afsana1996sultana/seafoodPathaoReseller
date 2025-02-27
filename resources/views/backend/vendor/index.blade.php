@@ -15,14 +15,12 @@
                     <thead>
                         <tr>
                             <th scope="col">Sl</th>
-                            <th scope="col">Shop Profile</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">User Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Phone</th>
+                            <th scope="col">Shop Profile</th> 
+                            <th scope="col">Shop Name</th> 
+                            <th scope="col">Vendor Name</th> 
+                            <th scope="col">Email</th> 
+                            <th scope="col">Phone</th> 
                             <th scope="col">Status</th>
-                            <!-- <th scope="col">Amount</th> -->
-                            <!-- <th scope="col">Pending</th> -->
                             <th scope="col" class="text-end">Action</th>
                         </tr>
                     </thead>
@@ -38,7 +36,7 @@
                                 </a>
                             </td>
                             <td> {{ $vendor->shop_name ?? ' ' }} </td>
-                            <td> {{ $vendor->user->username ?? ' ' }} </td>
+                            <td> {{ $vendor->vendor_name ?? ' ' }} </td>
                             <td> {{ $vendor->user->email ?? ' ' }} </td>
                             <td> {{ $vendor->user->phone ?? ' ' }} </td>
                             <td>
@@ -50,8 +48,9 @@
                                   <a href="{{ route('vendor.active',['id'=>$vendor->id]) }}" > <span class="badge rounded-pill alert-danger">Disable</span></a>
                                 @endif
                             </td>
-
+                            
                             <td class="text-end">
+                                <!--<a href="#" class="btn btn-md rounded font-sm">Detail</a>-->
                                 <div class="dropdown">
                                     <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
                                     <div class="dropdown-menu">

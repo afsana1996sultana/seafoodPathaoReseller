@@ -28,18 +28,21 @@
 		                            @enderror
 		                        </div>
 
-		                        <div class="col-sm-6 mb-3">
-									<label for="otp_system" class="col-form-label" style="font-weight: bold;">OTP System :</label>
-										<input type="hidden" name="types[]" value="otp_system">
-									 <select name="otp_system" id="otp_system" class="form-control">
-										 <option value="1"{{ get_setting('otp_system')->value == 1 ? ' Selected' : '' }}>Active</option>
-										 <option value="0"{{ get_setting('otp_system')->value == 0 ? ' Selected' : '' }}>Inactive</option>
-									 </select>
-									 @error('otp_system')
-										 <p class="text-danger">{{$message}}</p>
-									 @enderror
-								</div>
+								<div class="col-sm-6 mb-3">
+                                    <label for="vendor_comission" class="col-form-label" style="font-weight: bold;">Vendor Comission :</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                           <div class="input-group-text">%</div>
+                                        </div>
+                                        <input type="hidden" name="types[]" value="vendor_comission">
+                                        <input class="form-control" type="text" name="vendor_comission" id="vendor_comission" placeholder="Write Site name" value="{{ get_setting('vendor_comission')->value ?? 'Null' }}">
+                                    </div>
+                                    @error('vendor_comission')
+                                        <p class="text-danger">{{$message}}</p>
+                                    @enderror
+                                </div>
 	                    	</div>
+
 	                    	<!-- Row End -->
 	                    	<div class="row">
 				        		<div class="col-sm-6 mb-3">
@@ -53,14 +56,39 @@
 										 <p class="text-danger">{{$message}}</p>
 									 @enderror
 								</div>
+
+								<div class="col-sm-6 mb-3">
+									<label for="otp_system" class="col-form-label" style="font-weight: bold;">OTP System :</label>
+										<input type="hidden" name="types[]" value="otp_system">
+									 <select name="otp_system" id="otp_system" class="form-control">
+										 <option value="1"{{ get_setting('otp_system')->value == 1 ? ' Selected' : '' }}>Active</option>
+										 <option value="0"{{ get_setting('otp_system')->value == 0 ? ' Selected' : '' }}>Inactive</option>
+									 </select>
+									 @error('otp_system')
+										 <p class="text-danger">{{$message}}</p>
+									 @enderror
+								</div>
 				        	</div>
 				        	<!-- Row End// -->
+							<div class="row">
+								<div class="col-sm-6 mb-3">
+                                    <label for="reseller_discount_percent" class="col-form-label" style="font-weight: bold;">Reseller Discount Percentage :</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                           <div class="input-group-text">%</div>
+                                        </div>
+                                        <input type="hidden" name="types[]" value="reseller_discount_percent">
+                                        <input class="form-control" type="text" name="reseller_discount_percent" id="reseller_discount_percent" placeholder="Reseller Discount Percentage" value="{{ get_setting('reseller_discount_percent')->value ?? 'Null' }}">
+                                    </div>
+                                    @error('reseller_discount_percent')
+                                        <p class="text-danger">{{$message}}</p>
+                                    @enderror
+                                </div>
+	                    	</div>
 				        </div>
 				        <!-- card body .// -->
 				    </div>
 				    <!-- card .// --> 
-
-
 				</div>
 				<!-- col-6 //-->
 			</div>

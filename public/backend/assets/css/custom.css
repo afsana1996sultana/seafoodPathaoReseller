@@ -108,9 +108,9 @@ a.btn.btn-sm.float-end {
 }
 
 .alert-success {
-    color: #052b58 !important;
+    /* color: #052b58 !important;
     background-color: rgb(5 43 88 / 10%) !important;
-    border-color: #052b58 !important;
+    border-color: #052b58 !important; */
 }
 
 

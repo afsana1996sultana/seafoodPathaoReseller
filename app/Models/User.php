@@ -18,6 +18,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+       
         'name',
 	   'username',
         'email',
@@ -25,7 +26,13 @@ class User extends Authenticatable
         'phone',
         'role',
 	   'profile_image_user',
+        'nid',
         'password',
+        'status',
+        'is_approved',
+        'reseller_discount_percent',
+        'wallet_balance',
+        'fb_web_url'
     ];
 
     /**

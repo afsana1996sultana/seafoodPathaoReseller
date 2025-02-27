@@ -43,14 +43,15 @@ class VendorController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
+        // return $request;
         $this->validate($request,[
             'shop_name'     => 'required',
+            'vendor_name'   => 'required',
             'phone'         => ['required','regex:/(\+){0,1}(88){0,1}01(3|4|5|6|7|8|9)(\d){8}/','min:11','max:15'],
             'email'         => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'address'       => 'required',
-            'shop_profile'  => 'required',
-            'shop_cover'    => 'required',
+            'address'       => 'nullable',
+            'nid'  => 'required',
             'password'      => ['required', 'string', 'min:5', 'confirmed'],
         ]);
 
@@ -58,7 +59,7 @@ class VendorController extends Controller
             $image = $request->file('shop_profile');
             $name_gen = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();
             Image::make($image)->resize(300,300)->save('upload/vendor/'.$name_gen);
-            $shop_profile = 'upload/vendor/'.$name_gen; 
+            $shop_profile = 'upload/vendor/'.$name_gen;
         }else{
             $shop_profile = '';
         }
@@ -67,7 +68,7 @@ class VendorController extends Controller
             $image = $request->file('shop_cover');
             $name_gen = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();
             Image::make($image)->resize(300,300)->save('upload/vendor/'.$name_gen);
-            $shop_cover = 'upload/vendor/'.$name_gen; 
+            $shop_cover = 'upload/vendor/'.$name_gen;
         }else{
             $shop_cover = '';
         }
@@ -76,7 +77,7 @@ class VendorController extends Controller
             $image = $request->file('nid');
             $name_gen = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();
             Image::make($image)->resize(300,300)->save('upload/vendor/'.$name_gen);
-            $nid = 'upload/vendor/'.$name_gen; 
+            $nid = 'upload/vendor/'.$name_gen;
         }else{
             $nid = '';
         }
@@ -85,7 +86,7 @@ class VendorController extends Controller
             $image = $request->file('trade_license');
             $name_gen = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();
             Image::make($image)->resize(300,300)->save('upload/vendor/'.$name_gen);
-            $trade_license = 'upload/vendor/'.$name_gen; 
+            $trade_license = 'upload/vendor/'.$name_gen;
         }else{
             $trade_license = '';
         }
@@ -113,14 +114,16 @@ class VendorController extends Controller
 
         $user->role = 2;
         $user->save();
-
+        
         Vendor::insert([
             'shop_name' => $request->shop_name,
+            'vendor_name' => $request->vendor_name,
             'slug' => $slug,
             'user_id'=> $user->id,
             'address' => $request->address,
-            'commission' => $request->commission,
+            'commission' => $request->commission ?? $vendor_comission,
             'description' => $request->description,
+            'bank_information' => $request->bank_information,
             'shop_profile' => $shop_profile,
             'shop_cover' => $shop_cover,
             'nid' => $nid,
@@ -167,9 +170,10 @@ class VendorController extends Controller
     {
         $this->validate($request,[
             'shop_name'     => 'required',
+            'vendor_name'   => 'required',
             'phone'         => ['required','regex:/(\+){0,1}(88){0,1}01(3|4|5|6|7|8|9)(\d){8}/','min:11','max:15'],
             'email'         => ['required', 'string', 'email', 'max:255'],
-            'address'       => 'required',
+            'address'       => 'nullable',
         ]);
 
         $vendor = Vendor::find($id);
@@ -193,13 +197,17 @@ class VendorController extends Controller
         $user->status = $request->status;
 
         $user->save();
-        
+
+        $vendor_comission = get_setting('vendor_comission')->value;
+        // dd($vendor_comission);
         // Vendor table update
+        $vendor->vendor_name = $request->vendor_name;
         $vendor->shop_name = $request->shop_name;
         $vendor->slug = $slug;
         $vendor->address = $request->address;
-        $vendor->commission = $request->commission;
+        $vendor->commission = $request->commission ?? $vendor_comission;
         $vendor->description = $request->description;
+        $vendor->bank_information = $request->bank_information;
         $vendor->status = $request->status;
         $vendor->created_by = Auth::guard('admin')->user()->id;
 
@@ -212,12 +220,12 @@ class VendorController extends Controller
                     unlink($vendor->shop_profile);
                 }
             } catch (Exception $e) {
-                
+
             }
             $shop_profile = $request->shop_profile;
             $shop_pro = time().$shop_profile->getClientOriginalName();
             $shop_profile->move('upload/vendor/',$shop_pro);
-            
+
             $vendor->shop_profile = 'upload/vendor/'.$shop_pro;
             $user->profile_image = 'upload/vendor/'.$shop_pro;
         }else{
@@ -231,7 +239,7 @@ class VendorController extends Controller
                     unlink($vendor->shop_cover);
                 }
             } catch (Exception $e) {
-                
+
             }
             $shop_cover = $request->shop_cover;
             $shop_cover_photo = time().$shop_cover->getClientOriginalName();
@@ -249,7 +257,7 @@ class VendorController extends Controller
                     unlink($vendor->nid);
                 }
             } catch (Exception $e) {
-                
+
             }
             $nid = $request->nid;
             $nid_photo = time().$nid->getClientOriginalName();
@@ -266,7 +274,7 @@ class VendorController extends Controller
                     unlink($vendor->trade_license);
                 }
             } catch (Exception $e) {
-                
+
             }
             $trade_license = $request->trade_license;
             $trade_photo = time().$trade_license->getClientOriginalName();
@@ -350,6 +358,101 @@ class VendorController extends Controller
 
         Session::flash('warning','Vendor Inactive Successfully.');
         return redirect()->back();
+    }
+
+    public function Sellerstore(Request $request)
+    {
+        //dd($request->all());
+        // return $request;
+        $this->validate($request,[
+            'shop_name'     => 'required',
+            'vendor_name'   => 'required',
+            'phone'         => ['required','regex:/(\+){0,1}(88){0,1}01(3|4|5|6|7|8|9)(\d){8}/','min:11','max:15'],
+            'email'         => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'address'       => 'nullable',
+            'nid'  => 'required',
+            'password'      => ['required', 'string', 'min:5', 'confirmed'],
+        ]);
+
+        if($request->hasfile('shop_profile')){
+            $image = $request->file('shop_profile');
+            $name_gen = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();
+            Image::make($image)->resize(300,300)->save('upload/vendor/'.$name_gen);
+            $shop_profile = 'upload/vendor/'.$name_gen;
+        }else{
+            $shop_profile = '';
+        }
+
+        if($request->hasfile('shop_cover')){
+            $image = $request->file('shop_cover');
+            $name_gen = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();
+            Image::make($image)->resize(300,300)->save('upload/vendor/'.$name_gen);
+            $shop_cover = 'upload/vendor/'.$name_gen;
+        }else{
+            $shop_cover = '';
+        }
+
+        if($request->hasfile('nid')){
+            $image = $request->file('nid');
+            $name_gen = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();
+            Image::make($image)->resize(300,300)->save('upload/vendor/'.$name_gen);
+            $nid = 'upload/vendor/'.$name_gen;
+        }else{
+            $nid = '';
+        }
+
+        if($request->hasfile('trade_license')){
+            $image = $request->file('trade_license');
+            $name_gen = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();
+            Image::make($image)->resize(300,300)->save('upload/vendor/'.$name_gen);
+            $trade_license = 'upload/vendor/'.$name_gen;
+        }else{
+            $trade_license = '';
+        }
+
+        if ($request->slug != null) {
+            $slug = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->slug));
+        }else {
+            $slug = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $request->shop_name)).'-'.Str::random(5);
+        }
+
+        $role = 2;
+
+        $user = User::create([
+            'name' => $request->shop_name,
+            'username' => $slug,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'address' => $request->address,
+            'profile_image' => $shop_profile,
+            'password' => Hash::make($request->password),
+            'status' => $request->status ? 1 : 0,
+            'role' => $role,
+        ]);
+        
+        $user->role = 2;
+        $user->save();
+
+        $vendor_comission = get_setting('vendor_comission')->value;
+        Vendor::insert([
+            'shop_name' => $request->shop_name,
+            'vendor_name' => $request->vendor_name,
+            'slug' => $slug,
+            'user_id'=> $user->id,
+            'address' => $request->address,
+            'commission' => $request->commission ?? $vendor_comission,
+            'description' => $request->description,
+            'bank_information' => $request->bank_information,
+            'shop_profile' => $shop_profile,
+            'shop_cover' => $shop_cover,
+            'nid' => $nid,
+            'trade_license' => $trade_license,
+            'status' => $request->status ? 1 : 0,
+        ]);
+
+        Session::flash('success','Vendor Request Submited Successfully');
+        return redirect()->route('home');
+        
     }
 
 }

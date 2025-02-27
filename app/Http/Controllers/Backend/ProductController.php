@@ -28,70 +28,73 @@ class ProductController extends Controller
 {
     /*=================== Start ProductView Methoed ===================*/
     public function ProductView(Request $request)
- {
+    {
+        if (\request()->ajax()) {
+            // Get the authenticated admin user
+            $admin = Auth::guard('admin')->user();
 
-     if (\request()->ajax()) {
-         $products = Product::latest()->get();
-         return DataTables::of($products)
-             ->addIndexColumn()
-             ->addColumn('product_image', function ($product) {
-                 return '<img src="' . asset($product->product_thumbnail) . '" class="img-sm" alt="Userpic" style="width: 50px; height: 50px;">';
-             })
-             ->addColumn('name_en', function ($product) {
-                 return $product->name_en ?? ' ';
-             })
-             ->addColumn('category', function ($product) {
-                 return $product->category->name_en ?? ' ';
-             })
-             ->addColumn('regular_price', function ($product) {
-                 return $product->regular_price ?? ' ';
-             })
-             ->addColumn('quantity', function ($product) {
-                  if ($product->is_varient){
-                      return  'Variant Product';
-                  }else{
-                   return  $product->stock_qty ?? 'NULL';
-                  }
-             })
-             ->addColumn('discount', function ($product) {
-                  if ($product->discount_price >0){
-                      if ($product->discount_type == 1){
-                       return '<span style="font-size: 12px" class="badge rounded-pill alert-info">৳'. $product->discount_price . '</span>';
-                      }elseif($product->discount_type == 2){
-                            return   '<span style="font-size: 12px" class="badge rounded-pill alert-success">'. $product->discount_price .'% off</span>';
-                      }
-                  }else{
-                    return '<span style="font-size: 12px" class="badge rounded-pill alert-danger">No Discount</span>';
-                  }
-
-             })
-             ->addColumn('featured', function ($product) {
-                 if ($product->is_featured == 1) {
-                     return '<a href="'. route('product.featured', ['id' => $product->id]).'"> <span style="font-size: 12px" class="badge rounded-pill alert-success"">Yes</span> </a>';
-                 } else {
-                     return '<a href="' . route('product.featured', ['id' => $product->id]) .'"> <span style="font-size: 12px" class="badge rounded-pill alert-danger">No</span> </a>';
-                 }
-             })
-
-             ->addColumn('name_bn', function ($product) {
-                return $product->name_bn ?? ' ';
-             })
-             ->addColumn('status', function ($product) {
-                if ($product->status == 1) {
-                    return '<a href="'. route('product.in_active', ['id' => $product->id]).'"> <span style="font-size: 12px" class="badge badge-success">Active</span> </a>';
+            if ($admin->role == '2') { // If the user is a vendor
+                $vendor = Vendor::where('user_id', $admin->id)->first();
+                if ($vendor) {
+                    $products = Product::where('vendor_id', $vendor->user_id)->latest()->get();
                 } else {
-                    return '<a href="' . route('product.active', ['id' => $product->id]) .'"> <span style="font-size: 12px" class="badge badge-danger">Disable</span> </a>';
+                    $products = Product::where('vendor_id', $admin->id)->latest()->get();
                 }
-            })
+            } else { // If the user is an admin
+                $products = Product::latest()->get();
+            }
 
-             ->addColumn('action', function ($product) {
-                 return view('backend.product.action_button', compact('product'));
-             })
-             ->rawColumns(['status','action','name_en','name_bn','product_image','regular_price','category','quantity','discount','featured'])
-             ->tojson();
-     }
-     return view('backend.product.product_view');
-}
+            return DataTables::of($products)
+                ->addIndexColumn()
+                ->addColumn('product_image', function ($product) {
+                    return '<img src="' . asset($product->product_thumbnail) . '" class="img-sm" alt="Userpic" style="width: 50px; height: 50px;">';
+                })
+                ->addColumn('name_en', function ($product) {
+                    return $product->name_en ?? ' ';
+                })
+                ->addColumn('category', function ($product) {
+                    return $product->category->name_en ?? ' ';
+                })
+                ->addColumn('regular_price', function ($product) {
+                    return $product->regular_price ?? ' ';
+                })
+                ->addColumn('quantity', function ($product) {
+                    return $product->is_varient ? 'Variant Product' : ($product->stock_qty ?? 'NULL');
+                })
+                ->addColumn('discount', function ($product) {
+                    if ($product->discount_price > 0) {
+                        return $product->discount_type == 1
+                            ? '<span style="font-size: 12px" class="badge rounded-pill alert-info">৳' . $product->discount_price . '</span>'
+                            : '<span style="font-size: 12px" class="badge rounded-pill alert-success">' . $product->discount_price . '% off</span>';
+                    } else {
+                        return '<span style="font-size: 12px" class="badge rounded-pill alert-danger">No Discount</span>';
+                    }
+                })
+                ->addColumn('featured', function ($product) {
+                    return '<a href="' . route('product.featured', ['id' => $product->id]) . '"> 
+                        <span style="font-size: 12px" class="badge rounded-pill ' . ($product->is_featured == 1 ? 'alert-success' : 'alert-danger') . '">' 
+                        . ($product->is_featured == 1 ? 'Yes' : 'No') . '</span> 
+                    </a>';
+                })
+                ->addColumn('name_bn', function ($product) {
+                    return $product->name_bn ?? ' ';
+                })
+                ->addColumn('status', function ($product) {
+                    return '<a href="' . route($product->status == 1 ? 'product.in_active' : 'product.active', ['id' => $product->id]) . '">
+                        <span style="font-size: 12px" class="badge ' . ($product->status == 1 ? 'badge-success' : 'badge-danger') . '">' 
+                        . ($product->status == 1 ? 'Active' : 'Disable') . '</span> 
+                    </a>';
+                })
+                ->addColumn('action', function ($product) {
+                    return view('backend.product.action_button', compact('product'));
+                })
+                ->rawColumns(['status', 'action', 'name_en', 'name_bn', 'product_image', 'regular_price', 'category', 'quantity', 'discount', 'featured'])
+                ->toJson();
+        }
+
+        return view('backend.product.product_view');
+    }
+
 
     // end method
 
@@ -166,6 +169,26 @@ class ProductController extends Controller
             $save_url = '';
         }
 
+        if ($request->reseller_price == null || $request->reseller_price == "") {
+            $request->reseller_price = 0;
+
+            $default_percentage = get_setting('reseller_discount_percent')->value;
+
+            if ($default_percentage && $default_percentage > 0) {
+                $request->reseller_price = $request->regular_price - ($request->regular_price * $default_percentage) * 1.0 / 100;
+            }
+        }
+
+        if ($request->reseller_discount_variant == null || $request->reseller_discount_variant == "") {
+            $request->reseller_discount_variant = 0;
+
+            $default_percentage = get_setting('reseller_discount_percent')->value;
+
+            if ($default_percentage && $default_percentage > 0) {
+                $request->reseller_discount_variant = $default_percentage;
+            }
+        }
+
         $product = Product::create([
             'brand_id'              => $request->brand_id,
             'category_id'           => $request->category_id,
@@ -183,15 +206,17 @@ class ProductController extends Controller
             'discount_price'        => $request->discount_price,
             'discount_type'         => $request->discount_type,
             'product_code'          => rand(10000, 99999),
+            'reseller_price'        => $request->reseller_price,
+            'reseller_discount_variant' => $request->reseller_discount_variant,
             'minimum_buy_qty'       => $request->minimum_buy_qty,
             'stock_qty'             => $request->stock_qty,
             'description_en'        => $request->description_en,
             'description_bn'        => $request->description_bn,
-            'short_description_en'        => $request->short_description_en,
-            'short_description_bn'        => $request->short_description_bn,
+            'short_description_en'  => $request->short_description_en,
+            'short_description_bn'  => $request->short_description_bn,
             'is_featured'           => $request->is_featured ? 1 : 0,
             'is_deals'              => $request->is_deals ? 1 : 0,
-            'is_digital'            => $request->is_digital ? 1 : 0,
+            'is_resell'            => $request->is_resell ? 1 : 0,
             'status'                => $request->status ? 1 : 0,
             'product_thumbnail'     => $save_url,
             'created_by'            => Auth::guard('admin')->user()->id,
@@ -392,6 +417,26 @@ class ProductController extends Controller
             $save_url = $product->product_thumbnail;
         }
 
+        if ($request->reseller_price == null || $request->reseller_price == "") {
+            $request->reseller_price = 0;
+
+            $default_percentage = get_setting('reseller_discount_percent')->value;
+
+            if ($default_percentage && $default_percentage > 0) {
+                $request->reseller_price = $request->regular_price - ($request->regular_price * $default_percentage) * 1.0 / 100;
+            }
+        }
+
+        if ($request->reseller_discount_variant == null || $request->reseller_discount_variant == "") {
+            $request->reseller_discount_variant = 0;
+
+            $default_percentage = get_setting('reseller_discount_percent')->value;
+
+            if ($default_percentage && $default_percentage > 0) {
+                $request->reseller_discount_variant = $default_percentage;
+            }
+        }
+
         $product->update([
             'brand_id'              => $request->brand_id,
             'category_id'           => $request->category_id,
@@ -408,15 +453,17 @@ class ProductController extends Controller
             'regular_price'         => $request->regular_price,
             'discount_price'        => $request->discount_price,
             'discount_type'         => $request->discount_type,
+            'reseller_price'        => $request->reseller_price,
+            'reseller_discount_variant' => $request->reseller_discount_variant,
             'minimum_buy_qty'       => $request->minimum_buy_qty,
             'stock_qty'             => $request->stock_qty,
             'description_en'        => $request->description_en,
             'description_bn'        => $request->description_bn,
-            'short_description_en'        => $request->short_description_en,
-            'short_description_bn'        => $request->short_description_bn,
+            'short_description_en'  => $request->short_description_en,
+            'short_description_bn'  => $request->short_description_bn,
             'is_featured'           => $request->is_featured ? 1 : 0,
             'is_deals'              => $request->is_deals ? 1 : 0,
-            'is_digital'            => $request->is_digital ? 1 : 0,
+            'is_resell'             => $request->is_resell ? 1 : 0,
             'status'                => $request->status ? 1 : 0,
             'product_thumbnail'     => $save_url,
             'created_by' => Auth::guard('admin')->user()->id,

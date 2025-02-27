@@ -8,6 +8,8 @@ use App\Models\Address;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Orderdetail;
+use App\Models\Withdraw;
+use App\Models\WalletTransaction;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Auth;
@@ -53,15 +55,16 @@ class UserController extends Controller
         $cancelled = Order::where('user_id', Auth::user()->id)
                         ->where('delivery_status', 'cancel')
                         ->get();
+
+        $due_balance = WalletTransaction::where('user_id', Auth::user()->id)->where('status', 0)->where('type', 1)->sum('amount');
+        $withdraw=Withdraw::where('user_id',Auth::user()->id)->where('status',1)->sum('amount');
                         
-        return view('dashboard',compact('orders', 'all', 'pending', 'processing', 'shipping', 'picked', 'completed', 'cancelled'));
+        return view('dashboard',compact('orders', 'all', 'pending', 'processing', 'shipping', 'picked', 'completed', 'cancelled', 'due_balance','withdraw'));
     }
 
     /* ============= Order View ============= */
     public function orderView($invoice_no){
-        // $order = Order::where('user_id',Auth::id())->orderBy('id','DESC')->first();
         $order = Order::where('invoice_no', $invoice_no)->first();
-        // $orders = Order::with('address_id')->where('id',$id)->where('user_id',Auth::id())->first();
         return view('frontend.order.order_view', compact('order'));
     }
 
@@ -206,9 +209,6 @@ class UserController extends Controller
         $profile_image = $user->profile_image;
         // user Photo Update
         if($request->hasfile('profile_image')){
-            // if($profile_image !== ''){
-            //     unlink($profile_image);
-            // }
             $profile_img = $request->profile_image;
             $profile_save = time().$profile_img->getClientOriginalName();
             $profile_img->move('upload/user/',$profile_save);
@@ -305,6 +305,47 @@ class UserController extends Controller
             'alert-type' => 'error'
         );
         return redirect()->back()->with($notification);
+    }
+
+    public function withdraw_request(Request $request){
+        $adminData = User::select("users.*")->where('users.id',$request->user_id)->first();
+
+        $amount = $adminData->wallet_balance - $request->amount;
+        if($request->amount > $adminData->wallet_balance && $amount < $adminData->wallet_default_amount) {
+            $notification = array(
+                'message' => 'Your requested amount is insufficient.',
+                'alert-type' => 'error'
+            );
+            return redirect()->back()->with($notification);
+        }
+
+        
+        else{
+            $this->validate($request, [
+                'transition_number' => 'nullable|digits:11',
+                'amount'            => 'required',
+            ]);
+
+            $withdraw = new Withdraw();
+            $withdraw->user_id = $request->user_id;
+            $withdraw->method = $request->method;
+            $withdraw->account_type = $request->account_type;
+            $withdraw->user_type = $request->user_type;
+            $withdraw->phone = $request->transition_number ?? 0;
+            $withdraw->account_holder_name = $request->account_holder_name;
+            $withdraw->account_no = $request->account_no;
+            $withdraw->bank_name = $request->bank_name;
+            $withdraw->bank_brunch = $request->bank_brunch;
+            $withdraw->purpose = $request->purpose ?? 0;
+            $withdraw->amount = $request->amount;
+            $withdraw->status = 0;
+            $withdraw->save();
+            $notification = array(
+                'message' => 'Request Submit Successfully',
+                'alert-type' => 'success'
+            );
+            return redirect()->back()->with($notification);
+        }
     }
 
 }

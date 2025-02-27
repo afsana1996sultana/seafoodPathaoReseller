@@ -9,9 +9,9 @@
                 $logo = get_setting('site_footer_logo');
             @endphp
             @if($logo != null)
-                <img src="{{ asset(get_setting('site_footer_logo')->value ?? 'null') }}" alt="{{ env('APP_NAME') }}"  style="height: 30px !important; width: 100px !important; min-width: 100px !important;">
+                <img src="{{ asset(get_setting('site_footer_logo')->value ?? 'null') }}" alt="{{ env('APP_NAME') }}"  style="height: 70px !important; min-width: 100px !important;">
             @else
-                <img src="{{ asset('upload/no_image.jpg') }}" alt="{{ env('APP_NAME') }}" style="height: 30px !important; width: 80px !important; min-width: 80px !important;">
+                <img src="{{ asset('upload/no_image.jpg') }}" alt="{{ env('APP_NAME') }}" style="height: 70px !important; min-width: 80px !important;">
             @endif
         </a>
         <div>
@@ -26,8 +26,8 @@
                     <span class="text">Dashboard</span>
                 </a>
             </li>
-            
-            <li class="menu-item has-submenu 
+
+            <li class="menu-item has-submenu
                 {{ ($prefix == 'admin/product') || ($prefix == 'admin/category') || ($route == 'attribute.index') || ($prefix == 'admin/brand') ? 'active' : '' }}
             ">
                     <a class="menu-link" href="#">
@@ -42,7 +42,15 @@
                         <a class="{{ ($prefix == 'admin/brand') ? 'active':'' }}" href="{{ route('brand.all') }}">Brands</a>
                 </div>
             </li>
-            
+            <li class="menu-item has-submenu {{ ($route == 'all_orders.vendor_sale_index')?'active':'' }}">
+                <a class="menu-link" href="#">
+                    <i class="icon material-icons md-shopping_cart"></i>
+                    <span class="text">Sales</span>
+                </a>
+                <div class="submenu">
+                    <a class="{{ ($route == 'all_orders.vendor_sale_index') ? 'active':'' }}" href="{{ route('all_orders.vendor_sale_index') }}" >Vendor Order List</a>
+                </div>
+            </li>
             <li class="menu-item has-submenu {{ ($prefix == 'admin/supplier')?'active':'' }}">
                     <a class="menu-link" href="#">
                         <i class="icon material-icons md-stars"></i>
@@ -53,8 +61,8 @@
                         <a class="{{ ($route == 'supplier.create') ? 'active':'' }}" href="{{ route('supplier.create') }}">Supplier Add</a>
                 </div>
             </li>
-            
-            <li class="menu-item has-submenu 
+
+            <li class="menu-item has-submenu
                 {{ ($route == 'stock_report.index')? 'active':'' }}
             ">
                 <a class="menu-link" href="#">
@@ -66,6 +74,24 @@
                 </div>
             </li>
 
+            <li class="menu-item has-submenu
+                {{ ($route == 'cash-withdraw.index')? 'active':'' }}
+            ">
+                <a class="menu-link" href="#">
+                <i class="icon material-icons md-pie_chart"></i>
+                    <span class="text">Withdraw</span>
+                </a>
+                <div class="submenu">
+                    <a class="{{ ($route == 'cash-withdraw.index') ? 'active':'' }}" href="{{ route('cash-withdraw.index') }}">Cash Withdraw</a>
+                </div>
+            </li>
+
+            <li class="menu-item">
+                <a class="menu-link" href="{{route('withdraw.history')}}">
+                    <i class="icon material-icons md-monetization_on" aria-hidden="true"></i>
+                    <span class="text">Withdraw History</span>
+                </a>
+            </li>
         </ul>
         <hr />
         <br />
