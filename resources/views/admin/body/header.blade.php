@@ -4,24 +4,16 @@
 
         <a class="btn btn-sm btn-danger nav-link d-inline-block" href="{{ route('cache.clear')}}"><i class="fa-solid fa-shower me-2"></i>Clear Cache</a>
         </a>
-
-        <a class="btn btn-sm btn-success nav-link d-inline-block" href="{{ route('pos.index') }}"><i class="material-icons md-post_add"></i>POS</a></a>
+        @if (Auth::guard('admin')->user()->role != '2')
+            <a class="btn btn-sm btn-success nav-link d-inline-block" href="{{ route('pos.index') }}"><i class="material-icons md-post_add"></i>POS</a></a>
+        @endif
     </div>
     <div class="col-nav">
         <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i class="material-icons md-apps"></i></button>
         <ul class="nav">
-           <!--  <li class="nav-item">
-                <a class="nav-link btn-icon" href="#">
-                    <i class="material-icons md-notifications animation-shake"></i>
-                    <span class="badge rounded-pill">3</span>
-                </a>
-            </li> -->
             <li class="nav-item">
                 <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
             </li>
-            <!-- <li class="nav-item">
-                <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
-            </li> -->
             <?php
                 use App\Models\User;
                 $id = Auth::guard('admin')->user()->id;

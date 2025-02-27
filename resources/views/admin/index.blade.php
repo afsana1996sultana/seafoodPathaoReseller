@@ -20,64 +20,71 @@
             <h2 class="content-title card-title">Dashboard</h2>
             <p>Whole data about your business here</p>
         </div>
-        <div>
-            <a href="{{ route('pos.index') }}" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Pos</a>
-        </div>
+        @if (Auth::guard('admin')->user()->role != '2')
+            <div>
+                <a href="{{ route('pos.index') }}" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Pos</a>
+            </div>
+        @endif
     </div>
     <div class="row">
         @if(Auth::guard('admin')->user()->role != '2')
-        <div class="col-lg-3">
-            <div class="card card-body mb-4">
-                <article class="icontext">
-                    <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
-                    <div class="text">
-                        <h6 class="mb-1 card-title">Revenue</h6>
-                        <span>৳ {{ number_format($orderCount->total_sell, 2) }}</span>
-                        <span class="text-sm"> Shipping fees are not included </span>
-                    </div>
-                </article>
+            <div class="col-lg-3">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
+                        <div class="text">
+                            <h6 class="mb-1 card-title">Revenue</h6>
+                            <span>৳ {{ number_format($orderCount->total_sell, 2) }}</span>
+                            <span class="text-sm"> Shipping fees are not included </span>
+                        </div>
+                    </article>
+                </div>
             </div>
-        </div>
         @endif
+
         @if(Auth::guard('admin')->user()->role != '2')
-        <div class="col-lg-3">
-            <div class="card card-body mb-4">
-                <article class="icontext">
-                    <span class="icon icon-sm rounded-circle bg-success-light"><i class="text-success material-icons md-local_shipping"></i></span>
-                    <div class="text">
-                        <h6 class="mb-1 card-title">Orders</h6>
-                        <span>{{ number_format($orderCount->total_orders) }}</span>
-                        <span class="text-sm"> Excluding orders in transit </span>
-                    </div>
-                </article>
+            <div class="col-lg-3">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-success-light"><i class="text-success material-icons md-local_shipping"></i></span>
+                        <div class="text">
+                            <h6 class="mb-1 card-title">Orders</h6>
+                            <span>{{ number_format($orderCount->total_orders) }}</span>
+                            <span class="text-sm"> Excluding orders in transit </span>
+                        </div>
+                    </article>
+                </div>
             </div>
-        </div>
         @endif
-        <div class="col-lg-3">
-            <div class="card card-body mb-4">
-                <article class="icontext">
-                    <span class="icon icon-sm rounded-circle bg-warning-light"><i class="text-warning material-icons md-qr_code"></i></span>
-                    <div class="text">
-                        <h6 class="mb-1 card-title">Products</h6>
-                        <span>{{ number_format($productCount->total_products) }}</span>
-                        <span class="text-sm"> In {{ number_format($categoryCount->total_categories) }} Categories </span>
-                    </div>
-                </article>
-            </div>
-        </div>
+
         @if(Auth::guard('admin')->user()->role != '2')
-        <div class="col-lg-3">
-            <div class="card card-body mb-4">
-                <article class="icontext">
-                    <span class="icon icon-sm rounded-circle bg-info-light"><i class="text-info material-icons md-people"></i></span>
-                    <div class="text">
-                        <h6 class="mb-1 card-title">Customers</h6>
-                        <span>{{ number_format($userCount->total_users) }}</span>
-                        <span class="text-sm"> Who are active. </span>
-                    </div>
-                </article>
+            <div class="col-lg-3">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-warning-light"><i class="text-warning material-icons md-qr_code"></i></span>
+                        <div class="text">
+                            <h6 class="mb-1 card-title">Products</h6>
+                            <span>{{ number_format($productCount->total_products) }}</span>
+                            <span class="text-sm"> In {{ number_format($categoryCount->total_categories) }} Categories </span>
+                        </div>
+                    </article>
+                </div>
             </div>
-        </div>
+        @endif
+
+        @if(Auth::guard('admin')->user()->role != '2')
+            <div class="col-lg-3">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-info-light"><i class="text-info material-icons md-people"></i></span>
+                        <div class="text">
+                            <h6 class="mb-1 card-title">Customers</h6>
+                            <span>{{ number_format($userCount->total_users) }}</span>
+                            <span class="text-sm"> Who are active. </span>
+                        </div>
+                    </article>
+                </div>
+            </div>
         @endif
 
         <div class="col-lg-3">
@@ -92,19 +99,83 @@
                 </article>
             </div>
         </div>
-        @if(Auth::guard('admin')->user()->role != '2')
-        <div class="col-lg-3">
-            <div class="card card-body mb-4">
-                <article class="icontext">
-                    <span class="icon icon-sm rounded-circle bg-danger"><i class="text-white material-icons md-qr_code"></i></span>
-                    <div class="text">
-                        <h6 class="mb-1 card-title">Low Stocks</h6>
-                        <span>{{ number_format($lowStockCount->total_low_stocks) }}</span>
-                        <span class="text-sm"> Products having stock <= 5 </span>
-                    </div>
-                </article>
+
+
+        @if(Auth::guard('admin')->user()->role == '2')
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-warning-light"><i
+                                class="text-warning material-icons md-qr_code"></i></span>
+                        <div class="text">
+                            <h4 class="mb-1 card-title">Products</h4>
+                            <span>{{ number_format($productCount->total_products) }}</span>
+                            <span class="text-sm"> In {{ number_format($categoryCount->total_categories) }}
+                                Categories </span>
+                        </div>
+                    </article>
+                </div>
             </div>
-        </div>
+
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-success-light">
+                            <i class="text-success material-icons md-local_shipping"></i>
+                        </span>
+                        <div class="text">
+                            <h4 class="mb-1 card-title">Orders</h4>
+                            <span>{{ $vendorOrderCount }}</span>
+                            <span class="text-sm"> Excluding orders in transit </span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-primary-light"><i
+                                class="text-primary material-icons md-monetization_on"></i></span>
+                        <div class="text">
+                            <h4 class="mb-1 card-title">Vendor Wallet</h4>
+                            <span>৳ {{ $vendorWalletValue - $withdraw_ammount }}</span>
+                            <span class="text-sm">All Order Revenue</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        @endif
+
+        @if(Auth::guard('admin')->user()->role == '2')
+            <div class="col-lg-3">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-warning-light"><i class="text-warning material-icons md-local_police"></i></span>
+                        <div class="text">
+                            <h6 class="mb-1 card-title">Withdraw Amount</h6>
+                            <span>{{ $withdraw_ammount }}TK</span>
+                            <span class="text-sm">All Withdraw Amount from order</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        @endif
+
+        @if(Auth::guard('admin')->user()->role != '2')
+            <div class="col-lg-3">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-danger"><i class=" material-icons md-qr_code"></i></span>
+                        <div class="text">
+                            <h6 class="mb-1 card-title">Low Stocks</h6>
+                            <span>{{ number_format($lowStockCount->total_low_stocks) }}</span>
+                            <span class="text-sm"> Products having stock <= 5 </span>
+                        </div>
+                    </article>
+                </div>
+            </div>
         @endif
     </div>
 

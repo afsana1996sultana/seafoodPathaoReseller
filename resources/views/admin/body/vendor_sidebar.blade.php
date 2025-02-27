@@ -51,16 +51,6 @@
                     <a class="{{ ($route == 'all_orders.vendor_sale_index') ? 'active':'' }}" href="{{ route('all_orders.vendor_sale_index') }}" >Vendor Order List</a>
                 </div>
             </li>
-            <li class="menu-item has-submenu {{ ($prefix == 'admin/supplier')?'active':'' }}">
-                    <a class="menu-link" href="#">
-                        <i class="icon material-icons md-stars"></i>
-                        <span class="text">Suppliers</span>
-                    </a>
-                <div class="submenu">
-                        <a class="{{ ($route == 'supplier.all') ? 'active':'' }}" href="{{ route('supplier.all') }}">Supplier List</a>
-                        <a class="{{ ($route == 'supplier.create') ? 'active':'' }}" href="{{ route('supplier.create') }}">Supplier Add</a>
-                </div>
-            </li>
 
             <li class="menu-item has-submenu
                 {{ ($route == 'stock_report.index')? 'active':'' }}

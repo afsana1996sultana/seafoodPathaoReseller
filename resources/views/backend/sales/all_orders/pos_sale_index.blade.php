@@ -91,89 +91,175 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($orders as $key => $order)
-                                    <tr>
-                                        <td>{{ $order->invoice_no }}</td>
-                                        <td><b>{{ $order->name ?? '' }}</b></td>
-                                        <td>{{ $order->phone ?? 'No Phone' }}</td>
-                                        <td>{{ $order->grand_total }}</td>
-                                        <td>{{ $order->grand_total - $order->pur_sub_total }}</td>
-                                        <td>
-                                            @php
-                                                $status = $order->delivery_status;
-                                                if($order->delivery_status == 'cancelled') {
-                                                    $status = '<span class="badge rounded-pill alert-danger">Cancelled</span>';
-                                                } elseif($order->delivery_status == 'pending') {
-                                                    $status = '<span class="text-danger">Pending</span>';
-                                                }
-                                            @endphp
-                                            {!! $status !!}
-                                        </td>
+                                        @if(Auth::guard('admin')->user()->role == '1')
+                                            <tr>
+                                                <td>{{ $order->invoice_no }}</td>
+                                                <td><b>{{ $order->name ?? '' }}</b></td>
+                                                <td>{{ $order->phone ?? 'No Phone' }}</td>
+                                                <td>{{ $order->grand_total }}</td>
+                                                <td>{{ $order->grand_total - $order->pur_sub_total }}</td>
+                                                <td>
+                                                    @php
+                                                        $status = $order->delivery_status;
+                                                        if($order->delivery_status == 'cancelled') {
+                                                            $status = '<span class="badge rounded-pill alert-danger">Cancelled</span>';
+                                                        } elseif($order->delivery_status == 'pending') {
+                                                            $status = '<span class="text-danger">Pending</span>';
+                                                        }
+                                                    @endphp
+                                                    {!! $status !!}
+                                                </td>
 
-                                        <td>
-                                            @php
-                                                $status = $order->payment_status;
-                                                if($order->payment_status == 'unpaid') {
-                                                    $status = '<span class="badge rounded-pill alert-danger">Unpaid</span>';
-                                                }
-                                                elseif($order->payment_status == 'paid') {
-                                                    $status = '<span class="badge rounded-pill alert-success">Paid</span>';
-                                                }
+                                                <td>
+                                                    @php
+                                                        $status = $order->payment_status;
+                                                        if($order->payment_status == 'unpaid') {
+                                                            $status = '<span class="badge rounded-pill alert-danger">Unpaid</span>';
+                                                        }
+                                                        elseif($order->payment_status == 'paid') {
+                                                            $status = '<span class="badge rounded-pill alert-success">Paid</span>';
+                                                        }
 
-                                            @endphp
-                                            {!! $status !!}
-                                        </td>
-                                        <td>{{ $order->note_status }}</td>
-                                        <td>{{ $order->created_at ? $order->created_at->format('Y-m-d g:i:s A') : '' }}</td>
-                                        <td>{{ $order->staff->user->name ?? 'Admin' }}</td>
-                                        <td class="text-center">
-                                            <div class="dropdown">
-                                                <a type="button" class="btn btn-block" id="dropdownMenuButton" data-bs-toggle="dropdown"
-                                                    aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fa fa-ellipsis-v"></i>
-                                                </a>
-                                                <ul class="dropdown-menu order__action" aria-labelledby="dropdownMenuButton">
-                                                    @if($order->send_pathao == 0)
-                                                        <li>
-                                                            <a class="dropdown-item" id="send_courier_and_print" 
-                                                            data-order-id="{{ $order->id }}" 
-                                                            data-invoice-url="{{ route('print.invoice.download', $order->id) }}">
-                                                                <i class="fa-solid fa-print" style="color:#3BB77E"></i>Invoice Pathao
-                                                            </a>
-                                                        </li>
-                                                    @endif
-                                                    <li>
-                                                        <a class="dropdown-item" target="blank"
-                                                            href="{{ route('print.invoice.download', $order->id) }}"><i
-                                                                class="fa-solid fa-print" style="color:#3BB77E"></i>Invoice Print</a>
-                                                    </li>
-                                                    @if (Auth::guard('admin')->user()->role == '1' ||
-                                                            in_array('18', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
-                                                        <li>
-                                                            <a target="_blank" class="dropdown-item"
-                                                                href="{{ route('all_orders.show', $order->id) }}">
-                                                                <i class="fa-solid fa-eye" style="color:#3BB77E"></i>Details
-                                                            </a>
-                                                        </li>
-                                                    @endif
-                                                    <li>
-                                                        <a title="Download" href="{{ route('invoice.download', $order->id) }}"
-                                                            class="dropdown-item">
-                                                            <i class="fa-solid fa-download" style="color:#3BB77E"></i> Invoice Download
+                                                    @endphp
+                                                    {!! $status !!}
+                                                </td>
+                                                <td>{{ $order->note_status }}</td>
+                                                <td>{{ $order->created_at ? $order->created_at->format('Y-m-d g:i:s A') : '' }}</td>
+                                                <td>{{ $order->staff->user->name ?? 'Admin' }}</td>
+                                                <td class="text-center">
+                                                    <div class="dropdown">
+                                                        <a type="button" class="btn btn-block" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                                            aria-haspopup="true" aria-expanded="false">
+                                                            <i class="fa fa-ellipsis-v"></i>
                                                         </a>
-                                                    </li>
-                                                    @if (Auth::guard('admin')->user()->role == '1' ||
-                                                            in_array('20', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
-                                                        <li>
-                                                            <a title="Delete" style="color:#ff0000" href="{{ route('delete.orders',$order->id) }}" class="dropdown-item "
-                                                                id="delete">
-                                                                <i class="fa-solid fa-trash" style="color:#ff0000"></i> Delete
-                                                            </a>
-                                                        </li>
-                                                    @endif
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                                        <ul class="dropdown-menu order__action" aria-labelledby="dropdownMenuButton">
+                                                            @if($order->send_pathao == 0)
+                                                                <li>
+                                                                    <a class="dropdown-item" id="send_courier_and_print" 
+                                                                    data-order-id="{{ $order->id }}" 
+                                                                    data-invoice-url="{{ route('print.invoice.download', $order->id) }}">
+                                                                        <i class="fa-solid fa-print" style="color:#3BB77E"></i>Invoice Pathao
+                                                                    </a>
+                                                                </li>
+                                                            @endif
+                                                            <li>
+                                                                <a class="dropdown-item" target="blank"
+                                                                    href="{{ route('print.invoice.download', $order->id) }}"><i
+                                                                        class="fa-solid fa-print" style="color:#3BB77E"></i>Invoice Print</a>
+                                                            </li>
+                                                            @if (Auth::guard('admin')->user()->role == '1' ||
+                                                                    in_array('18', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                                                <li>
+                                                                    <a target="_blank" class="dropdown-item"
+                                                                        href="{{ route('all_orders.show', $order->id) }}">
+                                                                        <i class="fa-solid fa-eye" style="color:#3BB77E"></i>Details
+                                                                    </a>
+                                                                </li>
+                                                            @endif
+                                                            <li>
+                                                                <a title="Download" href="{{ route('invoice.download', $order->id) }}"
+                                                                    class="dropdown-item">
+                                                                    <i class="fa-solid fa-download" style="color:#3BB77E"></i> Invoice Download
+                                                                </a>
+                                                            </li>
+                                                            @if (Auth::guard('admin')->user()->role == '1' ||
+                                                                    in_array('20', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                                                <li>
+                                                                    <a title="Delete" style="color:#ff0000" href="{{ route('delete.orders',$order->id) }}" class="dropdown-item "
+                                                                        id="delete">
+                                                                        <i class="fa-solid fa-trash" style="color:#ff0000"></i> Delete
+                                                                    </a>
+                                                                </li>
+                                                            @endif
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @elseif($order->staff_id == Auth::guard('admin')->user()->id)
+                                            <tr>
+                                                <td>{{ $order->invoice_no }}</td>
+                                                <td><b>{{ $order->name ?? '' }}</b></td>
+                                                <td>{{ $order->phone ?? 'No Phone' }}</td>
+                                                <td>{{ $order->grand_total }}</td>
+                                                <td>{{ $order->grand_total - $order->pur_sub_total }}</td>
+                                                <td>
+                                                    @php
+                                                        $status = $order->delivery_status;
+                                                        if($order->delivery_status == 'cancelled') {
+                                                            $status = '<span class="badge rounded-pill alert-danger">Cancelled</span>';
+                                                        } elseif($order->delivery_status == 'pending') {
+                                                            $status = '<span class="text-danger">Pending</span>';
+                                                        }
+                                                    @endphp
+                                                    {!! $status !!}
+                                                </td>
+
+                                                <td>
+                                                    @php
+                                                        $status = $order->payment_status;
+                                                        if($order->payment_status == 'unpaid') {
+                                                            $status = '<span class="badge rounded-pill alert-danger">Unpaid</span>';
+                                                        }
+                                                        elseif($order->payment_status == 'paid') {
+                                                            $status = '<span class="badge rounded-pill alert-success">Paid</span>';
+                                                        }
+
+                                                    @endphp
+                                                    {!! $status !!}
+                                                </td>
+                                                <td>{{ $order->note_status }}</td>
+                                                <td>{{ $order->created_at ? $order->created_at->format('Y-m-d g:i:s A') : '' }}</td>
+                                                <td>{{ $order->staff->user->name ?? 'Admin' }}</td>
+                                                <td class="text-center">
+                                                    <div class="dropdown">
+                                                        <a type="button" class="btn btn-block" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                                            aria-haspopup="true" aria-expanded="false">
+                                                            <i class="fa fa-ellipsis-v"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu order__action" aria-labelledby="dropdownMenuButton">
+                                                            @if($order->send_pathao == 0)
+                                                                <li>
+                                                                    <a class="dropdown-item" id="send_courier_and_print" 
+                                                                    data-order-id="{{ $order->id }}" 
+                                                                    data-invoice-url="{{ route('print.invoice.download', $order->id) }}">
+                                                                        <i class="fa-solid fa-print" style="color:#3BB77E"></i>Invoice Pathao
+                                                                    </a>
+                                                                </li>
+                                                            @endif
+                                                            <li>
+                                                                <a class="dropdown-item" target="blank"
+                                                                    href="{{ route('print.invoice.download', $order->id) }}"><i
+                                                                        class="fa-solid fa-print" style="color:#3BB77E"></i>Invoice Print</a>
+                                                            </li>
+                                                            @if (Auth::guard('admin')->user()->role == '1' ||
+                                                                    in_array('18', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                                                <li>
+                                                                    <a target="_blank" class="dropdown-item"
+                                                                        href="{{ route('all_orders.show', $order->id) }}">
+                                                                        <i class="fa-solid fa-eye" style="color:#3BB77E"></i>Details
+                                                                    </a>
+                                                                </li>
+                                                            @endif
+                                                            <li>
+                                                                <a title="Download" href="{{ route('invoice.download', $order->id) }}"
+                                                                    class="dropdown-item">
+                                                                    <i class="fa-solid fa-download" style="color:#3BB77E"></i> Invoice Download
+                                                                </a>
+                                                            </li>
+                                                            @if (Auth::guard('admin')->user()->role == '1' ||
+                                                                    in_array('20', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                                                <li>
+                                                                    <a title="Delete" style="color:#ff0000" href="{{ route('delete.orders',$order->id) }}" class="dropdown-item "
+                                                                        id="delete">
+                                                                        <i class="fa-solid fa-trash" style="color:#ff0000"></i> Delete
+                                                                    </a>
+                                                                </li>
+                                                            @endif
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endif
                                     @endforeach
                                 </tbody>
                             </table>

@@ -243,11 +243,11 @@
 
 							<div class="col-md-6 mb-4">
 								<label for="reseller_price" class="col-form-label" style="font-weight: bold;">Reseller Price: </label>
-								<input class="form-control" id="reseller_price" type="number" name="reseller_price" placeholder="Write product regular price" min="0" value="{{old('reseller_price')}}">
+								<input class="form-control" id="reseller_price" type="number" name="reseller_price" placeholder="Write product regular price" min="0" value="{{ old('reseller_price') }}">
 								@error('reseller_price')
-									<p class="text-danger">{{$message}}</p>
+									<p class="text-danger">{{ $message }}</p>
 								@enderror
-						  	</div>
+							</div>
 
 							<!-- Product Attribute Price combination Starts -->
 							<div class="col-12 mt-2 mb-2" id="variation_wrapper">
@@ -348,8 +348,12 @@
                           	</div>
                           	<div class="row">
                           		<div class="custom-control custom-switch">
-                                    <input type="checkbox" class="form-check-input me-2 cursor" name="	is_resell" id="	is_resell" value="1">
-                                    <label class="form-check-label cursor" for="is_resell">Reselling</label>
+									@if (Auth::guard('admin')->user()->role != '2')
+										<input type="checkbox" class="form-check-input me-2 cursor" name="is_resell" id="is_resell" checked value="1">
+									@else
+										<input type="checkbox" class="form-check-input me-2 cursor" name="is_resell" id="is_resell" value="1">
+									@endif
+									<label class="form-check-label cursor" for="is_resell">Reselling</label>
                                 </div>
                           	</div>
                           	<div class="row">
@@ -483,14 +487,9 @@
   </div>
 </div>
 @endsection
-
-
 @push('footer-script')
-
 <script>
-	
     function makeCombinationTable(el) {
-		
         $.ajax({
             url: '{{ route('admin.api.attributes.index') }}',
             type: 'get',
@@ -745,4 +744,20 @@
     });
 </script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const isResellCheckbox = document.getElementById("is_resell");
+        const resellerPriceInput = document.getElementById("reseller_price");
+
+        function toggleResellerPrice() {
+            resellerPriceInput.disabled = !isResellCheckbox.checked;
+        }
+
+        // Initial check when the page loads
+        toggleResellerPrice();
+
+        // Add event listener for changes
+        isResellCheckbox.addEventListener("change", toggleResellerPrice);
+    });
+</script>
 @endpush

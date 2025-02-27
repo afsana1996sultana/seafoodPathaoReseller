@@ -93,38 +93,78 @@ class CartController extends Controller
             }
         }
 
-    	if($product->is_varient){
-            Cart::add([
-                'id' => $id,
-                'name' => $request->product_name,
-                'qty' => $request->quantity,
-                'price' => $price,
-                'weight' => 1,
-                'options' => [
-                    'image' => $product->product_thumbnail,
-                    'slug' => $product->slug,
-                    'is_varient' => 1,
-                    'varient' => $request->product_varient,
-                    'attribute_ids' => $attribute_ids,
-                    'attribute_names' => $attribute_names,
-                    'attribute_values' => $attribute_values,
-                ],
-            ]);
+        if($product->is_varient){
+            if(auth()->check() && auth()->user()->role==7){
+                Cart::add([
+                    'id' => $id,
+                    'name' => $product->name_en,
+                    'qty' => $request->quantity,
+                    'price' => $price,
+                    'weight' => 1,
+                    'options' => [
+                        'image' => $stock->image,
+                        'vendor' => $product->vendor_id,
+                        'slug' => $product->slug,
+                        'is_varient' => 1,
+                        'regular_price' => $regular_price,
+                        'varient' => $request->product_varient,
+                        'attribute_ids' => $attribute_ids,
+                        'attribute_names' => $attribute_names,
+                        'attribute_values' => $attribute_values,
+                    ],
+                ]);
+            }else{
+                Cart::add([
+                    'id' => $id,
+                    'name' => $product->name_en,
+                    'qty' => $request->quantity,
+                    'price' => $price,
+                    'weight' => 1,
+                    'options' => [
+                        'image' => $stock->image,
+                        'slug' => $product->slug,
+                        'vendor' => $product->vendor_id,
+                        'is_varient' => 1,
+                        'varient' => $request->product_varient,
+                        'attribute_ids' => $attribute_ids,
+                        'attribute_names' => $attribute_names,
+                        'attribute_values' => $attribute_values,
+                    ],
+                ]);
+            }
 
             return response()->json(['success'=> 'Successfully Added on Your Cart']);
         }else{
-            Cart::add([
-                'id' => $id,
-                'name' => $request->product_name,
-                'qty' => $request->quantity,
-                'price' => $price,
-                'weight' => 1,
-                'options' => [
-                    'image' => $product->product_thumbnail,
-                    'slug' => $product->slug,
-                    'is_varient' => 0,
-                ],
-            ]);
+            if(auth()->check() && auth()->user()->role==7){
+                Cart::add([
+                    'id' => $id,
+                    'name' => $product->name_en,
+                    'qty' => $request->quantity,
+                    'price' => $price,
+                    'weight' => 1,
+                    'options' => [
+                        'image' => $product->product_thumbnail,
+                        'slug' => $product->slug,
+                        'vendor' => $product->vendor_id,
+                        'regular_price' => $regular_price,
+                        'is_varient' => 0,
+                    ],
+                ]);
+            }else{
+                Cart::add([
+                    'id' => $id,
+                    'name' => $product->name_en,
+                    'qty' => $request->quantity,
+                    'price' => $price,
+                    'weight' => 1,
+                    'options' => [
+                        'image' => $product->product_thumbnail,
+                        'slug' => $product->slug,
+                        'vendor' => $product->vendor_id,
+                        'is_varient' => 0,
+                    ],
+                ]);
+            }
 
 		    return response()->json(['success'=> 'Successfully Added on Your Cart']);
         }

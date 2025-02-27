@@ -3,9 +3,11 @@
 <section class="content-main">
     <div class="content-header">
         <h2 class="content-title">Category List <span class="badge rounded-pill alert-success"> {{ count($categories) }} </span></h2>
-        <div>
-            <a href="{{ route('category.create') }}" class="btn btn-primary"><i class="material-icons md-plus"></i> Add Category</a>
-        </div>
+        @if (Auth::guard('admin')->user()->role == '1' || in_array('6', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+            <div>
+                <a href="{{ route('category.create') }}" class="btn btn-primary"><i class="material-icons md-plus"></i> Add Category</a>
+            </div>
+        @endif
     </div>
     </div>
     <div class="card mb-4">
@@ -22,7 +24,7 @@
                             <th scope="col">Parent</th>
                             <th scope="col">Status</th>
                             <th scope="col">Featured</th>
-                            @if(Auth::guard('admin')->user()->role != '2')
+                            @if (Auth::guard('admin')->user()->role == '1' || in_array('7', json_decode(Auth::guard('admin')->user()->staff->role->permissions)) || in_array('8', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
                                 <th scope="col" class="text-end">Action</th>
                             @endif
                         </tr>
@@ -69,10 +71,16 @@
                                 @endif
                             </td>
                             @if(Auth::guard('admin')->user()->role != '2')
-                                <td class="text-end">
-                                    <a class="btn btn-md rounded font-sm" href="{{ route('category.edit',$category->id) }}">Edit</a>
-                                    <a class="btn btn-md rounded font-sm bg-danger" href="{{ route('category.delete',$category->id) }}" id="delete">Delete</a>
-                                </td>
+                                @if (Auth::guard('admin')->user()->role == '1' || in_array('7', json_decode(Auth::guard('admin')->user()->staff->role->permissions)) || in_array('8', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                    <td class="text-end">
+                                        @if (Auth::guard('admin')->user()->role == '1' || in_array('7', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                            <a class="btn btn-md rounded font-sm" href="{{ route('category.edit',$category->id) }}">Edit</a>
+                                        @endif
+                                        @if (Auth::guard('admin')->user()->role == '1' || in_array('8', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                            <a class="btn btn-md rounded font-sm bg-danger" href="{{ route('category.delete',$category->id) }}" id="delete">Delete</a>
+                                        @endif
+                                    </td>
+                                @endif
                             @endif
                         </tr>
                         @endforeach

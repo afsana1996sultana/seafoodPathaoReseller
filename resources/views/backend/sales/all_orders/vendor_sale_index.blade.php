@@ -25,7 +25,7 @@
     <section class="content-main">
         <div class="content-header">
             <div>
-                <h2 class="content-title card-title">Order List</h2>
+                <h2 class="content-title card-title">Vendor Order List</h2>
             </div>
         </div>
         <div class="row">
@@ -36,50 +36,51 @@
                         <form class="" action="" method="GET">
                             <div class="form-group row mb-3">
                                 <div class="col-md-2">
-                                    <label class="col-form-label"><span>All Orders :</span></label>
+                                    <label class="col-form-label"><span>Vendor Order :</span></label>
                                 </div>
-                                <div class="col-md-2 mt-2"></div>
                                 <div class="col-md-2 mt-2">
                                     <div class="custom_select">
-                                        <select
-                                            class="form-select d-inline-block select-active select-nice mb-lg-0 mr-5 mw-200"
-                                            name="delivery_status" id="delivery_status">
+                                        <select class=" select-active select-nice form-select d-inline-block mb-lg-0 mr-5 mw-200" name="note_status" id="note_status">
+                                            <option value="" selected="">Note Status</option>
+                                            @foreach($ordernotes as $ordernote)
+                                                <option value="{{ $ordernote->name }}" @if($note_status == $ordernote->name) selected @endif>
+                                                    {{ $ordernote->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2 mt-2">
+                                    <div class="custom_select">
+                                        <select class="form-select d-inline-block select-active select-nice mb-lg-0 mr-5 mw-200" name="delivery_status" id="delivery_status">
                                             <option value="" selected="">Delivery Status</option>
-                                            <option value="pending" @if ($delivery_status == 'pending') selected @endif>
-                                                Pending</option>
-                                            <option value="holding" @if ($delivery_status == 'holding') selected @endif>
-                                                Holding</option>
-                                            <option value="processing" @if ($delivery_status == 'processing') selected @endif>
-                                                Processing</option>
-                                            <option value="shipped" @if ($delivery_status == 'shipped') selected @endif>
-                                                Shipped</option>
-                                            <option value="delivered" @if ($delivery_status == 'delivered') selected @endif>
-                                                Delivered</option>
-                                            <option value="cancelled" @if ($delivery_status == 'cancelled') selected @endif>
-                                                Cancelled</option>
+                                            <option value="pending" @if ($delivery_status == 'pending') selected @endif>Pending</option>
+                                            <option value="confirmed" @if ($delivery_status == 'confirmed') selected @endif>Confirmed</option>
+                                            <option value="processing" @if ($delivery_status == 'processing') selected @endif>Processing</option>
+                                            <option value="picked_up" @if ($delivery_status == 'picked_up') selected @endif>Picked Up</option>
+                                            <option value="shipped" @if ($delivery_status =='shipped') selected @endif>Shipped</option>
+                                            <option value="delivered" @if ($delivery_status == 'delivered') selected @endif>Delivered</option>
+                                            <option value="cancelled" @if ($delivery_status == 'cancelled') selected @endif>Cancel</option>
                                         </select>
                                     </div>
                                 </div>
+
                                 <div class="col-md-2 mt-2">
                                     <div class="custom_select">
-                                        <select
-                                            class=" select-active select-nice form-select d-inline-block mb-lg-0 mr-5 mw-200"
-                                            name="payment_status" id="payment_status">
+                                        <select class=" select-active select-nice form-select d-inline-block mb-lg-0 mr-5 mw-200" name="payment_status" id="payment_status">
                                             <option value="" selected="">Payment Status</option>
-                                            <option value="unpaid" @if ($payment_status == 'unpaid') selected @endif>Unpaid
-                                            </option>
-                                            <option value="paid" @if ($payment_status == 'paid') selected @endif>Paid
-                                            </option>
+                                            <option value="unpaid" @if ($payment_status == 'unpaid') selected @endif>Unpaid</option>
+                                            <option value="paid" @if ($payment_status == 'paid') selected @endif>Paid</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-2 mt-2">
                                     <div class="custom_select">
-                                        <input type="text" id="reportrange" class="form-control" name="date"
-                                            placeholder="Filter by date" data-format="DD-MM-Y" value="Filter by date"
-                                            data-separator=" - " autocomplete="off">
+                                        <input type="text" name="date_range" class="form-control" placeholder="Select date" id="date" value="">
                                     </div>
                                 </div>
+
                                 <div class="col-md-2 mt-2">
                                     <button class="btn btn-primary" type="submit">Filter</button>
                                 </div>
@@ -179,27 +180,18 @@
                                                         href="{{ route('all_orders.show', $order->id) }}">
                                                         <i class="fa-solid fa-eye"></i>
                                                     </a>
-                                                    {{-- <a class="btn btn-primary btn-icon btn-circle btn-sm btn-xs"
-                                                        href="{{ route('print.invoice.download', $order->id) }}">
-                                                        <i class="fa-solid fa-download"></i>
-                                                    </a> --}}
-                                                    <!--<a href="{{ route('delete.orders', $order->id) }}" id="delete"-->
-                                                    <!--    class="btn btn-primary btn-icon btn-circle btn-sm btn-xs"-->
-                                                    <!--    data-href="#">-->
-                                                    <!--    <i class="fa-solid fa-trash"></i>-->
-                                                    <!--</a>-->
                                                 </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
-                                {{-- <div class="pagination-area mt-25 mb-50">
+                                <div class="pagination-area mt-25 mb-50">
                                     <nav aria-label="Page navigation example">
                                         <ul class="pagination justify-content-end">
                                             {{ $orders->links() }}
                                         </ul>
                                     </nav>
-                                </div> --}}
+                                </div>
                             </div>
                         </form>
                         <!-- table-responsive //end -->
@@ -318,38 +310,16 @@
         </div>
     </div>
     @push('footer-script')
-        <script type="text/javascript">
-            $(function() {
-                var start = moment();
-                var end = moment();
-
-                $('input[name="date"]').daterangepicker({
-                    autoUpdateInput: false,
-                    locale: {
-                        cancelLabel: 'Clear'
-                    }
-                });
-
-                function cb(start, end) {
-                    $('#reportrange').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-                }
-
-                $('#reportrange').daterangepicker({
-                    startDate: start,
-                    endDate: end,
-                    ranges: {
-                        'Today': [moment(), moment()],
-                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                        'This Month': [moment().startOf('month'), moment().endOf('month')],
-                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
-                            'month').endOf('month')]
-                    }
-                }, cb);
-
-                cb(start, end);
-            });
-        </script>
-    @endpush
+<script type="text/javascript">
+    $(function() {
+        $('input[name="date_range"]').daterangepicker({
+            timePicker: true,
+            timePicker24Hour: false,
+            locale: {
+                format: 'YYYY-MM-DD h:mm A'
+            }
+        });
+    });
+</script>
+@endpush
 @endsection

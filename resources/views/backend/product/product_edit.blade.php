@@ -506,10 +506,10 @@
                                 </div>
                                 <div class="row">
                                     <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="form-check-input me-2 cursor" name="is_digital"
-                                            id="is_digital" {{ $product->is_digital == 1 ? 'checked' : '' }}
+                                        <input type="checkbox" class="form-check-input me-2 cursor" name="is_resell"
+                                            id="is_resell" {{ $product->is_resell == 1 ? 'checked' : '' }}
                                             value="1">
-                                        <label class="form-check-label cursor" for="is_digital">Digital</label>
+                                        <label class="form-check-label cursor" for="is_resell">Reselling</label>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -540,23 +540,6 @@
                     </div>
                 </form>
             </div>
-            <!-- col-6 //-->
-            {{-- <div class="col-md-4">
-	        <div class="card">
-				<div class="card-header">
-					<h3>Product Meta</h3>
-				</div>
-				<div class="card-body">
-					<div class="row">
-						<div class="col-md-12 mb-4">
-	                        <label for="product_meta_title" class="col-form-label" style="font-weight: bold;">Meta Title</label>
-	                        <input class="form-control" id="product_meta_title" type="text" name="product_meta_title" placeholder="Write Product Meta Title" required>
-		                </div>
-					</div>
-				</div>
-			</div>
-		</div> --}}
-            <!-- col-6 //-->
         </div>
     </section>
 @endsection
@@ -887,5 +870,21 @@
                 }
             });
         }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const isResellCheckbox = document.getElementById("is_resell");
+            const resellerPriceInput = document.getElementById("reseller_price");
+
+            function toggleResellerPrice() {
+                resellerPriceInput.disabled = !isResellCheckbox.checked;
+            }
+
+            // Initial check when the page loads
+            toggleResellerPrice();
+
+            // Add event listener for changes
+            isResellCheckbox.addEventListener("change", toggleResellerPrice);
+        });
     </script>
 @endpush

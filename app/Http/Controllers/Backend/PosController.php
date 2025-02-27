@@ -294,6 +294,7 @@ class PosController extends Controller
      */
     public function store(Request $request)
     {
+        //dd('Pos Request', $request);
         $s_id      = session()->get('session_id');
         $carts     = PosCart::where('session_id', $s_id)
             ->with('productStock')
@@ -328,7 +329,7 @@ class PosController extends Controller
             $invoice_no = "0000001";
         }
         if ($request->staff_id) {
-            $staff = Staff::where('id', $request->staff_id)->first();
+            $staff = Staff::where('user_id', $request->staff_id)->first();
             $staff_commission = (($request->grand_total / 100) * $staff->user->commission);
         } else {
             $staff_commission = 0;
@@ -349,10 +350,10 @@ class PosController extends Controller
             $user_name = $find_user->name;
             $user_email = $find_user->email;
             $user_phone = $find_user->phone;
-            $user_city  = $find_user->division_id;
-            $user_zone = $find_user->district_id;
-            $user_area = $find_user->upazilla_id;
-            $user_address = $find_user->address;
+            $user_city  = $find_user->division_id ?? '0';
+            $user_zone = $find_user->district_id ?? '0';
+            $user_area = $find_user->upazilla_id ?? '0';
+            $user_address = $find_user->address ?? '0';
         }
         if ($request->paid_amount == '') {
             $notification = array(
@@ -386,12 +387,13 @@ class PosController extends Controller
             'name'              => $user_name,
             'phone'             => $user_phone,
             'email'             => $user_email,
-            'division_id'       => $user_city,
-            'district_id'       => $user_zone,
-            'upazilla_id'       => $user_area,
+            'division_id'       => $request->division_id ?? '0',
+            'district_id'       => $request->district_id ?? '0',
+            'upazilla_id'       => $request->upazilla_id ?? '0',
             'address'           => $user_address,
             'type'              => 1,
             'sale_type'         => 1,
+            'created_by'        => Auth::guard('admin')->user()->id,
         ]);
         // order details add //
         foreach ($carts as $cart) {
@@ -587,13 +589,10 @@ class PosController extends Controller
     public function barcode_ajax($id)
     {
         $product_barcode = Product::where('product_code',$id)->first();
-        // dd($product_barcode);
         if($product_barcode != null){
-             //dd($product_barcode);
             return json_encode($product_barcode);
         }else{
             $product_stock_barcode = ProductStock::where('stock_code',$id)->first();
-            //dd($product_stock_barcode);
             return json_encode($product_stock_barcode);
         }
     }

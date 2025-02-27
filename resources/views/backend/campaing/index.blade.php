@@ -3,9 +3,11 @@
 <section class="content-main">
     <div class="content-header">
         <h3 class="content-title">Campaign list <span class="badge rounded-pill alert-success"> {{ count($campaings) }} </span></h3>
-        <div>
-            <a href="{{ route('campaing.create') }}" class="btn btn-primary"><i class="material-icons md-plus"></i>Campaign Create</a>
-        </div>
+        @if (Auth::guard('admin')->user()->role == '1' || in_array('42', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+            <div>
+                <a href="{{ route('campaing.create') }}" class="btn btn-primary"><i class="material-icons md-plus"></i>Campaign Create</a>
+            </div>
+        @endif
     </div>
     </div>
     <div class="card mb-4">
@@ -19,7 +21,9 @@
                             <th scope="col">Name (English)</th>
                             <th scope="col">Name (Bangla)</th>
                             <th scope="col">Status</th>
-                            <th scope="col" class="text-end">Action</th>
+                            @if (Auth::guard('admin')->user()->role == '1' || in_array('43', json_decode(Auth::guard('admin')->user()->staff->role->permissions)) || in_array('44', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                <th scope="col" class="text-end">Action</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -44,16 +48,25 @@
                                   <a href="{{ route('campaing.active',['id'=>$campaing->id]) }}" > <span class="badge rounded-pill alert-danger">Disable</span></a>
                                 @endif
                             </td>
-                            <td class="text-end">
-                                <div class="dropdown">
-                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="{{ route('campaing.edit',$campaing->id) }}">Edit info</a>
-                                        <a class="dropdown-item text-danger" href="{{ route('campaing.delete',$campaing->id) }}" id="delete">Delete</a>
-                                    </div>
-                                </div>
-                                <!-- dropdown //end -->
-                            </td>
+                            @if(Auth::guard('admin')->user()->role != '2')
+                                @if (Auth::guard('admin')->user()->role == '1' || in_array('43', json_decode(Auth::guard('admin')->user()->staff->role->permissions)) || in_array('44', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                    <td class="text-end">
+                                        <div class="dropdown">
+                                            <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                            <div class="dropdown-menu">
+                                                @if (Auth::guard('admin')->user()->role == '1' || in_array('43', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                                    <a class="dropdown-item" href="{{ route('campaing.edit',$campaing->id) }}">Edit info</a>
+                                                @endif
+
+                                                @if (Auth::guard('admin')->user()->role == '1' || in_array('44', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
+                                                    <a class="dropdown-item text-danger" href="{{ route('campaing.delete',$campaing->id) }}" id="delete">Delete</a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <!-- dropdown //end -->
+                                    </td>
+                                @endif
+                            @endif
                         </tr>
                         @endforeach
                     </tbody>

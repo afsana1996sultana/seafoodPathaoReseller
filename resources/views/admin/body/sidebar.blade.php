@@ -205,7 +205,7 @@
                     @endif
                 </div>
             </li>
-            <li class="menu-item has-submenu {{ ($route == 'all_orders.index') || ($route == 'all_orders.posindex')?'active':'' }}">
+            <li class="menu-item has-submenu {{ ($route == 'all_orders.index') || ($route == 'all_orders.posindex') ||$route == 'all_orders.all_vendor_sale_index' ||$route == 'all_orders.all_reseller_sale_index' ? 'active' : '' }}">
                 @if(Auth::guard('admin')->user()->role == '1' || in_array('17', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
                     <a class="menu-link" href="#">
                         <i class="icon material-icons md-shopping_cart"></i>
@@ -219,6 +219,8 @@
                     @if(Auth::guard('admin')->user()->role == '1' || in_array('17', json_decode(Auth::guard('admin')->user()->staff->role->permissions)))
                         <a class="{{ ($route == 'all_orders.posindex') ? 'active':'' }}" href="{{ route('all_orders.posindex') }}" >All POS Orders</a>
                     @endif
+                    <a class="{{ ($route == 'all_orders.all_reseller_sale_index') ? 'active':'' }}" href="{{ route('all_orders.all_reseller_sale_index') }}" >All Reseller Orders</a>
+                    <a class="{{ ($route == 'all_orders.all_vendor_sale_index') ? 'active':'' }}" href="{{ route('all_orders.all_vendor_sale_index') }}" >All Vendor Orders</a>
                 </div>
             </li>
             <li class="menu-item has-submenu {{ ($route == 'sms.templates') || ($route == 'sms.providers')?'active':'' }}">
