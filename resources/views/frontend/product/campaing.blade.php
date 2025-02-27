@@ -1,66 +1,61 @@
 @extends('layouts.frontend')
 @section('content-frontend')
 @include('frontend.common.add_to_cart_modal')
-@section('title')
-Category Nest Online Shop
-@endsection
 @push('css')
-
 <style>
-.campain__list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 18px;
-}
-
-.single__campaign {
-    width: 18%;
-}
-.campain__list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-/* Normal desktop :1200px. */
-@media (min-width: 1200px) and (max-width: 1500px) {}
-
-
-/* Normal desktop :992px. */
-@media (min-width: 992px) and (max-width: 1200px) {
-    .single__campaign {
-    	width: 22%;
+    .campain__list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
     }
-}
+
+    .single__campaign {
+        width: 18%;
+    }
+    .campain__list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    /* Normal desktop :1200px. */
+    @media (min-width: 1200px) and (max-width: 1500px) {}
 
 
-/* Tablet desktop :768px. */
-@media (min-width: 768px) and (max-width: 991px) {
-     .single__campaign {
-    	width: 22%;
-    }   
-}
+    /* Normal desktop :992px. */
+    @media (min-width: 992px) and (max-width: 1200px) {
+        .single__campaign {
+            width: 22%;
+        }
+    }
 
 
-/* small mobile :320px. */
-@media (max-width: 767px) {
-   .single__campaign {
-	width: 45%;
-}
-.product-cart-wrap .product-badges-right span {
-	padding: 5px 8px;
-}
-.campain__list {
-	margin-top: 50px;
-}
-}
+    /* Tablet desktop :768px. */
+    @media (min-width: 768px) and (max-width: 991px) {
+        .single__campaign {
+            width: 22%;
+        }   
+    }
 
-/* Large Mobile :480px. */
-@media only screen and (min-width: 480px) and (max-width: 767px) {
 
-}
+    /* small mobile :320px. */
+    @media (max-width: 767px) {
+    .single__campaign {
+        width: 45%;
+    }
+    .product-cart-wrap .product-badges-right span {
+        padding: 5px 8px;
+    }
+    .campain__list {
+        margin-top: 50px;
+    }
+    }
+
+    /* Large Mobile :480px. */
+    @media only screen and (min-width: 480px) and (max-width: 767px) {
+
+    }
 </style>
-
 @endpush
 
 <main class="main">
@@ -126,23 +121,33 @@ Category Nest Online Shop
                                                          data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
                                                  </div>
                                                  <!-- start product discount section -->
-                                                 @php
-                                                     if ($product->discount_type == 1) {
-                                                         $price_after_discount = $product->regular_price - $product->discount_price;
-                                                     } elseif ($product->discount_type == 2) {
-                                                         $price_after_discount = $product->regular_price - ($product->regular_price * $product->discount_price) / 100;
-                                                     }
-                                                 @endphp
+                                                @php
+                                                    if (auth()->check() && auth()->user()->role == 7) {
+                                                        if ($product_recently_add->discount_type == 1) {
+                                                            $price_after_discount = $product_recently_add->reseller_price - $product_recently_add->discount_price;
+                                                        } elseif ($product_recently_add->discount_type == 2) {
+                                                            $price_after_discount =
+                                                                $product_recently_add->reseller_price - ($product_recently_add->reseller_price * $product_recently_add->discount_price) / 100;
+                                                        }
+                                                    } else {
+                                                        if ($product_recently_add->discount_type == 1) {
+                                                            $price_after_discount = $product_recently_add->regular_price - $product_recently_add->discount_price;
+                                                        } elseif ($product_recently_add->discount_type == 2) {
+                                                            $price_after_discount =
+                                                                $product_recently_add->regular_price - ($product_recently_add->regular_price * $product_recently_add->discount_price) / 100;
+                                                        }
+                                                    }
+                                                @endphp
                                     
-                                                 @if ($product->discount_price > 0)
-                                                     <div class="product-badges-right product-badges-position-right product-badges-mrg">
-                                                         @if ($product->discount_type == 1)
-                                                             <span class="hot">৳{{ $product->discount_price }} off</span>
-                                                         @elseif($product->discount_type == 2)
-                                                             <span class="hot">{{ $product->discount_price }}% off</span>
-                                                         @endif
-                                                     </div>
-                                                 @endif
+                                                @if ($product->discount_price > 0)
+                                                    <div class="product-badges-right product-badges-position-right product-badges-mrg">
+                                                        @if ($product->discount_type == 1)
+                                                            <span class="hot">৳{{ $product->discount_price }} off</span>
+                                                        @elseif($product->discount_type == 2)
+                                                            <span class="hot">{{ $product->discount_price }}% off</span>
+                                                        @endif
+                                                    </div>
+                                                @endif
                                              </div>
                                              
                                              <div class="product-content-wrap">
@@ -185,22 +190,41 @@ Category Nest Online Shop
                                                     <span class="rating-count">({{ number_format($averageRating, 1) }})</span>
                                                 </div>
                                      
-                                                 <div class="product-card-bottom">
-                                                    @if ($product->discount_price > 0)
-                                                         <div class="product-price">
-                                                             <span class="price">৳{{ $price_after_discount }}</span>
-                                                             <span class="old-price" style="color: #DD1D21;">৳{{ $product->regular_price }}</span>
-                                                         </div>
-                                                     @else
-                                                         <div class="product-price">
-                                                             <span class="price">৳{{ $product->regular_price }}</span>
-                                                         </div>
-                                                     @endif
+                                                <div class="product-card-bottom">
+                                                    @if ($product_recently_add->discount_price > 0)
+                                                        @if (auth()->check() && auth()->user()->role == 7)
+                                                            <div class="product-price">
+                                                                <span class="price">৳{{ $product_recently_add->reseller_price }}</span>
+                                                            </div>
+                                                        @else
+                                                            <div class="product-price">
+                                                                <span class="price">৳{{ $price_after_discount }}</span>
+                                                                <span class="old-price" style="color: #DD1D21;">৳{{ $product_recently_add->regular_price }}</span>
+                                                            </div>
+                                                        @endif
+                                                    @else
+                                                        @if (auth()->check() && auth()->user()->role == 7)
+                                                            <div class="product-price">
+                                                                <span class="price">৳{{ $product_recently_add->reseller_price }}</span>
+                                                            </div>
+                                                        @else
+                                                            <div class="product-price">
+                                                                <span class="price">৳{{ $product_recently_add->regular_price }}</span>
+                                                            </div>
+                                                        @endif
+                                                    @endif
+
                                                     @php
                                                         $productsellcount = \App\Models\OrderDetail::where('product_id', $product->id)->sum('qty') ?? 0;
                                                     @endphp
                                                     <span class="price">Sold({{ $productsellcount }})</span>
-                                                 </div>
+                                                </div>
+                                                @if (auth()->check() && auth()->user()->role == 7)
+                                                    <div>
+                                                        <span>Regular Price: <span class="text-info">৳ {{ $product->regular_price }}</span></span>
+                                                        <input type="hidden" id="regular_price" name="regular_price" value="{{ $product->regular_price }}" min="1">
+                                                    </div>
+                                                @endif
                                              </div>
                                          </div>
                                     @endif
