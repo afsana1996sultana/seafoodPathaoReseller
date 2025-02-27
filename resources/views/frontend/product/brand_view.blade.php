@@ -98,23 +98,44 @@
                                 <div class="price d-flex">
                                     <span>
                                         @php
-                                            if ($product->discount_type == 1) {
-                                                $price_after_discount = $product->regular_price - $product->discount_price;
-                                            } elseif ($product->discount_type == 2) {
-                                                $price_after_discount = $product->regular_price - ($product->regular_price * $product->discount_price) / 100;
+                                            if (auth()->check() && auth()->user()->role == 7) {
+                                                if ($product_recently_add->discount_type == 1) {
+                                                    $price_after_discount = $product_recently_add->reseller_price - $product_recently_add->discount_price;
+                                                } elseif ($product_recently_add->discount_type == 2) {
+                                                    $price_after_discount =
+                                                        $product_recently_add->reseller_price - ($product_recently_add->reseller_price * $product_recently_add->discount_price) / 100;
+                                                }
+                                            } else {
+                                                if ($product_recently_add->discount_type == 1) {
+                                                    $price_after_discount = $product_recently_add->regular_price - $product_recently_add->discount_price;
+                                                } elseif ($product_recently_add->discount_type == 2) {
+                                                    $price_after_discount =
+                                                        $product_recently_add->regular_price - ($product_recently_add->regular_price * $product_recently_add->discount_price) / 100;
+                                                }
                                             }
                                         @endphp
     
-                                        @if ($product->discount_price > 0)
-                                            <div class="product-price price-derection">
-                                                <span class="price">৳{{ $price_after_discount }}</span>
-                                                <span class="old-price"
-                                                    style="color: #DD1D21;"><del>৳{{ $product->regular_price }}</del></span>
-                                            </div>
+                                        @if ($product_recently_add->discount_price > 0)
+                                            @if (auth()->check() && auth()->user()->role == 7)
+                                                <div class="product-price">
+                                                    <span class="price">৳{{ $product_recently_add->reseller_price }}</span>
+                                                </div>
+                                            @else
+                                                <div class="product-price">
+                                                    <span class="price">৳{{ $price_after_discount }}</span>
+                                                    <span class="old-price" style="color: #DD1D21;">৳{{ $product_recently_add->regular_price }}</span>
+                                                </div>
+                                            @endif
                                         @else
-                                            <div class="product-price price-derection">
-                                                <span class="price">৳{{ $product->regular_price }}</span>
-                                            </div>
+                                            @if (auth()->check() && auth()->user()->role == 7)
+                                                <div class="product-price">
+                                                    <span class="price">৳{{ $product_recently_add->reseller_price }}</span>
+                                                </div>
+                                            @else
+                                                <div class="product-price">
+                                                    <span class="price">৳{{ $product_recently_add->regular_price }}</span>
+                                                </div>
+                                            @endif
                                         @endif
                                     </span>
                                     @php
@@ -122,6 +143,12 @@
                                     @endphp
                                     <span class="price">Sold({{ $productsellcount }})</span>
                                 </div>
+                                @if (auth()->check() && auth()->user()->role == 7)
+                                    <div>
+                                        <span>Regular Price: <span class="text-info">৳ {{ $product->regular_price }}</span></span>
+                                        <input type="hidden" id="regular_price" name="regular_price" value="{{ $product->regular_price }}" min="1">
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>

@@ -52,27 +52,58 @@
 					<span class="rating-count">({{ number_format($averageRating, 1) }})</span>
 				</div>
 	            @php
-	                if($product->discount_type == 1){
-	                    $price_after_discount = $product->regular_price - $product->discount_price;
-	                }elseif($product->discount_type == 2){
-	                    $price_after_discount = $product->regular_price - ($product->regular_price * $product->discount_price / 100);
-	                }
-	          	@endphp
+					if (auth()->check() && auth()->user()->role == 7) {
+						if ($product->discount_type == 1) {
+							$price_after_discount = $product->reseller_price - $product->discount_price;
+						} elseif ($product->discount_type == 2) {
+							$price_after_discount =
+								$product->reseller_price - ($product->reseller_price * $product->discount_price) / 100;
+						}
+					} else {
+						if ($product->discount_type == 1) {
+							$price_after_discount = $product->regular_price - $product->discount_price;
+						} elseif ($product->discount_type == 2) {
+							$price_after_discount =
+								$product->regular_price - ($product->regular_price * $product->discount_price) / 100;
+						}
+					}
+				@endphp
                 <div class="product-card-bottom">
-                    @if ($product->discount_price > 0)
-	                    <div class="product-price">
-	                      	<span class="price"> ৳{{ $price_after_discount }} </span>
-	                      	<span class="old-price" style="color: #DD1D21;">৳{{ $product->regular_price }}</span>
-	                    </div>
-	                @else
-	                    <div class="product-price">
-	                    	<span class="price"> ৳{{ $product->regular_price }} </span>
-	                    </div>
-	                @endif
+					@if ($product->discount_price > 0)
+						@if (auth()->check() && auth()->user()->role == 7)
+							<div class="product-price">
+								<span class="price">৳{{ $product->reseller_price }}</span>
+							</div>
+						@else
+							<div class="product-price">
+								<span class="price">৳{{ $price_after_discount }}</span>
+								<span class="old-price" style="color: #DD1D21;">৳{{ $product->regular_price }}</span>
+							</div>
+						@endif
+					@else
+						@if (auth()->check() && auth()->user()->role == 7)
+							<div class="product-price">
+								<span class="price">৳{{ $product->reseller_price }}</span>
+							</div>
+						@else
+							<div class="product-price">
+								<span class="price">৳{{ $product->regular_price }}</span>
+							</div>
+						@endif
+					@endif
+
 					@php
 						$productsellcount = \App\Models\OrderDetail::where('product_id', $product->id)->sum('qty') ?? 0;
 					@endphp
 					<span class="price">Sold({{ $productsellcount }})</span>
+
+					@if (auth()->check() && auth()->user()->role == 7)
+						<div>
+							<span>Regular Price: <span class="text-info">৳ {{ $product->regular_price }}</span></span>
+							<input type="hidden" id="regular_price" name="regular_price" value="{{ $product->regular_price }}" min="1">
+						</div>
+					@endif
+					
                     <div class="add-cart">
                         @if($product->is_varient == 1)
 	                        <a class="add" id="{{ $product->id }}" onclick="productView(this.id)" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-shopping-cart mr-5"></i>Add </a>
