@@ -1,8 +1,11 @@
 @extends('layouts.frontend')
-@section('title')
-Dashboard Nest Online Shop
-@endsection
 @section('content-frontend')
+<?php
+    use App\Models\User;
+    $id = Auth::guard('web')->user()->id;
+    $role = Auth::guard('web')->user()->role;
+    $adminData = User::find($id);
+?>
 <main class="main pages">
     <div class="page-header breadcrumb-wrap">
         <div class="container">
@@ -12,7 +15,7 @@ Dashboard Nest Online Shop
             </div>
         </div>
     </div>
-    <div class="page-content pt-150 pb-150">
+    <div class="page-content pt-20 pb-20">
         <div class="container">
             <div class="row">
                 <div class="col-lg-10 m-auto">
@@ -30,8 +33,13 @@ Dashboard Nest Online Shop
                                     <li class="nav-item">
                                         <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab" href="#track-orders" role="tab" aria-controls="track-orders" aria-selected="false"><i class="fi-rs-shopping-cart-check mr-10"></i>Track Your Order</a>
                                     </li>
+
                                     <li class="nav-item">
-                                        <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="true"><i class="fi-rs-marker mr-10"></i>My Address</a>
+                                        <a class="nav-link" id="withdraw-tab" data-bs-toggle="tab" href="#withdraw" role="tab" aria-controls="withdraw" aria-selected="false"><i class="fa-solid fa-money-bill-transfer mr-10"></i>Withdraw</a>
+                                    </li> 
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address1" role="tab" aria-controls="address" aria-selected="true"><i class="fi-rs-marker mr-10"></i>My Address</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab" href="#account-detail" role="tab" aria-controls="account-detail" aria-selected="true"><i class="fi-rs-user mr-10"></i>Account details</a>
@@ -55,27 +63,6 @@ Dashboard Nest Online Shop
                             <div class="tab-content account dashboard-content pl-50">
                                 <div class="tab-pane fade active show" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
                                     <div class="row">
-                                        <!--<div class="col-lg-4 col-md-4 col-sm-4 col-6 item text-center">-->
-                                        <!--    <div class="card">-->
-                                        <!--        <p><i class="fas fa-coins"></i></p>-->
-                                        <!--        <span class="mb-4">PENDING POINT</span>-->
-                                        <!--    </div>-->
-                                        <!--</div>-->
-                                        <!--<div class="col-lg-4 col-md-4 col-sm-4 col-6 item text-center">-->
-                                        <!--    <div class="card">-->
-                                        <!--        <p><i class="fas fa-coins"></i></p>-->
-                                        <!--        <span>TOTAL POINT</span>-->
-                                        <!--        <p>0</p>-->
-                                        <!--    </div>-->
-                                        <!--</div>-->
-                                        <!--<div class="col-lg-4 col-md-4 col-sm-4 col-6 item text-center">-->
-                                        <!--    <div class="card">-->
-                                        <!--        <p><i class="fas fa-newspaper"></i></p>-->
-                                        <!--        <span>TOTAL BLOGS</span>-->
-                                        <!--        <p>0</p>-->
-                                        <!--    </div>-->
-                                        <!--</div>-->
-
                                         <div class="col-lg-4 col-md-4 col-sm-4 col-6 item text-center">
                                             <div class="card">
                                                 <p><i class="fas fa-box"></i></p>
@@ -126,10 +113,39 @@ Dashboard Nest Online Shop
                                             </div>
                                         </div>
 
+                                        @if ($role == 7)
+                                            <div class="col-lg-4 col-md-4 col-sm-4 col-6 item text-center">
+                                                <div class="card">
+                                                    <p><i class="fas fa-wallet"></i></p>
+                                                    <span>Wallet Balance</span>
+                                                    <p>{{ number_format(auth()->user()->wallet_balance) }}</p>
+                                                    <input type="hidden" class="walletAmount" value="{{auth()->user()->wallet_balance}}">
+                                                </div>
+                                            </div>
+                                        @endif
+
+                                        @if ($role == 7)
+                                            <div class="col-lg-4 col-md-4 col-sm-4 col-6 item text-center">
+                                                <div class="card">
+                                                    <p><i class="fas fa-wallet"></i></p>
+                                                    <span>Pending Wallet Balance</span>
+                                                    <p>{{ number_format($due_balance) }}</p>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        
+                                        @if ($role == 7)
+                                            <div class="col-lg-4 col-md-4 col-sm-4 col-6 item text-center">
+                                                <div class="card">
+                                                    <p><i class="fa-solid fa-money-bill-transfer"></i></p>
+                                                    <span>Withdraws Balance</span>
+                                                    <p>{{ number_format($withdraw) }}</p>
+                                                </div>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
-                                   
                                     <div class="card">
                                         <div class="card-header">
                                             <h3 class="mb-0">Your Orders</h3>
@@ -210,7 +226,83 @@ Dashboard Nest Online Shop
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
+                                <div class="tab-pane fade" id="withdraw" role="tabpanel" aria-labelledby="withdraw-tab">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3 class="mb-0">Cash Withdraw Option</h3>
+                                        </div>
+
+                                        <div class='mt-5 '>
+                                            <div class="row">
+                                                <div class="col-md-6 col-sm-6 col-6">
+                                                    <div class="card single-withdraw">
+                                                        <div class="withdraw-photo">
+                                                            <img src="{{ asset('upload/withdraw/bkash.png') }}"
+                                                                class="card-img-top" alt="bkash" style="width: 75% !important;">
+                                                        </div>
+
+                                                        <div class="card-body">
+                                                            {{-- @if($adminData->income != 0) --}}
+                                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Bkash">Apply</button>
+                                                            {{-- @else
+                                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Bkash" disabled>Apply</button>
+                                                            @endif --}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-sm-6 col-6">
+                                                    <div class="card single-withdraw">
+                                                        <div class="withdraw-photo">
+                                                            <img src="{{ asset('upload/withdraw/nagod.png') }}"
+                                                                class="card-img-top" alt="nagod" style="width: 75% !important;">
+                                                        </div>
+
+                                                        <div class="card-body">
+                                                            {{-- @if($adminData->income != 0) --}}
+                                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Nogod">Apply</button>
+                                                            {{-- @else
+                                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Nogod" disabled>Apply</button>
+                                                            @endif --}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-sm-6 col-6">
+                                                    <div class="card single-withdraw">
+                                                        <div class="withdraw-photo">
+                                                            <img src="{{ asset('upload/withdraw/transaction.png') }}"
+                                                                class="card-img-top" alt="transaction" style="width: 75% !important;">
+                                                        </div>
+
+                                                        <div class="card-body">
+                                                            {{-- @if($adminData->income != 0) --}}
+                                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bank">Apply</button>
+                                                            {{-- @else
+                                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bank" disabled>Apply</button>
+                                                            @endif --}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-sm-6 col-6">
+                                                    <div class="card single-withdraw">
+                                                        <div class="withdraw-photo">
+                                                            <img src="{{ asset('upload/withdraw/cash.png') }}"
+                                                                class="card-img-top" alt="cash" style="width: 75% !important;">
+                                                        </div>
+
+                                                        <div class="card-body">
+                                                            {{-- @if($adminData->income != 0) --}}
+                                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cash">Apply</button>
+                                                            {{-- @else --}}
+                                                                {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cash" disabled>Apply</button>
+                                                            @endif --}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="address1" role="tabpanel" aria-labelledby="address-tab">
                                     <h3 class="mb-0">Billing Address</h3>
                                     <div class="row mt-3">
                                         @php
@@ -476,6 +568,363 @@ Dashboard Nest Online Shop
         </div>
     </div>
 </main>
+{{-- model for BKash--}}
+<div class="modal fade" id="Bkash" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cash Withdraw from Bkash</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="page-content pt-10 pb-10">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-12 m-auto">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="login_wrap widget-taber-content background-white">
+                                            <div class="padding_eight_all bg-white">
+                                                <form method="POST" action="{{route('withdraw.request')}}">
+                                                    @csrf
+                                                    <div class="row">
+                                                        <div class="input-group-sm col-md-6 mb-3">
+                                                            <label for="name" class="fw-900">Name: <span class="text-danger">*</span></label>
+                                                            <input type="text" name="name" class="form-control" id="name" value="{{ $adminData->name }}" required readonly/>
+                                                        </div>
+
+                                                        <div class="form-group col-md-6 mb-3">
+                                                            <label for="phone" class="fw-900">Phone:<span class="text-danger">*</span></label>
+                                                            <input type="text" name="phone" class="form-control" id="phone" value="{{ $adminData->phone }}" required readonly/>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="form-group col-md-6 mb-3">
+                                                            <label for="address" class="fw-900">Address : <span class="text-danger">*</span></label>
+                                                            <input type="text" name="address" class="form-control" id="address" value="{{ $adminData->address }}" required readonly/>
+                                                        </div>
+
+                                                        <div class="form-group col-md-6 mb-3">
+                                                            <label for="transition_number" class="fw-900">BKash Number: <span class="text-danger">*</span></label>
+                                                            <input type="text" name="transition_number" class="form-control" id="transition_number" placeholder="017XX-XXXXXX" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required/>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="form-group col-md-6">
+                                                            <label for="account_type" class="fw-900">Account Type:<span class="text-danger">*</span></label>
+                                                            <div class="custom_select">
+                                                                <select class="form-control" name="account_type" id="account_type" required>
+                                                                    <option value="">Select Type</option>
+                                                                    <option value="personal">personal</option>
+                                                                    <option value="Agent">Agent</option>
+                                                                    <option value="Marchent">Marchent</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <label for="amount" class="fw-900">Amount<span class="text-danger">*</span></label>
+                                                            <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="amount" class="form-control walletAmountadd" id="amount" value="0" required/>
+                                                            <p class="amount-alert" style="color:red"></p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="form-group col-md-3">
+                                                            <input type="text" name="method" id="method" value="Bkash" required hidden/>
+                                                        </div>
+                                                        <div class="form-group col-md-3">
+                                                            <input type="number" name="user_id" id="user_id" value="{{ $adminData->id }}" required hidden/>
+                                                        </div>
+                                                        <div class="form-group col-md-3">
+                                                            <input type="number" name="user_type" id="user_type" value="0" required hidden/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group mb-30 mt-20">
+                                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- model for Nagad --}}
+<div class="modal fade" id="Nogod" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cash Withdraw from Nagad</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="page-content pt-10 pb-10">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-12 m-auto">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="login_wrap widget-taber-content background-white">
+                                            <div class="padding_eight_all bg-white">
+                                                <form method="POST" action="{{route('withdraw.request')}}">
+                                                    @csrf
+                                                    <div class="row">
+                                                        <div class="input-group-sm col-md-6 mb-3">
+                                                            <label for="name" class="fw-900">Name: <span class="text-danger">*</span></label>
+                                                            <input type="text" name="name" class="form-control" id="name" value="{{ $adminData->name }}" required readonly/>
+                                                        </div>
+
+                                                        <div class="form-group col-md-6 mb-3">
+                                                            <label for="phone" class="fw-900">Phone:<span class="text-danger">*</span></label>
+                                                            <input type="text" name="phone" class="form-control" id="phone" value="{{ $adminData->phone }}" required readonly/>
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="form-group col-md-6 mb-3">
+                                                            <label for="address" class="fw-900">Address : <span class="text-danger">*</span></label>
+                                                            <input type="text" name="address" class="form-control" id="address" value="{{ $adminData->address }}" required readonly/>
+                                                        </div>
+
+                                                        <div class="form-group col-md-6 mb-3">
+                                                            <label for="transition_number" class="fw-900">Nagad Number: <span class="text-danger">*</span></label>
+                                                            <input type="text" class="form-control" name="transition_number" id="transition_number" placeholder="017XX-XXXXXX" oninput="this.value = this.value.replace(/[^0-9]/g, '')"  required/>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="form-group col-md-6">
+                                                            <label for="account_type" class="fw-900">Account Type:<span class="text-danger">*</span></label>
+                                                            <div class="custom_select">
+                                                                <select class="form-control" name="account_type" id="account_type" required>
+                                                                    <option value="">Select Type</option>
+                                                                    <option value="personal">personal</option>
+                                                                    <option value="Agent">Agent</option>
+                                                                    <option value="Marchent">Marchent</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <label for="amount" class="fw-900">Amount<span class="text-danger">*</span></label>
+                                                            <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="amount" class="form-control walletAmountadd" id="amount" value="0" required/>
+                                                            <p class="amount-alert" style="color:red"></p>
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="form-group col-md-3">
+                                                            <input type="text" name="method" id="method" value="Nagad" required hidden/>
+                                                        </div>
+                                                        <div class="form-group col-md-3">
+                                                            <input type="number" name="user_id" id="user_id" value="{{ $adminData->id }}" required hidden/>
+                                                        </div>
+                                                        <div class="form-group col-md-3">
+                                                            <input type="number" name="user_type" id="user_type" value="0" required hidden/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group mb-30 mt-20">
+                                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- model for bank --}}
+<div class="modal fade" id="bank" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cash Withdraw from Bank</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="page-content pt-10 pb-10">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-12 m-auto">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="login_wrap widget-taber-content background-white">
+                                            <div class="padding_eight_all bg-white">
+                                                <form method="POST" action="{{route('withdraw.request')}}">
+                                                    @csrf
+                                                    <div class="row">
+                                                        <div class="input-group-sm col-md-6 mb-3">
+                                                            <label for="name" class="fw-900">Name: <span class="text-danger">*</span></label>
+                                                            <input type="text" name="name" class="form-control" id="name" value="{{ $adminData->name }}" required readonly/>
+                                                        </div>
+                                                        <div class="form-group col-md-6 mb-3">
+                                                            <label for="phone" class="fw-900">Phone:<span class="text-danger">*</span></label>
+                                                            <input type="text" name="phone" class="form-control" id="phone" value="{{ $adminData->phone }}" required readonly/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="form-group col-md-6 mb-3">
+                                                            <label for="address" class="fw-900">Address : <span class="text-danger">*</span></label>
+                                                            <input type="text" name="address" class="form-control" id="address" value="{{ $adminData->address }}" required readonly/>
+                                                        </div>
+                                                        <div class="form-group col-md-6 mb-3">
+                                                            <label for="bank_name" class="fw-900">Bank Name: <span class="text-danger">*</span></label>
+                                                            <input type="text" name="bank_name" class="form-control" id="bank_name" placeholder="Bank Name" required/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="form-group col-md-6 mb-3">
+                                                            <label for="bank_brunch" class="fw-900">Bank Brunch: <span class="text-danger">*</span></label>
+                                                            <input type="text" name="bank_brunch" class="form-control" id="bank_brunch" placeholder="Bank Brunch" required/>
+                                                        </div>
+                                                        <div class="form-group col-md-6 mb-3">
+                                                            <label for="account_no" class="fw-900">Account No: <span class="text-danger">*</span></label>
+                                                            <input type="text" name="account_no" class="form-control" id="account_no" placeholder="Account No" required/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="form-group col-md-6 mb-3">
+                                                            <label for="account_holder_name" class="fw-900">Account Holder Name: <span class="text-danger">*</span></label>
+                                                            <input type="text" name="account_holder_name" class="form-control" id="account_holder_name" placeholder="Account Holder Name" required  maxlength="100"/>
+                                                        </div>
+                                                        <div class="form-group col-md-6 mb-3">
+                                                            <label for="account_type" class="fw-900">Account Type:<span class="text-danger">*</span></label>
+                                                            <div class="custom_select">
+                                                                <input type="text" name="account_type" class="form-control" id="account_type" placeholder="Account Type" required/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="form-group col-md-6">
+                                                            <label for="amount" class="fw-900">Amount<span class="text-danger">*</span></label>
+                                                            <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="amount" class="form-control walletAmountadd" id="amount" value="0" required/>
+                                                                <p class="amount-alert" style="color:red"></p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="form-group col-md-3">
+                                                            <input type="text" name="method" id="method" value="Bank" required hidden/>
+                                                        </div>
+                                                        <div class="form-group col-md-3">
+                                                            <input type="number" name="user_id" id="user_id" value="{{ $adminData->id }}" required hidden/>
+                                                        </div>
+                                                        <div class="form-group col-md-3">
+                                                            <input type="number" name="user_type" id="user_type" value="0" required hidden/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group mb-30 mt-20">
+                                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Model for cash --}}
+<div class="modal fade" id="cash" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cash Withdraw</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="page-content pt-10 pb-10">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-12 m-auto">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="login_wrap widget-taber-content background-white">
+                                            <div class="padding_eight_all bg-white">
+                                                <form method="POST" action="{{route('withdraw.request')}}">
+                                                    @csrf
+                                                    <div class="row">
+                                                        <div class="input-group-sm col-md-6 mb-3">
+                                                            <label for="name" class="fw-900">Name: <span class="text-danger">*</span></label>
+                                                            <input type="text" name="name" class="form-control" id="name" value="{{ $adminData->name }}" required readonly/>
+                                                        </div>
+
+                                                        <div class="form-group col-md-6 mb-3">
+                                                            <label for="phone" class="fw-900">Phone:<span class="text-danger">*</span></label>
+                                                            <input type="text" name="phone" class="form-control" id="phone" value="{{ $adminData->phone }}" required readonly/>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="form-group col-md-6 mb-3">
+                                                            <label for="address" class="fw-900">Address : <span class="text-danger">*</span></label>
+                                                            <input type="text" name="address" class="form-control" id="address" value="{{ $adminData->address }}" required readonly/>
+                                                        </div>
+                                                        <div class="form-group col-md-6 mb-3">
+                                                            <label for="amount" class="fw-900">Amount<span class="text-danger">*</span></label>
+                                                            <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="amount" class="form-control walletAmountadd" id="amount" value="0" required/>
+                                                            <p class="amount-alert" style="color:red"></p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="form-group col-12">
+                                                            <label for="purpose" class="fw-900">Purpose:<span class="text-danger">*</span></label>
+                                                            <input type="text" name="purpose" id="purpose" class="form-control" placeholder="Enter Parpous" required/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="form-group col-md-3">
+                                                            <input type="text" name="method" id="method" value="Cash" required hidden />
+                                                        </div>
+                                                        <div class="form-group col-md-3">
+                                                            <input type="number" name="user_id" id="user_id" value="{{ $adminData->id }}" required hidden/>
+                                                        </div>
+                                                        <div class="form-group col-md-3">
+                                                            <input type="number" name="user_type" id="user_type" value="0" required hidden/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group mb-30 mt-20">
+                                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('footer-script')
@@ -486,9 +935,6 @@ Dashboard Nest Online Shop
   $(document).ready(function() {
     $('select[name="division_id"]').on('change', function(){
         var division_id = $(this).val();
-        // const divArray = division.split("-");
-        // var division_id = divArray[0];
-        // $('#division_name').val(divArray[1]);
         if(division_id) {
             $.ajax({
                 url: "{{  url('/division-district/ajax') }}/"+division_id,
@@ -518,9 +964,6 @@ Dashboard Nest Online Shop
   $(document).ready(function() {
     $('select[name="district_id"]').on('change', function(){
         var district_id = $(this).val();
-        // const divArray = district.split("-");
-        // var division_id = divArray[0];
-        // $('#district_name').val(divArray[1]);
         if(district_id) {
             $.ajax({
                 url: "{{  url('/district-upazilla/ajax') }}/"+district_id,
@@ -540,5 +983,20 @@ Dashboard Nest Online Shop
     });
 });
 </script>
-
+<!--  walletAmount  Add -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.walletAmountadd').on('input', function() {
+            var amount  = $(this).val();
+            var walletAmount = parseFloat($('.walletAmount').val());
+            if (walletAmount < amount ){
+                Math.min(walletAmount, amount );
+                parseFloat($('.walletAmountadd').val(walletAmount));
+                $('.amount-alert').text('Withdrawal amount should not exceed the available Wallet Total Amount');
+            } else {
+                $('.amount-alert').text('');
+            }
+        });
+    });
+</script>
 @endpush

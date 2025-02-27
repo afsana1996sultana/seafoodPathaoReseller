@@ -25,10 +25,12 @@ use App\Http\Controllers\Backend\SmsController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\StaffController;
 use App\Http\Controllers\Backend\SubscriberController;
+use App\Http\Controllers\Backend\WithdrawController;
 use App\Http\Controllers\Frontend\ReviewController;
 use App\Http\Controllers\Backend\AccountsController;
 use App\Http\Controllers\Backend\PosController;
 use App\Http\Controllers\Backend\UserController;
+use App\Http\Controllers\Backend\ResellerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -168,6 +170,16 @@ Route::prefix('admin')->middleware('admin')->group(function(){
 	Route::post('/flash-deals/product-discount-edit', [CampaingController::class, 'product_discount_edit'])->name('flash_deals.product_discount_edit');
 
 
+	//cash withdraw
+	Route::post('/cash/withdraw', [WithdrawController::class, 'store'])->name('cash.withdraw');
+	Route::get('/cash-withdraw', [WithdrawController::class, 'index'])->name('cash-withdraw.index');
+	Route::get('/Bkash',[WithdrawController::class,'Bkash'])->name('bkash');
+	Route::get('/Nagad',[WithdrawController::class,'Nagad'])->name('nagad');
+	Route::get('/Bank',[WithdrawController::class,'Bank'])->name('bank');
+	Route::get('/cash',[WithdrawController::class,'Cash'])->name('cash');
+	Route::get('/withdraw/status/{id}',[WithdrawController::class,'withdrawStatus'])->name('withdraw.status');
+	Route::get('/withdraw-history',[WithdrawController::class,'withdraw_history'])->name('withdraw.history');
+
 	//Reating & Review
 	Route::get('/review', [ReviewController::class, 'index'])->name('review.index');
 	Route::get('/review/destroy/{id}', [ReviewController::class, 'destroy'])->name('review.destroy');
@@ -175,7 +187,7 @@ Route::prefix('admin')->middleware('admin')->group(function(){
 	Route::get('/review_inactive/{id}', [ReviewController::class, 'inactive'])->name('review.in_active');
 
 
-	    // <--------- Banner route start ------>
+	// <--------- Banner route start ------>
 	Route::resource('/banner', BannerController::class);
 	Route::post('/banner/update/{id}', [BannerController::class, 'update'])->name('banner.update');
 	Route::get('/banner/delete/{id}', [BannerController::class, 'destroy'])->name('banner.delete');
@@ -264,6 +276,13 @@ Route::prefix('admin')->middleware('admin')->group(function(){
 		Route::post('/orders_update/{id}', [OrderController::class, 'update'])->name('admin.orders.update');
 		Route::get('/invoice/{id}', [OrderController::class, 'invoice_download'])->name('invoice.download');
 		Route::get('/print/invoice/{order}', [OrderController::class, 'invoice_print_download'])->name('print.invoice.download');
+
+		Route::get('/all_orders/{id}/reseller/show', [OrderController::class, 'reseller_show'])->name('all_orders.reseller_show');
+		Route::get('/all_orders/all_vendor_sale_index', [OrderController::class, 'AllvendorSellView'])->name('all_orders.all_vendor_sale_index');
+		Route::get('/all_orders/all_reseller_sale_index', [OrderController::class, 'AllresellerSellView'])->name('all_orders.all_reseller_sale_index');
+        Route::get('/all_orders/vendor_sale_index', [OrderController::class, 'vendorSellView'])->name('all_orders.vendor_sale_index');
+		Route::get('/reseller/print/invoice/{order}', [OrderController::class, 'reseller_invoice_print_download'])->name('reseller.print.invoice.download');
+		Route::get('/vendor/show_status/{id}', [OrderController::class, 'vendor_show_status'])->name('vendor.showStatus');
 	});
 
 	// payment status
@@ -343,6 +362,20 @@ Route::prefix('admin')->middleware('admin')->group(function(){
 	});
 
 	Route::post('/pos/customer/insert',[PosController::class,'customerInsert'])->name('customer.ajax.store.pos');
+
+	//Reseller
+	Route::prefix('reseller')->group(function(){
+		Route::get('/', [ResellerController::class, 'index'])->name('reseller.index');
+		Route::get('/details/{id}', [ResellerController::class, 'show'])->name('reseller.show');
+		Route::get('/requests', [ResellerController::class, 'requests'])->name('reseller.requests');
+		Route::get('/create', [ResellerController::class, 'create'])->name('reseller.create');
+		Route::post('/store', [ResellerController::class, 'store'])->name('reseller.store');
+		Route::get('/approve/{id}', [ResellerController::class, 'approve'])->name('reseller.approve');
+		Route::get('/change-status/{id}', [ResellerController::class, 'changeStatus'])->name('reseller.changeStatus');
+		Route::get('/edit/{id}', [ResellerController::class, 'edit'])->name('reseller.edit');
+		Route::post('/update/{id}', [ResellerController::class, 'update'])->name('reseller.update');
+		Route::get('/delete/{id}', [ResellerController::class, 'destroy'])->name('reseller.delete');
+	});
 
 	//Admin POS All Routes
     Route::prefix('pos')->group(function(){

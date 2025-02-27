@@ -80,6 +80,66 @@
             </li>
 
             @if(Auth::guard('admin')->user()->role == '1')
+               @if (get_setting('multi_vendor')->value)
+                    <li class="menu-item has-submenu
+                        {{ ($route == 'vendor.index')? 'active':'' }}
+                        {{ ($route == 'vendor.edit')? 'active':'' }}
+                        {{ ($route == 'vendor.create')? 'active':'' }}
+                    ">
+                        <a class="menu-link" href="#">
+                            <i class="icon material-icons md-person_add"></i>
+                            <span class="text">Vendors</span>
+                        </a>
+                        <div class="submenu">
+                            <a class="{{ ($route == 'vendor.index') ? 'active':'' }}" href="{{ route('vendor.index') }}">Vendor List</a>
+                            <a class="{{ ($route == 'vendor.create') ? 'active':'' }}" href="{{ route('vendor.create') }}">Vendor Add</a>
+                        </div>
+                    </li>
+                @endif
+            @endif
+
+            @if(Auth::guard('admin')->user()->role == '1')
+                <li class="menu-item has-submenu
+                    {{ ($route == 'reseller.index')? 'active':'' }}
+                    {{ ($route == 'reseller.show')? 'active':'' }}
+                    {{ ($route == 'reseller.requests')? 'active':'' }}
+                    {{ ($route == 'reseller.create')? 'active':'' }}
+                    {{ ($route == 'reseller.edit')? 'active':'' }}
+
+                ">
+                    <a class="menu-link" href="#">
+                        <i class="icon material-icons md-supervised_user_circle"></i>
+                        <span class="text">Resellers</span>
+                    </a>
+                    <div class="submenu">
+                        <a class="{{ ($route == 'reseller.index') ? 'active':'' }}" href="{{ route('reseller.index') }}">Reseller List</a>
+                        <a class="{{ ($route == 'reseller.requests') ? 'active':'' }}" href="{{ route('reseller.requests') }}">Reseller Requests</a>
+                        <a class="{{ ($route == 'reseller.create') ? 'active':'' }}" href="{{ route('reseller.create') }}">Reseller Add</a>
+                    </div>
+                </li>
+            @endif
+
+            @if(Auth::guard('admin')->user()->role == '1')
+                <li class="menu-item has-submenu
+                {{ ($route == 'bkash')? 'active':'' }}
+                {{ ($route == 'nagad')? 'active':'' }}
+                {{ ($route == 'bank')? 'active':'' }}
+                {{ ($route == 'cash')? 'active':'' }}
+                ">
+                    <a class="menu-link" href="#">
+                        <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Withdraw List</span>
+                    </a>
+                    <div class="submenu">
+                        <a class="{{ ($route == 'bkash')? 'active':'' }}" href="{{ route('bkash') }}">BKash</a>
+                        <a class="{{ ($route == 'nagad')? 'active':'' }}" href="{{ route('nagad') }}">Nagad</a>
+                        <a class="{{ ($route == 'bank')? 'active':'' }}" href="{{ route('bank') }}">Bank</a>
+                        <a class="{{ ($route == 'cash')? 'active':'' }}" href="{{ route('cash') }}">Cash</a>
+                    </div>
+                </li>
+            @endif
+
+            @if(Auth::guard('admin')->user()->role == '1')
             <li class="menu-item has-submenu
                 {{ ($route == 'review.index')? 'active':'' }}
             ">

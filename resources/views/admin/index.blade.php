@@ -92,6 +92,7 @@
                 </article>
             </div>
         </div>
+        @if(Auth::guard('admin')->user()->role != '2')
         <div class="col-lg-3">
             <div class="card card-body mb-4">
                 <article class="icontext">
@@ -104,8 +105,10 @@
                 </article>
             </div>
         </div>
+        @endif
     </div>
 
+    @if(Auth::guard('admin')->user()->role != '2')
     <div class="card mb-4">
         <header class="card-header">
             <h2 class="text-white">Order History</h2>
@@ -115,6 +118,7 @@
             <canvas id="chart"></canvas>
         </div>
     </div>
+    @endif
 </section>
 @endsection
 @push('footer-script')

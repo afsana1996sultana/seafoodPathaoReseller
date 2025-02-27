@@ -16,6 +16,7 @@ use App\Http\Controllers\Frontend\BkashController;
 use App\Http\Controllers\Frontend\AamarpayController;
 use App\Http\Controllers\Backend\SubscriberController;
 use App\Http\Controllers\Backend\CompareController;
+use App\Http\Controllers\Backend\VendorController;
 use App\Http\Controllers\Frontend\PublicSslCommerzPaymentController;
 use App\Http\Controllers\Frontend\ReviewController;
 use App\Http\Middleware\UserMiddleware;
@@ -187,6 +188,14 @@ Route::POST('/subscribers/store', [SubscriberController::class, 'store'])->name(
 Route::get('/compare', 'CompareController@index')->name('compare');
 Route::get('/compare/reset', 'CompareController@reset')->name('compare.reset');
 Route::post('/compare/addToCompare', 'CompareController@addToCompare')->name('compare.addToCompare');
+
+// Reseller Apply
+Route::post('/reseller-apply', [FrontendController::class, 'resellerApply'])->name('resellerApply');
+Route::get('/reseller-apply-page', [FrontendController::class, 'resellerApplyPage'])->name('resellerapply.page');
+Route::post('/vendor/Sellerstore', [VendorController::class, 'Sellerstore'])->name('vendor.Sellerstore');
+
+//cash withdraw
+Route::post('/request/withdraw', [UserController::class, 'withdraw_request'])->name('withdraw.request');
 
 //Review
 Route::post('/review/store',[ReviewController::class,'store'])->name('review.store');

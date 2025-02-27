@@ -19,8 +19,12 @@ class UserMiddleware
     {
         //dd(Auth::guard('web')->check());
         if(Auth::guard('web')->check()){
-            if(Auth::guard('web')->user() && Auth::guard('web')->user()->role =="3"){
+            if(Auth::guard('web')->user() && (Auth::guard('web')->user()->role =="3" || Auth::guard('web')->user()->role =="7")){
                 //dd(Auth::guard('web')->user());
+                if (Auth::guard('web')->user()->role == "7" && Auth::guard('web')->user()->status == "0") {
+                    Auth::guard('web')->logout(); // Log out the user if already logged in
+                    return redirect()->route('login')->with('error', 'Your account is inactive. Please contact support.');
+                }
                 if(!Auth::guard('web')->user()->role == "3"){
                     return redirect()->route('login')->with('error','Plz login First');
                 }

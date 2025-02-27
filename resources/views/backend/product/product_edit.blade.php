@@ -21,15 +21,6 @@
             </div>
         </div>
         <div class="row">
-            {{-- @if ($errors->any())
-		    <div class="alert alert-danger">
-		        <ul>
-		            @foreach ($errors->all() as $error)
-		                <li>{{ $error }}</li>
-		            @endforeach
-		        </ul>
-		    </div>
-		@endif --}}
             <div class="col-md-10 mx-auto">
                 <form method="post" action="{{ route('product.update', $product->id) }}" enctype="multipart/form-data">
                     @csrf
@@ -66,19 +57,6 @@
                                     <input class="form-control" id="product_code" type="text" name="product_code"
                                         placeholder="Write product code" value="{{ $product->product_code }}">
                                 </div>
-                                {{-- <div class="col-md-6 mb-4">
-	                          <label for="category_id" class="col-form-label" style="font-weight: bold;">Category:</label>
-				                <div class="custom_select">
-                                    <select class="form-control select-active w-100 form-select select-nice" name="category_id" id="product_category" data-selected="{{ $product->category_id }}">
-                                    	@foreach ($categories as $category)
-	                                    <option value="{{ $category->id }}">{{ $category->name_en }}</option>
-		                                    @foreach ($category->childrenCategories as $childCategory)
-		                                    	@include('backend.include.child_category', ['child_category' => $childCategory])
-		                                    @endforeach
-	                                    @endforeach
-                                    </select>
-                                </div>
-	                        </div> --}}
                                 <div class="col-md-6 mb-4">
                                     <label for="product_category" class="col-form-label"
                                         style="font-weight: bold;">Category:</label>
@@ -104,18 +82,6 @@
                                         </select>
                                     </div>
                                 </div>
-
-                                {{-- <div class="col-md-6 mb-4">
-	                           <label for="brand_id" class="col-form-label" style="font-weight: bold;">Brand:</label>
-				                <div class="custom_select">
-                                    <select class="form-control select-active w-100 form-select select-nice" name="brand_id" id="product_brand" required>
-                                    	<option value="">--Select Brand--</option>
-		                                @foreach ($brands as $brand)
-		                                    <option value="{{ $brand->id }}" {{ $brand->id == $product->brand_id ? 'selected' : '' }}>{{ $brand->name_en ?? 'Null' }}</option>
-		                                @endforeach
-                                    </select>
-                                </div>
-	                        </div> --}}
                                 <div class="col-md-6 mb-4">
                                     <a style="background-color: #3BB77E; " type="button" class="btn btn-sm float-end"
                                         id="closeModal1" data-bs-toggle="modal" data-bs-target="#brand"><i
@@ -137,23 +103,23 @@
                                     </div>
                                 </div>
 
-                                {{-- @if (get_setting('multi_vendor')->value)
-		        			    @if (Auth::guard('admin')->user()->role == '2')
-		        			        <input type="hidden" name="vendor_id" id="vendor_id" value="{{ Auth::guard('admin')->user()->id }}" />
-		        			    @else
-								<div class="col-md-6 mb-4">
-									<label for="vendor_id" class="col-form-label" style="font-weight: bold;">Vendor:</label>
-									<div class="custom_select">
-										<select class="form-control select-active w-100 form-select select-nice" name="vendor_id" id="vendor_id">
-											<option value="">Select Vendor</option>
-											@foreach ($vendors as $vendor)
-												<option value="{{ $vendor->id }}" {{ $vendor->id == $product->vendor_id ? 'selected' : '' }}>{{ $vendor->shop_name ?? 'Null' }}</option>
-											@endforeach
-										</select>
-									</div>
-								</div>
-								@endif
-							@endif --}}
+                                @if(get_setting('multi_vendor')->value)
+                                    @if(Auth::guard('admin')->user()->role == '2')
+                                        <input type="hidden" name="vendor_id" id="vendor_id" value="{{ Auth::guard('admin')->user()->id }}" />
+                                    @else
+                                    <div class="col-md-6 mb-4">
+                                        <label for="vendor_id" class="col-form-label" style="font-weight: bold;">Vendor:</label>
+                                        <div class="custom_select">
+                                            <select class="form-control select-active w-100 form-select select-nice" name="vendor_id" id="vendor_id">
+                                                <option selected value="">Select Vendor</option>
+                                                @foreach($vendors as $vendor)
+                                                    <option value="{{ $vendor->user_id }}" {{ $vendor->user_id == $product->vendor_id ? 'selected' : '' }}>{{ $vendor->shop_name ?? 'Null' }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    @endif
+                                @endif
 
                                 <div class="col-md-6 mb-4">
                                     <label for="supplier_id" class="col-form-label"
@@ -192,14 +158,7 @@
                                     <input class="form-control" id="unit_weight" type="number" name="unit_weight"
                                         placeholder="Write unit weight" value="{{ $product->unit_weight }}">
                                 </div>
-                                {{-- <div class="col-md-6 mb-4">
-	                         	<label for="campaing_id" class="col-form-label" style="font-weight: bold;">Campaing:</label>
-				                <div class="custom_select">
-                                    <select class="form-control select-active w-100 form-select select-nice" name="campaing_id" id="campaing_id">
-                                    	<option selected="">Select Campaing</option>
-                                    </select>
-                                </div>
-	                        </div> --}}
+
                                 <div class="col-md-6 mb-4">
                                     <label for="product_name_en" class="col-form-label"
                                         style="font-weight: bold;">Tags:</label>
@@ -296,7 +255,7 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-12 mb-4">
+                                <div class="col-md-6 mb-4">
                                     <label for="bying_price" class="col-form-label" style="font-weight: bold;">Product
                                         Buying Price:</label>
                                     <input class="form-control" id="purchase_price" type="number" name="purchase_price"
@@ -305,6 +264,18 @@
                                         <p class="text-danger">{{ $message }}</p>
                                     @enderror
                                 </div>
+
+                                <div class="col-md-6 mb-4">
+                                    <label for="regular_price" class="col-form-label" style="font-weight: bold;">Regular
+                                        Price:</label>
+                                    <input class="form-control" id="regular_price" type="number" name="regular_price"
+                                        placeholder="Write product regular price" value="{{ $product->regular_price }}"
+                                        min="0">
+                                    @error('regular_price')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
                                 <div class="col-md-6 mb-4">
                                     <label for="wholesell_price" class="col-form-label" style="font-weight: bold;">Whole
                                         Sell Price:</label>
@@ -312,6 +283,7 @@
                                         name="wholesell_price" placeholder="Write product whole sell price"
                                         value="{{ $product->wholesell_price }}">
                                 </div>
+
                                 <div class="col-md-6 mb-4">
                                     <label for="wholesell_minimum_qty" class="col-form-label"
                                         style="font-weight: bold;">Whole Sell Minimum Quantity:</label>
@@ -322,24 +294,14 @@
                             </div>
                             <!-- Row //-->
                             <div class="row">
-                                <div class="col-md-4 mb-4">
-                                    <label for="regular_price" class="col-form-label" style="font-weight: bold;">Regular
-                                        Price:</label>
-                                    <input class="form-control" id="regular_price" type="number" name="regular_price"
-                                        placeholder="Write product regular price" value="{{ $product->regular_price }}"
-                                        min="0">
-                                    @error('regular_price')
-                                        <p class="text-danger">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                                <div class="col-md-4 mb-4">
+                                <div class="col-md-6 mb-4">
                                     <label for="discount_price" class="col-form-label"
                                         style="font-weight: bold;">Discount Price:</label>
                                     <input class="form-control" id="discount_price" type="number" name="discount_price"
                                         value="{{ $product->discount_price }}" min="0"
                                         placeholder="Write product discount price">
                                 </div>
-                                <div class="col-md-4 mb-4">
+                                <div class="col-md-6 mb-4">
                                     <label for="discount_type" class="col-form-label" style="font-weight: bold;">Discount
                                         Type:</label>
                                     <div class="custom_select">
@@ -354,7 +316,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-4 mb-4">
+                                <div class="col-md-6 mb-4">
                                     <label for="minimum_buy_qty" class="col-form-label"
                                         style="font-weight: bold;">Minimum Buy Quantity:</label>
                                     <input class="form-control" id="minimum_buy_qty" type="number"
@@ -364,6 +326,7 @@
                                         <p class="text-danger">{{ $message }}</p>
                                     @enderror
                                 </div>
+
                                 <div class="col-md-6 mb-4">
                                     <label for="stock_qty" class="col-form-label" style="font-weight: bold;">Stock
                                         Quantity:</label>
@@ -372,6 +335,14 @@
                                         placeholder="Write product stock qty">
                                     @error('stock_qty')
                                         <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-6 mb-4">
+                                    <label for="reseller_price" class="col-form-label" style="font-weight: bold;">Reseller Price: <span class="text-danger">*</span></label>
+                                    <input class="form-control" id="reseller_price" type="number" name="reseller_price" placeholder="Write product regular price" min="0" value="{{ $product->reseller_price }}" required>
+                                    @error('reseller_price')
+                                        <p class="text-danger">{{$message}}</p>
                                     @enderror
                                 </div>
 

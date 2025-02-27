@@ -14,14 +14,16 @@
 		        <div class="card-body">
 		            <div class="row">
 		                <div class="col-md-12">
-		                	{{-- @if(count($errors))
-		                        @foreach ($errors->all() as $error)
-		                           <p class="alert alert-danger alert-dismissible fade show"> {{ $error}} </p>
-		                        @endforeach
-	                        @endif --}}
 		                    <form method="post" action="{{ route('vendor.store') }}" enctype="multipart/form-data">
 		                    	@csrf
-
+		                        <div class="mb-4">
+		                          <label for="vendor_name" class="col-form-label col-md-4" style="font-weight: bold;">Name : <span class="text-danger">*</span></label>
+		                            <input class="form-control" id="vendor_name" type="text" name="vendor_name" placeholder="Write vendor name" value="{{old('vendor_name')}}">
+									@error('vendor_name')
+                                        <p class="text-danger">{{$message}}</p>
+                                    @enderror
+		                        </div>
+		                        
 		                        <div class="mb-4">
 		                          <label for="shop_name" class="col-form-label col-md-4" style="font-weight: bold;"> Shop Name : <span class="text-danger">*</span></label>
 		                            <input class="form-control" id="shop_name" type="text" name="shop_name" placeholder="Write vendor shop name" value="{{old('shop_name')}}">
@@ -55,13 +57,23 @@
 		                        </div>
 
 		                        <div class="mb-4">
-		                          <label for="commission" class="col-form-label col-md-4" style="font-weight: bold;">Commission (Optional):</label>
-		                            <input class="form-control" id="commission" type="text" name="commission" placeholder="Write vendor commission" value="{{old('commission')}}">
+		                            <label for="commission" class="col-form-label col-md-4" style="font-weight: bold;">Commission (Optional):</label>
+		                            <div class="input-group">
+                                        <div class="input-group-prepend">
+                                          <div class="input-group-text">%</div>
+                                        </div>
+                                        <input class="form-control" id="commission" type="number" name="commission" placeholder="Write vendor commission" value="{{ get_setting('vendor_comission')->value }}">
+                                    </div>
 		                        </div>
 
 		                        <div class="mb-4">
 		                          <label for="description" class="col-form-label col-md-4" style="font-weight: bold;">Description :</label>
 		                            <textarea name="description" id="description" cols="5" placeholder="Write vendor description" class="form-control ">{{old('description')}}</textarea>
+		                        </div>
+		                        
+		                        <div class="mb-4">
+		                          <label for="bank_information" class="col-form-label col-md-4" style="font-weight: bold;">Bank Information :</label>
+		                            <textarea name="bank_information" id="bank_information" cols="5" placeholder="Write Bank Information" class="form-control ">{{old('bank_information')}}</textarea>
 		                        </div>
 
 		                        <div class="row">
@@ -70,7 +82,7 @@
 				                         	<img id="showImage" class="rounded avatar-lg" src="{{ (!empty($editData->profile_image))? url('upload/admin_images/'.$editData->profile_image):url('upload/no_image.jpg') }}" alt="Card image cap" width="100px" height="80px;">
 				                        </div>
 		                        		<div class="mb-4">
-				                         	<label for="image" class="col-form-label" style="font-weight: bold;">Shop Profile: <span class="text-danger">*</span></label>
+				                         	<label for="image" class="col-form-label" style="font-weight: bold;">Shop Profile: </label>
 				                            <input name="shop_profile" class="form-control" type="file" id="image">
 											@error('shop_profile')
 												<p class="text-danger">{{$message}}</p>
@@ -83,7 +95,7 @@
 				                         	<img id="showImage2" class="rounded avatar-lg" src="{{ (!empty($editData->profile_image))? url('upload/admin_images/'.$editData->profile_image):url('upload/no_image.jpg') }}" alt="Card image cap" width="100px" height="80px;">
 				                        </div>
 				                    	<div class="mb-4">
-				                         	<label for="image2" class="col-form-label" style="font-weight: bold;">Shop Cover Photo: <span class="text-danger">*</span></label>
+				                         	<label for="image2" class="col-form-label" style="font-weight: bold;">Shop Cover Photo: </label>
 				                            <input name="shop_cover" class="form-control" type="file" id="image2">
 											@error('shop_cover')
 												<p class="text-danger">{{$message}}</p>
@@ -98,7 +110,7 @@
 				                         	<img id="showImage3" class="rounded avatar-lg" src="{{ (!empty($editData->profile_image))? url('upload/admin_images/'.$editData->profile_image):url('upload/no_image.jpg') }}" alt="Card image cap" width="100px" height="80px;">
 				                        </div>
 		                       			<div class="mb-4">
-				                         	<label for="image3" class="col-form-label" style="font-weight: bold;">Nid Card:</label>
+				                         	<label for="image3" class="col-form-label" style="font-weight: bold;">Nid Card: <span class="text-danger">*</span></label>
 				                            <input name="nid" class="form-control" type="file" id="image3">
 				                        </div>
 		                       		</div>
@@ -108,7 +120,7 @@
 				                         	<img id="showImage4" class="rounded avatar-lg" src="{{ (!empty($editData->profile_image))? url('upload/admin_images/'.$editData->profile_image):url('upload/no_image.jpg') }}" alt="Card image cap" width="100px" height="80px;">
 				                        </div>
 		                       			<div class="mb-4">
-				                         	<label for="image4" class="col-form-label" style="font-weight: bold;">Trade license:</label>
+				                         	<label for="image4" class="col-form-label" style="font-weight: bold;">Trade license(if any one have):</label>
 				                            <input name="trade_license" class="form-control" type="file" id="image4">
 				                        </div>
 		                       		</div>
@@ -123,7 +135,7 @@
 										@enderror
 									</div>
 									<div class="col-md-6">
-										<label class="col-form-label col-md-4" style="font-weight: bold;" for="rtpassword">Confirm Password: <span class="text-danger">*</span></label>
+										<label class="col-form-label col-md-6" style="font-weight: bold;" for="rtpassword">Confirm Password: <span class="text-danger">*</span></label>
 										<input class="form-control" placeholder="Confirm Password" type="password" name="password_confirmation" id="rtpassword" />
 										@error('password_confirmation')
 											<span class="text-danger">{{ $message }}</span>

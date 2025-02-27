@@ -53,11 +53,8 @@
                 <div class="col-xl-5 col-lg-12 p-lg-3">
                     <div class="header-info header-info-right">
                         <ul>
-                            @foreach (get_pages_both_footer()->skip(3)->take(3) as $page)
-                                <li class="junayna__outlet">
-                                    <a href="{{ route('page.about', $page->slug) }}"><span>{{ $page->title }}</span></a>
-                                </li>
-                            @endforeach
+                            <li><a href="#" data-bs-toggle="modal" data-bs-target="#vendor_service" class="vendorBtn">Become a Vendor</a></li>
+                            <li><a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" class="vendorBtn">Apply as Reseller</a></li>
                             <li><a href="{{ route('order.tracking') }}">Order Tracking</a></li>
                             <li>
                                 @if (session()->get('language') == 'bangla')
@@ -256,12 +253,8 @@
                                 <li><button>ADD TO CART</button></li>
                                 <li><a href="">PRODUCT DETAILS</a></li>
                             </ul>
-
-
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>
@@ -536,157 +529,408 @@
     </div>
 </div>
 <!-- Mobile Side menu End -->
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <div class="heading_s1">
+                        <h3 class="mb-5">রিসেলার আবেদন তথ্য:</h3>
+                    </div>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="page-content pt-10 pb-10">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="login_wrap widget-taber-content background-white">
+                                    <div class="padding_eight_all bg-white">
+                                        <form method="POST" action="{{ route('resellerApply') }}"
+                                            class="needs-validation" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="form-group">
+                                                <label for="name" class="fw-900">রিসেলারের নাম: <span class="text-danger"> *</span></label>
+                                                <input type="text" name="name" placeholder="রিসেলারের নাম:"
+                                                    id="name" value="{{ old('name') }}" required />
+                                                @error('name')
+                                                    <div class="text-danger" style="font-weight: bold;">
+                                                        {{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="phone" class="fw-900">রিসেলারের বিকাশ নম্বর: <span class="text-denger"> *</span></label>
+                                                <input type="number" name="phone" placeholder="রিসেলারের বিকাশ নম্বর: "
+                                                    id="phone" value="{{ old('phone') }}" required />
+                                                @error('phone')
+                                                    <div class="text-danger" style="font-weight: bold;">
+                                                        {{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="fb_web_url" class="fw-900">ফেসবুক পেজ লিংক / ওয়েবসাইট লিংক: </label>
+                                                <input type="text" name="fb_web_url" id="fb_web_url"
+                                                    placeholder="ফেসবুক পেজ লিংক / ওয়েবসাইট লিংক: " value="{{ old('fb_web_url') }}"
+                                                    />
+                                                @error('fb_web_url')
+                                                    <div class="text-danger" style="font-weight: bold;">
+                                                        {{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="email" class="fw-900">ইমেইল ঠিকানা: <span class="class-denger"> *</span></label>
+                                                <input type="email" name="email" id="email"
+                                                    placeholder="ইমেইল ঠিকানা:" value="{{ old('email') }}" required />
+                                                @error('email')
+                                                    <div class="text-danger" style="font-weight: bold;">
+                                                        {{ $message }}</div>
+                                                @enderror
+                                            </div>
 
+                                            <div class="form-group">
+                                                <div class="mb-4">
+                                                    <img id="showImage3" class="rounded avatar-lg" src="{{ (!empty($editData->nid)) ? asset($editData->nid) : asset('upload/no_image.jpg') }}" alt="NID Card" width="100px" height="80px;">
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label for="image3" class="col-form-label" style="font-weight: bold;">Nid Card: </label>
+                                                    <input name="nid" class="form-control" type="file" id="image3">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="password" class="fw-900">পাসওয়ার্ড: <span class="text-danger"> *</span></label>
+                                                <input type="password" name="password" placeholder="পাসওয়ার্ড:"  required />
+                                                <span>পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে</span>
+                                                @error('password')
+                                                    <div class="text-danger" style="font-weight: bold;">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group mb-30 seller__btn">
+                                                <button type="submit" class="btn-primary " name="login">Submit &amp; Register</button>
+                                            </div>
+                                            <p class="font-xs fw-900"><strong>শর্তাবলী:</strong>
+                                            আমি নিশ্চিত করি যে, আমি প্রদত্ত তথ্য সঠিক এবং পূর্ণাঙ্গ।
+আবেদনটি সফলভাবে জমা দেওয়ার পর, আমাদের পক্ষ থেকে কিছুক্ষণের মধ্যে আপনাকে ফোন কল দিয়ে যোগাযোগ করা হবে।</p>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- vendor Modal form -->
+<div class="modal fade" id="vendor_service" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Vendor Apply Form</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{{ route('vendor.Sellerstore') }}" enctype="multipart/form-data">
+                    @csrf
+                    <h6 class="mb-2 border-bottom pb-2">Basic Information</h6>
+                    <div class="form-group">
+                        <label for="name"><strong>Name: </strong><span class="text-danger">*</span></label>
+                        <input type="text" id="vendor_name" name="vendor_name" class="form-control"
+                            placeholder="Enter Your Name" value="{{ old('vendor_name') }}">
+                        @error('vendor_name')
+                            <p class="text-danger">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="phone"><strong>Phone Number: </strong><span
+                                        class="text-danger">*</span></label>
+                                <input type="text" id="phone" name="phone" class="form-control"
+                                    placeholder="Enter Your Phone Number" value="{{ old('phone') }}">
+                                @error('phone')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="email"><strong>Email: </strong><span
+                                        class="text-danger">*</span></label>
+                                <input type="email" id="email" name="email" class="form-control"
+                                    placeholder="Enter Your Email" value="{{ old('email') }}">
+                                @error('email')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="mb-4">
+                                    <img id="showImage3" class="rounded avatar-lg"
+                                        src="{{ !empty($editData->profile_image) ? url('upload/admin_images/' . $editData->profile_image) : url('upload/no_image.jpg') }}"
+                                        alt="Card image cap" width="100px" height="80px;">
+                                </div>
+                                <label for="nid"><strong>Nid Card: </strong> <span
+                                        class="text-danger">*</span></label>
+                                <input name="nid" class="form-control" type="file" id="image3">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="mb-4">
+                                    <img id="showImage4" class="rounded avatar-lg"
+                                        src="{{ !empty($editData->profile_image) ? url('upload/admin_images/' . $editData->profile_image) : url('upload/no_image.jpg') }}"
+                                        alt="Card image cap" width="100px" height="80px;">
+                                </div>
+                                <label for="trade"><strong>Trade License(if any one have): </strong></label>
+                                <input name="trade_license" class="form-control" type="file" id="image4">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="password"><strong>Password : </strong><span
+                                        class="text-danger">*</span></label>
+                                <input class="form-control" id="password" type="password" name="password"
+                                    placeholder="Enter Your Password">
+                                @error('password')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="cpassword"><strong>Confirm Password : </strong><span
+                                        class="text-danger">*</span></label>
+                                <input class="form-control" placeholder="Confirm Password" type="password"
+                                    name="password_confirmation" id="rtpassword" />
+                                @error('password_confirmation')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="mb-2 border-bottom pb-2">Shop Information</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="shopname"><strong>Shop Name : </strong><span
+                                        class="text-danger">*</span></label>
+                                <input class="form-control" id="shop_name" type="text" name="shop_name"
+                                    placeholder="Write vendor shop name" value="{{ old('shop_name') }}">
+                                @error('shop_name')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="address"><strong>Address : </strong></label>
+                                <input class="form-control" id="address" type="text" name="address"
+                                    placeholder="Enter Your Address" value="{{ old('address') }}">
+                                @error('address')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="mb-4">
+                                    <img id="showImage1" class="rounded avatar-lg"
+                                        src="{{ !empty($editData->profile_image) ? url('upload/admin_images/' . $editData->profile_image) : url('upload/no_image.jpg') }}"
+                                        alt="Card image cap" width="100px" height="80px;">
+                                </div>
+                                <label for="image"><strong>Shop Profile : </strong></label>
+                                <input name="shop_profile" class="form-control" type="file" id="image1">
+                                @error('shop_profile')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="mb-4">
+                                    <img id="showImage2" class="rounded avatar-lg"
+                                        src="{{ !empty($editData->profile_image) ? url('upload/admin_images/' . $editData->profile_image) : url('upload/no_image.jpg') }}"
+                                        alt="Card image cap" width="100px" height="80px;">
+                                </div>
+                                <label for="image"><strong>Shop Cover Photo : </strong></label>
+                                <input name="shop_cover" class="form-control" type="file" id="image2">
+                                @error('shop_cover')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shop"><strong>Bank Information</strong></label>
+                        <textarea name="bank_information" id="bank_information" cols="30" rows="5" class="form-control"
+                            placeholder="Enter Bank Information"></textarea>
+                    </div>
+                    <button type="submit" class="additional_menuBtn">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <!--End header-->
 
 
 @push('footer-script')
-    <script>
-        $(document).ready(function() {
-            // Hide the category initially
-            $(".category").hide();
+<script>
+    $(document).ready(function() {
+        // Hide the category initially
+        $(".category").hide();
 
-            // Toggle the category when clicking on span
-            $(".all__categories li span").click(function(e) {
-                e.stopPropagation(); // Prevent the click from reaching the body/window
-                $(this).siblings(".category").toggle();
-            });
-
-            // Hide the category when clicking anywhere else on the page
-            // $(document).click(function() {
-            //     $(".category").hide();
-            // });
+        // Toggle the category when clicking on span
+        $(".all__categories li span").click(function(e) {
+            e.stopPropagation(); // Prevent the click from reaching the body/window
+            $(this).siblings(".category").toggle();
         });
-    </script>
+    });
+</script>
 
-    <script type="text/javascript">
-        /* ================ Advance Product Search ============ */
-        $("body").on("keyup", ".search", function() {
-            let text = $(".search").val();
-            let category_id = $("#searchCategory").val();
-            // alert(category_id);
-            // console.log(text);
+<script type="text/javascript">
+    /* ================ Advance Product Search ============ */
+    $("body").on("keyup", ".search", function() {
+        let text = $(".search").val();
+        let category_id = $("#searchCategory").val();
+        // alert(category_id);
+        // console.log(text);
 
-            if (text.length > 0) {
+        if (text.length > 0) {
 
-                $.ajax({
-                    data: {
-                        search: text,
-                        category: category_id
-                    },
-                    url: "/search-product",
-                    method: 'post',
-                    beforSend: function(request) {
-                        return request.setReuestHeader('X-CSRF-Token', ("meta[name='csrf-token']"))
+            $.ajax({
+                data: {
+                    search: text,
+                    category: category_id
+                },
+                url: "/search-product",
+                method: 'post',
+                beforSend: function(request) {
+                    return request.setReuestHeader('X-CSRF-Token', ("meta[name='csrf-token']"))
 
-                    },
-                    success: function(result) {
-                        $(".searchProducts").html(result);
-                    }
+                },
+                success: function(result) {
+                    $(".searchProducts").html(result);
+                }
 
-                }); // end ajax
-            } // end if
-            if (text.length < 1) $(".searchProducts").html("");
-        }); // end function
+            }); // end ajax
+        } // end if
+        if (text.length < 1) $(".searchProducts").html("");
+    }); // end function
 
-        /* ================ Advance Product slideUp/slideDown ============ */
-        function search_result_hide() {
-            $(".searchProducts").slideUp();
-        }
-
-        function search_result_show() {
-            $(".searchProducts").slideDown();
-        }
-    </script>
-    
-    <script>
-        // sidebar menu count
-    var $menu = $('.sidebar__menu__system');
-
-    // Find all top-level menu items (categories)
-    var $topLevelItems = $menu.find('.show__item__category');
-
-    // Count the total number of items (including nested items)
-    var totalItems = $topLevelItems.length;
-
-    // Check if there are more than 12 items
-    if (totalItems > 10) {
-        // Hide items beyond the first 12
-        $topLevelItems.slice(10).hide();
-
-        // Add "Show More" link with initial icon
-        $menu.append('<div class="showMore">Show More <i class="fas fa-plus"></i></div>');
-
-        // Event handler for "Show More" link
-        $menu.find('.showMore').on('click', function () {
-            $topLevelItems.slice(10).toggle(500); // Toggle visibility of hidden items
-
-            // Toggle icon between plus and minus
-            $(this).toggleClass('showLess');
-            if ($(this).hasClass('showLess')) {
-                $(this).html('Show Less <i class="fas fa-minus"></i>');
-            } else {
-                $(this).html('Show More <i class="fas fa-plus"></i>');
-            }
-        });
+    /* ================ Advance Product slideUp/slideDown ============ */
+    function search_result_hide() {
+        $(".searchProducts").slideUp();
     }
-    </script>
 
-    <script>
-        $(document).ready(function() {
-            $(".show").click(function() {
-                $(".advance-search").show();
-            });
-            $(".hide").click(function() {
-                $(".advance-search").hide();
-            });
+    function search_result_show() {
+        $(".searchProducts").slideDown();
+    }
+</script>
+
+<script>
+    // sidebar menu count
+var $menu = $('.sidebar__menu__system');
+
+// Find all top-level menu items (categories)
+var $topLevelItems = $menu.find('.show__item__category');
+
+// Count the total number of items (including nested items)
+var totalItems = $topLevelItems.length;
+
+// Check if there are more than 12 items
+if (totalItems > 10) {
+    // Hide items beyond the first 12
+    $topLevelItems.slice(10).hide();
+
+    // Add "Show More" link with initial icon
+    $menu.append('<div class="showMore">Show More <i class="fas fa-plus"></i></div>');
+
+    // Event handler for "Show More" link
+    $menu.find('.showMore').on('click', function () {
+        $topLevelItems.slice(10).toggle(500); // Toggle visibility of hidden items
+
+        // Toggle icon between plus and minus
+        $(this).toggleClass('showLess');
+        if ($(this).hasClass('showLess')) {
+            $(this).html('Show Less <i class="fas fa-minus"></i>');
+        } else {
+            $(this).html('Show More <i class="fas fa-plus"></i>');
+        }
+    });
+}
+</script>
+
+<script>
+    $(document).ready(function() {
+        $(".show").click(function() {
+            $(".advance-search").show();
+        });
+        $(".hide").click(function() {
+            $(".advance-search").hide();
+        });
+    });
+
+    // slider - active
+    function mainSlider() {
+        var BasicSlider = $('.slider-active');
+
+        BasicSlider.on('init', function(e, slick) {
+            var $firstAnimatingElements = $('.single-slider:first-child').find('[data-animation]');
+            doAnimations($firstAnimatingElements);
         });
 
-        // slider - active
-        function mainSlider() {
-            var BasicSlider = $('.slider-active');
+        BasicSlider.on('beforeChange', function(e, slick, currentSlide, nextSlide) {
+            var $animatingElements = $('.single-slider[data-slick-index="' + nextSlide + '"]').find(
+                '[data-animation]');
+            doAnimations($animatingElements);
+        });
 
-            BasicSlider.on('init', function(e, slick) {
-                var $firstAnimatingElements = $('.single-slider:first-child').find('[data-animation]');
-                doAnimations($firstAnimatingElements);
-            });
+        BasicSlider.slick({
+            autoplay: true,
+            autoplaySpeed: 3000,
+            dots: false,
+            infinite: false,
+            prevArrow: '<button type="button" class="slick-prev"><i class="fa fa-angle-left"></i></button>',
+            nextArrow: '<button type="button" class="slick-next"><i class="fa fa-angle-right"></i></button>',
+            fade: true,
+            arrows: true,
+            responsive: [{
+                breakpoint: 767,
+            }]
+        });
 
-            BasicSlider.on('beforeChange', function(e, slick, currentSlide, nextSlide) {
-                var $animatingElements = $('.single-slider[data-slick-index="' + nextSlide + '"]').find(
-                    '[data-animation]');
-                doAnimations($animatingElements);
-            });
-
-            BasicSlider.slick({
-                autoplay: true,
-                autoplaySpeed: 3000,
-                dots: false,
-                infinite: false,
-                prevArrow: '<button type="button" class="slick-prev"><i class="fa fa-angle-left"></i></button>',
-                nextArrow: '<button type="button" class="slick-next"><i class="fa fa-angle-right"></i></button>',
-                fade: true,
-                arrows: true,
-                responsive: [{
-                    breakpoint: 767,
-                }]
-            });
-
-            function doAnimations(elements) {
-                var animationEndEvents = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-                elements.each(function() {
-                    var $this = $(this);
-                    var $animationDelay = $this.data('delay');
-                    var $animationType = 'animated ' + $this.data('animation');
-                    $this.css({
-                        'animation-delay': $animationDelay,
-                        '-webkit-animation-delay': $animationDelay
-                    });
-                    $this.addClass($animationType).one(animationEndEvents, function() {
-                        $this.removeClass($animationType);
-                    });
+        function doAnimations(elements) {
+            var animationEndEvents = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+            elements.each(function() {
+                var $this = $(this);
+                var $animationDelay = $this.data('delay');
+                var $animationType = 'animated ' + $this.data('animation');
+                $this.css({
+                    'animation-delay': $animationDelay,
+                    '-webkit-animation-delay': $animationDelay
                 });
-            }
+                $this.addClass($animationType).one(animationEndEvents, function() {
+                    $this.removeClass($animationType);
+                });
+            });
         }
-        mainSlider();
-    </script>
-    @endpush
+    }
+    mainSlider();
+</script>
+@endpush
