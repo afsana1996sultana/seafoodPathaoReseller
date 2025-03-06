@@ -107,11 +107,7 @@
 			                            <input type="hidden" id="discount_amount" value="{{ $discount }}">
 
 	                                    <h2 class="title-detail">
-	                                    	@if(session()->get('language') == 'bangla')
-			                                    {{ $product->name_bn }}
-			                                @else
-			                                    {{ $product->name_en }}
-			                                @endif
+			                                {{ $product->name_bn ?? '$product->name_en' }}
 	                                    </h2>
 	                                    <div class="clearfix product-price-cover">
 	                                        <div class="product-price primary-color float-left">
@@ -189,9 +185,9 @@
 
 												<input type="hidden" id="buyNowCheck" value="0">
 
-	                                            <button type="submit" class="button button-add-to-cart" onclick="addToCartDetails({{ $product->id }})"><i class="fi-rs-shoppi ng-cart"></i>Add to cart</button>
+	                                            <button type="submit" class="button button-add-to-cart" onclick="addToCartDetails({{ $product->id }})"><i class="fi-rs-shoppi ng-cart"></i>কার্টে যুক্ত করুন</button>
 
-	                                            <button type="submit" class="button button-add-to-cart ml-5 bg-danger" onclick="buyNow()"><i class="fi-rs-shoppi ng-cart"></i>Buy Now</button>
+	                                            <button type="submit" class="button button-add-to-cart ml-5 bg-danger" onclick="buyNow()"><i class="fi-rs-shoppi ng-cart"></i>এখনি কিনুন</button>
 	                                        </div>
 	                                    </div>
 										<div class="row mb-3" id="stock_alert" class="stockAlert"></div>
@@ -242,22 +238,15 @@
 	                                    <div class="tab-pane fade show active" id="Description">
 	                                        <div class="">
 	                                            <p>
-	                                            	@if(session()->get('language') == 'bangla')
-														{!! $product->description_en ?? 'No Product Long Descrption' !!}
-								                    @else
-														{!! $product->description_bn ?? 'No Product Logn Descrption' !!}
-								                    @endif
+													{!! $product->description_bn ?? '$product->description_en' !!}
 	                                            </p>
 	                                        </div>
 	                                    </div>
 										<div class="tab-pane fade" id="reviews">
 											<div class="product__review__system">
 												<h6>Youre reviewing:</h6>
-												<h5>@if(session()->get('language') == 'bangla')
-													{{ $product->name_bn }}
-													@else
-													{{ $product->name_en }}
-													@endif
+												<h5>
+													{{ $product->name_bn ?? '$product->name_en' }}
 												</h5>
 												<form action="{{route('review.store')}}" method="post">
 													@csrf
@@ -417,22 +406,13 @@
 	                                            <div class="product-content-wrap">
                                                     <h2 class="mt-3" style="height: 40px;">
                                                         <a href="{{ route('product.details',$product->slug) }}">
-                                                            @if(session()->get('language') == 'bangla')
-                                                                <?php $p_name_bn =  strip_tags(html_entity_decode($product->name_bn))?>
-                                                                {{ Str::limit($p_name_bn, $limit = 30, $end = '. . .') }}
-                                                            @else
-                                                                <?php $p_name_en =  strip_tags(html_entity_decode($product->name_en))?>
-                                                                {{ Str::limit($p_name_en, $limit = 30, $end = '. . .') }}
-                                                            @endif
+															<?php $p_name_bn =  strip_tags(html_entity_decode($product->name_bn ?? '$product->name_en'))?>
+															{{ Str::limit($p_name_bn, $limit = 30, $end = '. . .') }}
                                                         </a>
                                                     </h2>
                                                     <div class="product-category">
                                                         <a href="{{ route('product.category', $product->category->slug) }}">
-                                                            @if(session()->get('language') == 'bangla')
-                                                                {{ $product->category->name_bn }}
-                                                            @else
-                                                                {{ $product->category->name_en }}
-                                                            @endif
+                                                            {{ $product->category->name_bn ?? '$product->category->name_en' }}
                                                         </a>
                                                     </div>
 													@php

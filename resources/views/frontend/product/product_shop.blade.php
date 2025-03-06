@@ -13,7 +13,7 @@
     	            </div>
     	            <div class="row product-grid gutters-5">
     	            	@forelse($products as $product)
-    	                <div class="col-lg-1-5 col-md-4 col-6 col-sm-6">
+    	                <div class="col-lg-3 col-md-4 col-6 col-sm-6">
     	                     <div class="product-cart-wrap">
                                 <div class="product-img-action-wrap">
                                     <div class="product-img product-img-zoom">
@@ -53,23 +53,14 @@
                                 <div class="product-content-wrap">
                                     <h2>
                                         <a href="{{ route('product.details',$product->slug) }}">
-                                            @if(session()->get('language') == 'bangla')
-                                                <?php $p_name_bn =  strip_tags(html_entity_decode($product->name_bn))?>
-                                                {{ Str::limit($p_name_bn, $limit = 30, $end = '. . .') }}
-                                            @else
-                                                <?php $p_name_en =  strip_tags(html_entity_decode($product->name_en))?>
-                                                {{ Str::limit($p_name_en, $limit = 30, $end = '. . .') }}
-                                            @endif
+                                            <?php $p_name_bn =  strip_tags(html_entity_decode($product->name_bn ?? '$product->name_en'))?>
+                                            {{ Str::limit($p_name_bn, $limit = 30, $end = '. . .') }}
                                         </a>
                                     </h2>
                                     
                                     <div class="product-category">
                                         <a href="{{ route('product.category', $product->category->slug) }}">
-                                        	@if(session()->get('language') == 'bangla') 
-    			                                {{ $product->category->name_bn }}
-    			                            @else 
-    			                                {{ $product->category->name_en }} 
-    			                            @endif
+    			                            {{ $product->category->name_bn ?? '$product->category->name_en'}}
                                         </a>
                                     </div>
                                     @php
@@ -125,15 +116,26 @@
                                             @endif
                                         </div> --}}
                                     </div>
+                                    <!-- Add to Cart and Buy Now Buttons -->
+                                    <div class="add-to-cart-buttons">
+                                        @if ($product->is_varient == 1)
+                                            <a class="add" id="{{ $product->id }}" onclick="productView(this.id)"
+                                                data-bs-toggle="modal" data-bs-target="#quickViewModal"><i
+                                                    class="fi-rs-shopping-cart mr-5"></i>কার্টে যুক্ত করুন</a>
+                                        @else
+                                            <input type="hidden" id="pfrom" value="direct">
+                                            <input type="hidden" id="product_product_id" value="{{ $product->id }}" min="1">
+                                            <input type="hidden" id="{{ $product->id }}-product_pname" value="{{ $product->name_en }}">
+                                            <input type="hidden" id="buyNowCheck" value="0">
+                                            <button type="submit" class="add_to_cart_home" onclick="addToCartDirect({{ $product->id }})"><i class="fi-rs-shoppi ng-cart"></i>কার্টে যুক্ত করুন</button>
+                                            <button type="submit" class="buy_now_home ml-5 bg-danger" onclick="buyNow({{ $product->id }})"><i class="fi-rs-shoppi ng-cart"></i>এখনি কিনুন</button>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
     	                </div>
     	                @empty
-                            @if(session()->get('language') == 'bangla') 
-    	                        <h5 class="text-danger">এখানে কোন পণ্য খুঁজে পাওয়া যায়নি!</h5> 
-    	                    @else 
-    	                       	<h5 class="text-danger">No products were found here!</h5> 
-    	                    @endif
+    	                    <h5 class="text-danger">এখানে কোন পণ্য খুঁজে পাওয়া যায়নি!</h5> 
     	                @endforelse
     	                <!--end product card-->
     	            </div>
@@ -182,11 +184,7 @@
                                         />
                                         <label class="form-check-label" for="category_{{$category->id}}">
                                             <span>
-                                                @if(session()->get('language') == 'bangla') 
-                                                    {{ $category->name_bn }}
-                                                @else 
-                                                    {{ $category->name_en }} 
-                                                @endif 
+                                                {{ $category->name_bn ?? '$category->name_en'}}
                                             </span>
                                         </label>
                                         @php
