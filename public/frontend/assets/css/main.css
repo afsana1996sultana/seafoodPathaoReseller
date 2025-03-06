@@ -1167,23 +1167,23 @@ button.btn-heading[type="submit"] {
 
 button.submit,
 button[type="submit"] {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
-    padding: 10px 40px;
+    padding: 2px 20px;
     color: #ffffff;
     border: none;
-    background-color: #052B58;
-    border: 1px solid #052B58;
+    background-color: #4757fb;
+    border: 1px solid #4757fb;
     border-radius: 2px;
 }
 
 button.submit:hover,
 button[type='submit']:hover {
-    background-color: #052B58 !important;
+    background-color: #4757fb !important;
 }
 
 .btn-brand:hover {
-    background-color: #052B58 !important;
+    background-color: #4757fb !important;
 }
 
 .btn-login {

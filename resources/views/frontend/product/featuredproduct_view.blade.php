@@ -10,7 +10,7 @@
                         <div class="archive-header">
                             <div class="row align-items-center">
                                 <div class="col-xl-5">
-                                    <h3 class="mb-15">All Featured Products</h3>
+                                    <h3 class="mb-15">সমস্ত বৈশিষ্ট্যযুক্ত পণ্য</h3>
                                 </div>
                             </div>
                         </div>
@@ -20,11 +20,7 @@
 	            	@forelse($products as $product)
 	                   @include('frontend.common.product_grid_view',['product' => $product])
 	                @empty
-                        @if(session()->get('language') == 'bangla') 
-	                        <h5 class="text-danger">এখানে কোন পণ্য খুঁজে পাওয়া যায়নি!</h5> 
-	                    @else 
-	                       	<h5 class="text-danger">No products were found here!</h5> 
-	                    @endif
+	                    <h5 class="text-danger">এখানে কোন পণ্য খুঁজে পাওয়া যায়নি!</h5> 
 	                @endforelse
 	                <!--end product card-->
 	            </div>
@@ -69,11 +65,7 @@
                                     />
                                     <label class="form-check-label" for="category_{{$category->id}}">
                                         <span>
-                                            @if(session()->get('language') == 'bangla') 
-                                                {{ $category->name_bn }}
-                                            @else 
-                                                {{ $category->name_en }} 
-                                            @endif 
+                                            {{ $category->name_bn ?? '$category->name_en'}}
                                         </span>
                                     </label>
                                     <span class="float-end">{{ count($category->products) }}</span>

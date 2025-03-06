@@ -224,3 +224,11 @@ if (!function_exists('get_category_products')) {
         return $products;
     }
 }
+
+if (!function_exists('formatNumberInBengali')) {
+    function formatNumberInBengali($number) {
+        $bengaliDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+        $englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        return str_replace($englishDigits, $bengaliDigits, (string) $number);
+    }
+}

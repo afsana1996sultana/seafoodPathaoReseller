@@ -9,9 +9,9 @@
                 $logo = get_setting('site_footer_logo');
             @endphp
             @if($logo != null)
-                <img src="{{ asset(get_setting('site_footer_logo')->value ?? ' ') }}" alt="{{ env('APP_NAME') }}"  style="width: 80px">
+                <img src="{{ asset(get_setting('site_footer_logo')->value ?? ' ') }}" alt="{{ env('APP_NAME') }}">
             @else
-                <img src="{{ asset('upload/no_image.jpg') }}" alt="{{ env('APP_NAME') }}" style="height: 30px !important; width: 80px !important; min-width: 80px !important;">
+                <img src="{{ asset('upload/no_image.jpg') }}" alt="{{ env('APP_NAME') }}">
             @endif
         </a>
         <div>

@@ -20,6 +20,12 @@
             height: 100%;
             z-index: 100;
         }
+
+        .add-to-cart-buttons {
+            position: absolute;
+            margin-top: 20px;
+            display: flex;
+        }
     </style>
 @endpush
 
@@ -44,7 +50,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="section-heading text-center">
-                        <h3>SHOP COLLECTIONS</h3>
+                        <h3>দোকান সংগ্রহ</h3>
                     </div>
                 </div>
             </div>
@@ -85,7 +91,7 @@
                     <div class="row">
                         <div class="col-12">
                             <ul class="product_button product-view-more d-flex justify-content-center">
-                                <li><a href="{{ route('campaing.all') }}">VIEW MORE</a></li>
+                                <li><a href="{{ route('campaing.all') }}">আরও দেখুন</a></li>
                             </ul>
                         </div>
                     </div>
@@ -112,7 +118,7 @@
 
     <!--special collection start -->
     @if(count($home2_featured_categories) > 0)
-    <h3 class="area-heading">Festive Fit</h3>
+        <h3 class="area-heading">উৎসবের সময়</h3>
         @foreach($home2_featured_categories->take(8) as $home2_featured_category)
             @if(count($home2_featured_category->cat_products) > 0)
             <div class="special-collection-area">
@@ -121,15 +127,7 @@
                         <div class="col-12">
                             <div class="section-heading text-center">
                                 <h5>
-                                    @if(session()->get('language') == 'bangla') 
-                                        {{
-                                            $home2_featured_category->name_bn 
-                                        }}
-                                    @else
-                                        {{
-                                            $home2_featured_category->name_en 
-                                        }} 
-                                    @endif
+                                    {{ $home2_featured_category->name_bn ?? '$home2_featured_category->name_en' }}
                                 </h5>
                             </div>
                         </div>
@@ -151,7 +149,8 @@
                                     <div class="back-quick-view">
                                         <a aria-label="Quick view" id="{{ $product->id }}" onclick="productView(this.id)" class="action-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fa-regular fa-eye"></i></a>
                                     </div>
-                               </div>    
+                               </div>
+
                                 <div class="special-image-content">
                                     <a href="{{ route('product.details', $product->slug) }}">
                                         @if (session()->get('language') == 'bangla')
@@ -214,22 +213,22 @@
                                             @if ($product->discount_price > 0)
                                                 @if (auth()->check() && auth()->user()->role == 7)
                                                     <div class="product-price">
-                                                        <span class="price">৳{{ $product->reseller_price }}</span>
+                                                        <span class="price">৳{{ formatNumberInBengali($product->reseller_price) }}</span>
                                                     </div>
                                                 @else
                                                     <div class="product-price">
-                                                        <span class="price">৳{{ $price_after_discount }}</span>
-                                                        <span class="old-price" style="color: #DD1D21;">৳{{ $product->regular_price }}</span>
+                                                        <span class="price">৳{{ formatNumberInBengali($price_after_discount) }}</span>
+                                                        <span class="old-price" style="color: #DD1D21;">৳{{ formatNumberInBengali($product->regular_price) }}</span>
                                                     </div>
                                                 @endif
                                             @else
                                                 @if (auth()->check() && auth()->user()->role == 7)
                                                     <div class="product-price">
-                                                        <span class="price">৳{{ $product->reseller_price }}</span>
+                                                        <span class="price">৳{{ formatNumberInBengali($product->reseller_price) }}</span>
                                                     </div>
                                                 @else
                                                     <div class="product-price">
-                                                        <span class="price">৳{{ $product->regular_price }}</span>
+                                                        <span class="price">৳{{ formatNumberInBengali($product->regular_price) }}</span>
                                                     </div>
                                                 @endif
                                             @endif
@@ -241,10 +240,26 @@
                                     </div>
                                     @if (auth()->check() && auth()->user()->role == 7)
                                         <div>
-                                            <span>Regular Price: <span class="text-info">৳ {{ $product->regular_price }}</span></span>
+                                            <span>Regular Price: <span class="text-info">৳ {{ formatNumberInBengali($product->regular_price) }}</span></span>
                                             <input type="hidden" id="regular_price" name="regular_price" value="{{ $product->regular_price }}" min="1">
                                         </div>
                                     @endif
+
+                                    <!-- Add to Cart and Buy Now Buttons -->
+                                    <div class="add-to-cart-buttons">
+                                        @if ($product->is_varient == 1)
+                                            <a class="add" id="{{ $product->id }}" onclick="productView(this.id)"
+                                                data-bs-toggle="modal" data-bs-target="#quickViewModal"><i
+                                                    class="fi-rs-shopping-cart mr-5"></i>Add </a>
+                                        @else
+                                            <input type="hidden" id="pfrom" value="direct">
+                                            <input type="hidden" id="product_product_id" value="{{ $product->id }}" min="1">
+                                            <input type="hidden" id="{{ $product->id }}-product_pname" value="{{ $product->name_en }}">
+                                            <input type="hidden" id="buyNowCheck" value="0">
+                                            <button type="submit" class="add_to_cart_home" onclick="addToCartDirect({{ $product->id }})"><i class="fi-rs-shoppi ng-cart"></i>Add to cart</button>
+                                            <button type="submit" class="buy_now_home ml-5 bg-danger" onclick="buyNow({{ $product->id }})"><i class="fi-rs-shoppi ng-cart"></i>Buy Now</button>
+                                        @endif
+                                    </div>
                                 </div>                                            
                             </div>
                             @endforeach
@@ -253,7 +268,7 @@
                     <div class="row">
                         <div class="col-12">
                             <ul class="product_button product-view-more d-flex justify-content-center">
-                                <li><a href="{{ route('product.category', $home2_featured_category->slug) }}">VIEW MORE</a></li>
+                                <li><a href="{{ route('product.category', $home2_featured_category->slug) }}">আরও দেখুন</a></li>
                             </ul>
                         </div>
                     </div>
@@ -268,18 +283,18 @@
     <section class="product-tabs section-padding position-relative">
         <div class="container-fluid">
             <div class="section-title style-2 wow animate__animated animate__fadeIn">
-                <h3>Featured Products</h3>
+                <h3>বৈশিষ্ট্যযুক্ত পণ্য</h3>
                 <ul class="nav nav-tabs links" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="nav-tab-one" data-bs-toggle="tab" data-bs-target="#tab-one"
                             type="button" role="tab" aria-controls="tab-one" aria-selected="true">All</button>
                     </li>
                     @foreach (get_categories() as $category)
-                        <li class="nav-item mb-1" role="presentation">
-                            <button class="nav-link" id="nav-tab-two_{{ $category->id }}" data-bs-toggle="tab"
-                                data-bs-target="#category{{ $category->id }}" type="button" role="tab"
-                                aria-selected="false">{{ $category->name_en }}</button>
-                        </li>
+                            <li class="nav-item mb-1" role="presentation">
+                                <button class="nav-link" id="nav-tab-two_{{ $category->id }}" data-bs-toggle="tab"
+                                    data-bs-target="#category{{ $category->id }}" type="button" role="tab"
+                                    aria-selected="false">{{ $category->name_bn  ?? '$category->name_en' }}</button>
+                            </li>
                     @endforeach
                 </ul>
             </div>
@@ -304,11 +319,7 @@
                             @forelse($products->take(10) as $product)
                                 @include('frontend.common.product_grid_view')
                             @empty
-                                @if (session()->get('language') == 'bangla')
-                                    <h5 class="text-danger">এখানে কোন পণ্য খুঁজে পাওয়া যায়নি!</h5>
-                                @else
-                                    <h5 class="text-danger">No products were found here!</h5>
-                                @endif
+                                <h5 class="text-danger">এখানে কোন পণ্য খুঁজে পাওয়া যায়নি!</h5>
                             @endforelse
                         </div>
                         <!--End product-grid-4-->
@@ -320,7 +331,7 @@
              <div class="row">
                 <div class="col-12">
                     <ul class="product_button product-view-more d-flex justify-content-center">
-                        <li><a href="{{ route('featured.product') }}">VIEW MORE</a></li>
+                        <li><a href="{{ route('featured.product') }}">আরও দেখুন</a></li>
                     </ul>
                 </div>
             </div>
@@ -336,8 +347,8 @@
             <div class="row">
                 <div class="col-12">
                     <div class="section-heading text-center">
-                        <h3>Whats New?</h3>
-                        <span>latest edition</span>
+                        <h3>নতুন কি?</h3>
+                        <span>সর্বশেষ সংস্করণ</span>
                     </div>
                 </div>
             </div>
@@ -421,22 +432,22 @@
                                     @if ($product_recently_add->discount_price > 0)
                                         @if (auth()->check() && auth()->user()->role == 7)
                                             <div class="product-price">
-                                                <span class="price">৳{{ $product_recently_add->reseller_price }}</span>
+                                                <span class="price">৳{{ formatNumberInBengali($product_recently_add->reseller_price) }}</span>
                                             </div>
                                         @else
                                             <div class="product-price">
-                                                <span class="price">৳{{ $price_after_discount }}</span>
-                                                <span class="old-price" style="color: #DD1D21;">৳{{ $product_recently_add->regular_price }}</span>
+                                                <span class="price">৳{{ formatNumberInBengali($price_after_discount) }}</span>
+                                                <span class="old-price" style="color: #DD1D21;">৳{{ formatNumberInBengali($product_recently_add->regular_price) }}</span>
                                             </div>
                                         @endif
                                     @else
                                         @if (auth()->check() && auth()->user()->role == 7)
                                             <div class="product-price">
-                                                <span class="price">৳{{ $product_recently_add->reseller_price }}</span>
+                                                <span class="price">৳{{ formatNumberInBengali($product_recently_add->reseller_price) }}</span>
                                             </div>
                                         @else
                                             <div class="product-price">
-                                                <span class="price">৳{{ $product_recently_add->regular_price }}</span>
+                                                <span class="price">৳{{ formatNumberInBengali($product_recently_add->regular_price) }}</span>
                                             </div>
                                         @endif
                                     @endif
@@ -448,10 +459,25 @@
                             </div>
                             @if (auth()->check() && auth()->user()->role == 7)
                                 <div>
-                                    <span>Regular Price: <span class="text-info">৳ {{ $product->regular_price }}</span></span>
+                                    <span>Regular Price: <span class="text-info">৳ {{ formatNumberInBengali($product->regular_price) }}</span></span>
                                     <input type="hidden" id="regular_price" name="regular_price" value="{{ $product->regular_price }}" min="1">
                                 </div>
                             @endif
+                            <!-- Add to Cart and Buy Now Buttons -->
+                            <div class="add-to-cart-buttons">
+                                @if ($product->is_varient == 1)
+                                    <a class="add" id="{{ $product->id }}" onclick="productView(this.id)"
+                                        data-bs-toggle="modal" data-bs-target="#quickViewModal"><i
+                                            class="fi-rs-shopping-cart mr-5"></i>Add </a>
+                                @else
+                                    <input type="hidden" id="pfrom" value="direct">
+                                    <input type="hidden" id="product_product_id" value="{{ $product->id }}" min="1">
+                                    <input type="hidden" id="{{ $product->id }}-product_pname" value="{{ $product->name_en }}">
+                                    <input type="hidden" id="buyNowCheck" value="0">
+                                    <button type="submit" class="add_to_cart_home" onclick="addToCartDirect({{ $product->id }})"><i class="fi-rs-shoppi ng-cart"></i>Add to cart</button>
+                                    <button type="submit" class="buy_now_home ml-5 bg-danger" onclick="buyNow({{ $product->id }})"><i class="fi-rs-shoppi ng-cart"></i>Buy Now</button>
+                                @endif
+                            </div>
                         </div>
                     </div>
                     @endforeach
@@ -460,7 +486,7 @@
             <div class="row">
                 <div class="col-12">
                     <ul class="product_button product-view-more d-flex justify-content-center">
-                        <li><a href="{{ route('product.show') }}">VIEW MORE</a></li>
+                        <li><a href="{{ route('product.show') }}">আরও দেখুন</a></li>
                     </ul>
                 </div>
             </div>
@@ -475,11 +501,7 @@
             <div class="container-fluid">
                 <div class="section-title wow animate__animated animate__fadeIn" data-wow-delay="0">
                     <h3 class="">
-                        @if (session()->get('language') == 'bangla')
-                            হট ডিলস
-                        @else
-                            Hot Deals
-                        @endif
+                        হট ডিলস
                     </h3>
                     <a class="show-all btn btn-primary text-white" href="{{ route('hot_deals.all') }}">
                         All Deals
@@ -503,7 +525,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="section-heading text-center">
-                        <h3>ANNOUNCEMENT</h3>
+                        <h3>ঘোষণা</h3>
                     </div>
                 </div>
             </div>
@@ -552,8 +574,8 @@
                 autoplaySpeed: 3000,
                 dots: false,
                 infinite: true,
-                prevArrow: '<button type="button" class="slick-prev"><i class="fa fa-angle-left"></i></button>',
-                nextArrow: '<button type="button" class="slick-next"><i class="fa fa-angle-right"></i></button>',
+                prevArrow: '<button class="slick-prev"><i class="fa fa-angle-left"></i></button>',
+                nextArrow: '<button class="slick-next"><i class="fa fa-angle-right"></i></button>',
                 fade: true,
                 arrows: true,
                 responsive: [{

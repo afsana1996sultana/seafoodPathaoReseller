@@ -1,13 +1,10 @@
 @extends('layouts.frontend')
 @section('content-frontend')
 @include('frontend.common.add_to_cart_modal')
-@section('title')
-    Categories Online Shop
-@endsection
 	<div class="page-header breadcrumb-wrap">
         <div class="container">
             <div class="breadcrumb">
-                <a href="{{ route('home') }}" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
+                <a href="{{ route('home') }}" rel="nofollow"><i class="fi-rs-home mr-5"></i>হোম</a>
                 <span> Categories </span>
             </div>
         </div>
@@ -30,11 +27,7 @@
                                     <a href="{{ route('product.category', $category->slug) }}" class="align-items-center d-flex d-inline-block">
                                         <img src="{{ asset($category->image) }}" class="img-fluid category_image" alt="{{ env('APP_NAME') }}">
                                         <h4 class="category-title">
-                                            @if(session()->get('language') == 'bangla')
-                                                {{ $category->name_bn }}
-                                            @else
-                                                {{ $category->name_en }}
-                                            @endif
+                                            {{ $category->name_bn ?? '$category->name_en' }}
                                         </h4>
                                     </a> <hr>
                                 </div>
@@ -46,11 +39,7 @@
                                                     <div class="subcategory-header">
         	                                			<a class="d-inline-block" href="{{ route('product.category', $subcategory->slug) }}">
         			                                        <h6 class="mb-sm-3 mb-2 subcategory-title">
-        			                                        	@if(session()->get('language') == 'bangla')
-                                                                	{{ $subcategory->name_bn }}
-        	                                                    @else
-        	                                                        {{ $subcategory->name_en }}
-        	                                                    @endif
+                                                                {{ $subcategory->name_bn ?? '$subcategory->name_en'}}
                                                         	</h6>
         			                                    </a>
                                                     </div>
@@ -61,11 +50,7 @@
                                                             <div class="subsubcategory-header">
         	                                        			<a class="d-inline-block" href="{{ route('product.category', $subsubcategory->slug) }}">
         	                                        				<p class="subsubcategory-title">
-        	                                        					@if(session()->get('language') == 'bangla')
-                                                                        	{{ $subsubcategory->name_bn }}
-        	                                                            @else
-        	                                                                {{ $subsubcategory->name_en }}
-        	                                                            @endif
+                                                                        {{ $subsubcategory->name_bn ?? '$subsubcategory->name_en' }}
                                                                 	</p>
         	                                        			</a>
                                                             </div>

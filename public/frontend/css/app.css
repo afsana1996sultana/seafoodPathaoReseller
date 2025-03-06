@@ -577,7 +577,7 @@ img {
 
 /*Footer Mid*/
 .footer-dark .dark-section {
-    background-color: #052B58;
+    background-color: #4757fb;
 }
 
 .footer-dark .main-footer-custom p,
@@ -622,7 +622,7 @@ img {
 }
 
 .header-style-1 .header-top-ptb-1 {
-    background-color: #052B58;
+    background-color: #4757fb;
     color: #2d2d2d;
 }
 
@@ -671,7 +671,7 @@ li.junayna__outlet a:hover {
 .header-right ul li span {
     position: absolute;
     top: -50%;
-    background: #000;
+    background: #4757fb;
     color: #fff;
     width: 15px;
     height: 15px;
@@ -739,8 +739,8 @@ li.junayna__outlet a:hover {
 
 /* new menu css */
 .logo img {
-    width: 150px;
-    max-width: 150px;
+    width: 210px;
+    max-width: 210px;
 }
 
 .main-menu ul li .sub-menu {
@@ -1021,7 +1021,6 @@ li.junayna__outlet a:hover {
 }
 
 
-.special-product-active button,
 .announcement-active button,
 .hotdeal_slider button,
 .category_slider_wrapper button{
@@ -1034,6 +1033,37 @@ li.junayna__outlet a:hover {
     top: 50%;
     transform: translateY(-50%);
 }
+
+
+.special-product-active button{
+    border: 1px solid #000 !important;
+    z-index: 9 !important;
+    top: 50% !important;
+    transform: translateY(-50%);
+}
+
+button.slick-prev.slick-arrow {
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: 1px solid #000;
+    position: absolute;
+    z-index: 9;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+button.slick-next.slick-arrow {
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: 1px solid #000;
+    position: absolute;
+    z-index: 9;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
 
 .special-product-active button.slick-next,
 .announcement-active button.slick-next,
@@ -1115,7 +1145,7 @@ li.junayna__outlet a:hover {
 }
 
 .product_button li {
-    background: #000;
+    background: #4757fb;
     padding: 5px;
     margin-right: 5px;
 }
@@ -1693,6 +1723,7 @@ li.junayna__outlet a:hover {
 
 .special-image-content {
     margin-top: 15px;
+    margin-bottom: 50px;
 }
 
 .shop-product-fillter .nav-item {
@@ -1794,7 +1825,7 @@ li.junayna__outlet a:hover {
 .home_btn i {
     font-size: 20px;
     display: block;
-    color: #052b58;
+    color: #4757fb;
 }
 
 /*.header-menu.header-sticky.sticky::after {*/

@@ -28,7 +28,7 @@
 			                    <div class="form-group row mb-4">
 			                        <label class="col-md-3 col-form-label" for="name_bn">Name Bangla</label>
 			                        <div class="col-md-9">
-			                            <input type="text" placeholder="Name Bangla" id="name_bn" name="name_bn" value="{{old('name_bn')}}" class="form-control" >
+			                            <input type="text" placeholder="Name Bangla" id="name_bn" name="name_bn" value="{{old('name_bn')}}" class="form-control" required>
 			                        </div>
 			                    </div>
 			                    <div class="form-group row mb-4">

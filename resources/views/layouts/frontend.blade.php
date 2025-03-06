@@ -536,88 +536,75 @@
         /* ============= End Product View With Modal ========== */
 
         /* ============= Start AddToCart View With Modal ========== */
-        function buyNow() {
+        function buyNow(id) {
             $('#buyNowCheck').val(1);
-            addToCart();
-            addToCartDetails();
+            addToCartDetails(id);
+            addToCartDirect(id);
         }
 
         function addToCart() {
-            //console.log("joi bangla id samla",id);
-            var total_attributes = parseInt($('#total_attributes').val()) || 0;
+            var total_attributes = parseInt($('#total_attributes').val());
             var checkNotSelected = 0;
             var checkAlertHtml = '';
-
-            // Check if any attributes are not selected
-            for (var i = 1; i <= total_attributes; i++) {
-                var checkSelected = parseInt($('#attribute_check_' + i).val());
-                if (checkSelected === 0) {
+            for(var i=1; i<=total_attributes; i++){
+                var checkSelected = parseInt($('#attribute_check_'+i).val());
+                if(checkSelected == 0){
                     checkNotSelected = 1;
-                    checkAlertHtml += `
-                        <div class="attr-detail mb-5">
-                            <div class="alert alert-danger d-flex align-items-center" role="alert">
-                                <div>
-                                    <i class="fa fa-warning mr-10"></i> <span> Select ${$('#attribute_name_' + i).val()}</span>
-                                </div>
-                            </div>
-                        </div>`;
+                    checkAlertHtml += `<div class="attr-detail mb-5">
+											<div class="alert alert-danger d-flex align-items-center" role="alert">
+												<div>
+													<i class="fa fa-warning mr-10"></i> <span> Select `+$('#attribute_name_'+i).val()+`</span>
+												</div>
+											</div>
+										</div>`;
                 }
             }
-
-            // If attributes are not selected, display an error message
-            if (checkNotSelected === 1) {
+            if(checkNotSelected == 1){
                 $('#qty_alert').html('');
-                $('#attribute_alert').html(checkAlertHtml);
+                $('#attribute_alert').html(`<div class="attr-detail mb-5">
+											<div class="alert alert-danger d-flex align-items-center" role="alert">
+												<div>
+													<i class="fa fa-warning mr-10"></i> <span> Select all attributes</span>
+												</div>
+											</div>
+										</div>`);
                 return false;
             }
 
-            // Clear active selection on size filter
             $('.size-filter li').removeClass("active");
-            // Extract necessary data from input fields
             var product_name = $('#pname').val();
-            console.log(product_name);
             var id = $('#product_id').val();
-
             var price = $('#product_price').val();
             var color = $('#color option:selected').val();
             var size = $('#size option:selected').val();
             var quantity = $('#qty').val();
             var varient = $('#pvarient').val();
+
             var min_qty = parseInt($('#minimum_buy_qty').val());
+            if(quantity < min_qty){
+                $('#attribute_alert').html('');
+                $('#qty_alert').html(`<div class="attr-detail mb-5">
+											<div class="alert alert-danger d-flex align-items-center" role="alert">
+												<div>
+													<i class="fa fa-warning mr-10"></i> <span> Minimum quantity `+ min_qty +` required.</span>
+												</div>
+											</div>
+										</div>`);
+                return false;
+            }
             var p_qty = parseInt($('#stock_qty').val());
 
-            // Check if quantity is less than the minimum buy quantity
-            if (quantity < min_qty) {
-                $('#attribute_alert').html('');
-                $('#qty_alert').html(`
-                    <div class="attr-detail mb-5">
-                        <div class="alert alert-danger d-flex align-items-center" role="alert">
-                            <div>
-                                <i class="fa fa-warning mr-10"></i> <span> Minimum quantity ${min_qty} required.</span>
-                            </div>
-                        </div>
-                    </div>`);
-                return false;
-            }
-
-            // Check if the selected quantity exceeds the available stock
-            if (quantity > p_qty) {
-                $('#stock_alert').html(`
-                    <div class="attr-detail mb-5">
-                        <div class="alert alert-danger d-flex align-items-center" role="alert">
-                            <div>
-                                <i class="fa fa-warning mr-10"></i> <span> Not enough stock.</span>
-                            </div>
-                        </div>
-                    </div>`);
-                return false;
-            }
-
-            // Prepare options data for the AJAX request
             var options = $('#choice_form').serializeArray();
             var jsonString = JSON.stringify(options);
 
-            // Make an AJAX request to add the product to the cart
+            // Start Message
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 1200
+            });
             $.ajax({
                 type: 'POST',
                 url: '/cart/data/store/' + id,
@@ -632,29 +619,56 @@
                     options: jsonString,
                 },
                 success: function(data) {
-                    // Handle the response, update the mini cart, and show success/error messages
+                    console.log(data);
                     miniCart();
                     $('#closeModel').click();
 
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        icon: data.success ? 'success' : 'error',
-                        showConfirmButton: false,
-                        timer: 1200,
-                    });
+                    // Start Sweertaleart Message
+                    if ($.isEmptyObject(data.error)) {
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 1200
+                        })
+                        Toast.fire({
+                            type: 'success',
+                            title: data.success
+                        })
+                        $('#qty').val(min_qty);
+                        $('#pvarient').val('');
 
-                    Toast.fire({
-                        type: data.success ? 'success' : 'error',
-                        title: data.success ? data.success : data.error,
-                    });
+                        for (var i = 1; i <= total_attributes; i++) {
+                            $('#attribute_check_' + i).val(0);
+                        }
+                    } else {
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            showConfirmButton: false,
+                            timer: 1200
+                        })
+                        Toast.fire({
+                            type: 'error',
+                            title: data.error
+                        })
+                        $('#qty').val(min_qty);
+                        $('#pvarient').val('');
 
+                        for (var i = 1; i <= total_attributes; i++) {
+                            $('#attribute_check_' + i).val(0);
+                        }
+                    }
+                    // Start Sweertaleart Message
                     var buyNowCheck = $('#buyNowCheck').val();
-                    if (buyNowCheck === '1') {
-                        $('#buyNowCheck').val('0');
+                    if (buyNowCheck && buyNowCheck == 1) {
+                        $('#buyNowCheck').val(0);
                         window.location = '/checkout';
                     }
-                },
+
+                }
             });
         }
 
@@ -714,6 +728,12 @@
                         })
                     }
                     // Start Sweertaleart Message
+                    var buyNowCheck = $('#buyNowCheck').val();
+                    //alert(buyNowCheck);
+                    if (buyNowCheck && buyNowCheck == 1) {
+                        $('#buyNowCheck').val(0);
+                        window.location = '/checkout';
+                    }
 
 
                 }

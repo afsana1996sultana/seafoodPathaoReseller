@@ -59,7 +59,6 @@
                                                 <div>
                                                     <strong>{{ get_setting('business_name')->value ?? ''}}</strong> <br />
                                                     <abbr title="Phone">Phone:</abbr> {{ get_setting('phone')->value ?? ''}}<br>
-                                                    <abbr title="Email">Email: </abbr>{{ get_setting('email')->value ?? ''}}<br>
                                                 </div>
                                             </div>
                                         </div>
@@ -90,33 +89,7 @@
                                             <h4 class="invoice-title-1 mb-10">Bill To</h4>
                                             <p class="invoice-addr-1 text-capitalize">
                                                 <strong>{{ $order->name ?? '' }}</strong> <br />
-                                                @php
-                                                    if ($order->address) {
-                                                        $pathao = new App\Http\Controllers\Frontend\PathaoController();
-                                                        $cityResult = $pathao->getCities();
-                                                        $cities = $cityResult->data->data;
-                                                        $city = null;
-                                                        foreach ($cities as $key => $cityItem) {
-                                                            if ($cityItem->city_id == $order->division_id) {
-                                                                $city = $cityItem;
-                                                                break;
-                                                            }
-                                                        }
-                                                        $pathao = new App\Http\Controllers\Frontend\PathaoController();
-                                                        $zoneResult = $pathao->getZones($order->division_id);
-                                                        $zones = $zoneResult->data->data;
-                                                        $zone = null;
-                                                        foreach ($zones as $key => $zoneItem) {
-                                                            if ($zoneItem->zone_id == $order->district_id) {
-                                                                $zone = $zoneItem;
-                                                                break;
-                                                            }
-                                                        }
-                                                    }
-                                                @endphp
                                                 Address : {{ isset($order->address) ? $order->address . ',' : 'No address' }}
-                                                    {{ isset($zone) && isset($zone->zone_name) ? ucwords($zone->zone_name) . ',' : '' }}
-                                                    {{ isset($city) && isset($city->city_name) ? ucwords($city->city_name) : '' }}
                                                 <br>
                                                 <abbr title="Phone">Phone:</abbr> {{ $order->phone ?? ''}}<br>
                                                 <abbr title="Email">Email: </abbr>{{ $order->email ?? ''}}<br>
