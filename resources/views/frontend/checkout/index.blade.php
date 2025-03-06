@@ -44,7 +44,7 @@
                 </div>
             </div>
         </div>
-        <div class="container mb-80 mt-50">
+        <div class="container mb-20 mt-20">
             <div class="row">
                 <div class="col-lg-8 mb-40">
                     <h1 class="heading-2 mb-10">Checkout</h1>
@@ -91,20 +91,20 @@
                     </div>
                 <form action="{{ route('checkout.payment') }}" method="post">
                     @csrf
-                    <div class="row">
-                        <div class="d-flex">
+                    <div class="row card">
+                        <div class="d-flex mt-3">
                             <h4 class="mb-30 col-9">Billing Details</h4>
                         </div>
 
                         <div class="row">
-                            <div class="form-group col-lg-6">
+                            <div class="form-group col-lg-12">
                                 <label for="name" class="fw-bold text-black"><span class="text-danger">*</span> Name </label>
                                 <input type="text" required="" id="name" name="name" placeholder="Full Name" value="{{ Auth::user()->name ?? old('name') }}">
                                 @error('name')
                                     <p class="text-danger">{{$message}}</p>
                                 @enderror
                             </div>
-                            <div class="form-group col-lg-6">
+                            <div class="form-group col-lg-12">
                                 <label for="phone" class="fw-bold text-black"><span class="required text-danger">*</span> Phone </label>
                                 <input required="" type="number" name="phone" placeholder="Phone" id="phone" value="{{ Auth::user()->phone ?? old('phone') }}">
                                 @error('phone')
@@ -112,14 +112,14 @@
                                 @enderror
                             </div>
 
-                            <div class="form-group col-lg-6">
+                            <!-- <div class="form-group col-lg-6">
                                 <label for="email" class="fw-bold text-black">Email</label>
                                 <input id="email" type="email" name="email" placeholder="Email address *" value="{{ Auth::user()->email ?? old('email') }}">
-                            </div>
+                            </div> -->
                         </div>
 
                         <div class="row shipping_calculator">
-                            <div class="form-group col-lg-6 address_select_custom">
+                            <!-- <div class="form-group col-lg-6 address_select_custom">
                                 <div class="custom_select custom_address_modal">
                                     <label for="division_id" class="fw-bold text-black"><span class="text-danger">*</span> City</label>
                                     <select class="form-select select-active select__active" name="division_id" id="division_id" required>
@@ -130,8 +130,8 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
-                            <div class="form-group col-lg-6 address_select_custom">
+                            </div> -->
+                            <!-- <div class="form-group col-lg-6 address_select_custom">
                                 <div class="custom_select custom_address_modal">
                                     <label for="district_id" class="fw-bold text-black"><span class="text-danger">*</span> Zone</label>
                                     <select class="form-select select-active select__active" name="district_id"
@@ -139,8 +139,8 @@
                                         <option selected="" value="">Select Zone</option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="form-group col-lg-6 address_select_custom">
+                            </div> -->
+                            <!-- <div class="form-group col-lg-6 address_select_custom">
                                 <div class="custom_select custom_address_modal">
                                     <label for="upazilla_id" class="fw-bold text-black"> Area</label>
                                     <select class="form-control select-active select__active" name="upazilla_id"
@@ -148,8 +148,8 @@
                                         <option selected="" value="">Select Area</option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="form-group col-lg-6">
+                            </div> -->
+                            <div class="form-group col-lg-12">
                                 <label for="address" class="fw-bold text-black"><span class="text-danger">*</span>
                                     House/Road/Area</label>
                                 <textarea name="address" id="address" class="form-control" placeholder="Address" required>{{ old('address') }}</textarea>
@@ -159,7 +159,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group col-lg-6 address_select_custom">
+                        <div class="form-group col-lg-12 address_select_custom">
                             <div class="custom_select">
                                 <label for="shipping_id" class="fw-bold text-black col-12"><span class="text-danger">*</span> Shipping</label>
                                 <select class="form-control select-active col-12" name="shipping_id" id="shipping_id" required>
@@ -172,11 +172,6 @@
                                     <p class="text-danger">{{$message}}</p>
                                 @enderror
                             </div>
-                        </div>
-
-                        <div class="form-group col-lg-6">
-                            <label for="comment" class="fw-bold text-black">Comments</label>
-                            <textarea name="comment" id="comment" class="form-control" placeholder="Additional information"></textarea>
                         </div>
                     </div>
                 </div>

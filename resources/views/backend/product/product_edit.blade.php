@@ -46,7 +46,7 @@
                                     <label for="product_name_bn" class="col-form-label" style="font-weight: bold;">Product
                                         Name (Bn):</label>
                                     <input class="form-control" id="product_name_bn" type="text" name="name_bn"
-                                        placeholder="Write product name bangla" value="{{ $product->name_bn }}">
+                                        placeholder="Write product name bangla" value="{{ $product->name_bn }}" required>
                                 </div>
                             </div>
 

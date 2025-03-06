@@ -5,7 +5,7 @@
                 <div class="col-xl-3 col-lg-6">
                     <div class="header-info">
                         <ul>
-                            <li class="contact_header" style="color: #C90312;">Need help? Call Us: <strong class="text-brand"> <a
+                            <li class="contact_header" style="color: #C90312;">সাহায্যের জন্য ? আমাদের ফোন করুন: <strong class="text-brand"> <a
                             class="text-brand" href="tel:{{ get_setting('phone')->value ?? 'null' }}"><i
                             class="fa fa-phone ms-1"></i>
                             {{ get_setting('phone')->value ?? 'null' }}</a></strong></li>
@@ -32,11 +32,7 @@
                                     <option value="0">Categories</option>
                                     @foreach(get_all_categories() as $cat)
                                         <option value="{{ $cat->id }}">
-                                            @if(session()->get('language') == 'bangla') 
-                                                {{ $cat->name_bn }}
-                                            @else 
-                                                {{ $cat->name_en }} 
-                                            @endif
+                                            {{ $cat->name_bn ?? '$cat->name_en' }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -53,17 +49,17 @@
                 <div class="col-xl-5 col-lg-12 p-lg-3">
                     <div class="header-info header-info-right">
                         <ul>
-                            <li><a href="#" data-bs-toggle="modal" data-bs-target="#vendor_service" class="vendorBtn">Become a Vendor</a></li>
-                            <li><a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" class="vendorBtn">Apply as Reseller</a></li>
-                            <li><a href="{{ route('order.tracking') }}">Order Tracking</a></li>
-                            <li>
+                            <li><a href="#" data-bs-toggle="modal" data-bs-target="#vendor_service" class="vendorBtn">বিক্রেতা হিসেবে আবেদন করুন</a></li>
+                            <li><a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" class="vendorBtn">রিসেলার হিসেবে আবেদন করুন</a></li>
+                            <li><a href="{{ route('order.tracking') }}">অর্ডার ট্র্যাকিং</a></li>
+                            <!-- <li>
                                 @if (session()->get('language') == 'bangla')
                                     <a class="language-dropdown-active"
                                         href="{{ route('english.language') }}">English</a>
                                 @else
                                     <a class="language-dropdown-active" href="{{ route('bangla.language') }}">বাংলা</a>
                                 @endif
-                            </li>
+                            </li> -->
                         </ul>
                     </div>
                 </div>
@@ -75,7 +71,7 @@
     {{-- header start --}}
     <div class="container-fluid d-none d-lg-block header-menu header-sticky">
         <div class="row align-items-center">
-            <div class="col-lg-1">
+            <div class="col-lg-2">
                 <div class="logo">
                     <a href="{{ url('/') }}">
                         @php
@@ -91,7 +87,7 @@
                     </a>
                 </div>
             </div>
-            <div class="col-lg-10">
+            <div class="col-lg-9">
                 <div class="all_categories_wrapper">
                     <div>
                         <a class="home_btn" href="{{ url('/') }}">
@@ -104,26 +100,14 @@
                         @foreach (get_categories() as $category)
                             <li>
                                 <a href="{{ route('product.category', $category->slug) }}">
-                                    @if (session()->get('language') == 'bangla')
-                                        {{ $category->name_bn }}
-                                    @else
-                                        @if($category->name_en == 'Buy1 Get1' || $category->name_en == 'Clearance Sale' || $category->name_en == 'Hot Offers')
-                                            <span style="color: #DD1D21 !important;">{{ $category->name_en }}</span>
-                                        @else
-                                            {{ $category->name_en }}
-                                        @endif
-                                    @endif
+                                    {{ $category->name_bn ?? '$category->name_en' }}
                                 </a>
                                 @if ($category->sub_categories && count($category->sub_categories) > 0)
                                     <ul class="sub-menu">
                                         @foreach ($category->sub_categories as $sub_category)
                                             <li>
                                                 <a href="{{ route('product.category', $sub_category->slug) }}">
-                                                    @if (session()->get('language') == 'bangla')
-                                                        {{ $sub_category->name_bn }}
-                                                    @else
-                                                        {{ $sub_category->name_en }}
-                                                    @endif
+                                                    {{ $sub_category->name_bn ?? '$sub_category->name_en' }}
                                                 </a>
                                                 @if ($sub_category->sub_sub_categories && count($sub_category->sub_sub_categories) > 0)
                                                     <i class="fa fa-angle-right"></i>
@@ -134,11 +118,7 @@
                                                             <li>
                                                                 <a
                                                                     href="{{ route('product.category', $sub_sub_category->slug) }}">
-                                                                    @if (session()->get('language') == 'bangla')
-                                                                        {{ $sub_sub_category->name_bn }}
-                                                                    @else
-                                                                        {{ $sub_sub_category->name_en }}
-                                                                    @endif
+                                                                    {{ $sub_sub_category->name_bn ?? '$sub_sub_category->name_en' }}
                                                                 </a>
                                                             </li>
                                                         @endforeach
@@ -150,24 +130,6 @@
                                 @endif
                             </li>
                         @endforeach
-                        <li><a href="#">All Brands</a>
-                            <ul class="sub-menu">
-                                @foreach (get_all_brands()->take(20) as $brand)
-                                    <li>
-                                        <a href="{{ route('product.brand', $brand->slug) }}">
-                                            @if (session()->get('language') == 'bangla')
-                                                {{ $brand->name_bn }}
-                                            @else
-                                                {{ $brand->name_en }}
-                                            @endif
-                                        </a>
-                                    </li>
-                                @endforeach
-                                <li>
-                                    <a href="{{ route('brand_list.index') }}" style="color: #DD1D21 !important;">See More</a>
-                                </li>
-                            </ul>
-                        </li>
                     </ul>
                 </div>
                 </div>
@@ -210,7 +172,7 @@
                 <div class="modal-body">
                     <div class="single-product d-flex">
                         <div class="search-product-image">
-                            <a href=""><img src="{{ asset('frontend/assets/imgs/panjabi/panjabi.jpg') }}"
+                            <a href=""><img src=""
                                     alt="logo"></a>
                         </div>
                         <div class="search-product-content">
@@ -264,15 +226,15 @@
     <div class="offcanvas offcanvas-end" tabindex="-1" id="shopping_offcanvas"
         aria-labelledby="offcanvasExampleLabel">
         <div class="offcanvas-header border-bottom">
-            <h6 class="offcanvas-title " id="offcanvasExampleLabel">SHOPPING CART
+            <h6 class="offcanvas-title " id="offcanvasExampleLabel">শপিং কার্ট
             </h6>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
             <div class="shopping-empty d-none">
                 <i class="fa fa-cart-shopping"></i>
-                <p>Your Cart is Empty</p>
-                <a href="{{ route('home') }}" class="return_shop">return to shop</a>
+                <p>আপনার কার্ট খালি।</p>
+                <a href="{{ route('home') }}" class="return_shop">দোকানে ফিরে যাও</a>
             </div>
 
             <div id="miniCart">
@@ -306,11 +268,7 @@
                 <option value="0">All Categories</option>
                 @foreach (get_all_categories() as $cat)
                     <option value="{{ $cat->id }}">
-                        @if (session()->get('language') == 'bangla')
-                            {{ $cat->name_bn }}
-                        @else
-                            {{ $cat->name_en }}
-                        @endif
+                        {{ $cat->name_bn ?? '$cat->name_en' }}
                     </option>
                 @endforeach
             </select>
@@ -401,15 +359,11 @@
                 <nav>
                     <ul class="mobile-menu font-heading">
                         <li class="menu-item-has-children">
-                            <a href="{{ route('home') }}">Home</a>
+                            <a href="{{ route('home') }}">হোম</a>
                         </li>
                         <li class="menu-item-has-children">
                             <a href="{{ route('product.show') }}">
-                                @if (session()->get('language') == 'bangla')
-                                    দোকান
-                                @else
-                                    Shop
-                                @endif
+                                দোকান
                             </a>
                         </li>
                         <li class="menu-item-has-children">
@@ -418,22 +372,14 @@
                                 @foreach (get_categories()->take(8) as $cat)
                                     <li class="menu-item-has-children">
                                         <a href="{{ route('product.category', $cat->slug) }}">
-                                            @if (session()->get('language') == 'bangla')
-                                                {{ $cat->name_bn }}
-                                            @else
-                                                {{ $cat->name_en }}
-                                            @endif
+                                            {{ $cat->name_bn ?? '$cat->name_en' }}
                                         </a>
                                         @if ($cat->sub_categories && count($cat->sub_categories) > 0)
                                             <ul class="dropdown">
                                                 @foreach ($cat->sub_categories as $subcategory)
                                                     <li>
                                                         <a href="{{ route('product.category', $subcategory->slug) }}">
-                                                            @if (session()->get('language') == 'bangla')
-                                                                {{ $subcategory->name_bn }}
-                                                            @else
-                                                                {{ $subcategory->name_en }}
-                                                            @endif
+                                                            {{ $subcategory->name_bn ?? '$subcategory->name_en' }}
                                                         </a>
                                                     </li>
                                                 @endforeach
@@ -443,11 +389,7 @@
                                                             <li>
                                                                 <a
                                                                     href="{{ route('product.category', $subsubcategory->slug) }}">
-                                                                    @if (session()->get('language') == 'bangla')
-                                                                        {{ $subsubcategory->name_bn }}
-                                                                    @else
-                                                                        {{ $subsubcategory->name_en }}
-                                                                    @endif
+                                                                        {{ $subsubcategory->name_bn ?? '$subsubcategory->name_en' }}
                                                                 </a>
                                                             </li>
                                                         @endforeach
@@ -472,7 +414,7 @@
                         <li class="menu-item-has-children">
                             <a href="#">Language</a>
                             <ul class="dropdown">
-                                @if (session()->get('language') == 'bangla')
+                                <!-- @if (session()->get('language') == 'bangla')
                                     <li>
                                         <a href="{{ route('english.language') }}">English</a>
                                     </li>
@@ -480,7 +422,7 @@
                                     <li>
                                         <a href="{{ route('bangla.language') }}">বাংলা</a>
                                     </li>
-                                @endif
+                                @endif -->
                             </ul>
                         </li>
                     </ul>
@@ -488,9 +430,6 @@
                 <!-- mobile menu end -->
             </div>
             <div class="mobile-header-info-wrap">
-                <!-- <div class="single-mobile-header-info">
-                    <a href="#"><i class="fi-rs-marker"></i> Our location </a>
-                </div> -->
                 <div class="single-mobile-header-info">
                     <a href="{{ route('login') }}"><i class="fi-rs-user"></i>Log In </a>
                 </div>
