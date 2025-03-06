@@ -3,7 +3,7 @@
         padding: 2px 6px;
         border-radius: 4px;
         font-size: 14px;
-        margin-right: 45px;
+        /* margin-right: 25px; */
     }
 
     button.button.buy_now {
@@ -130,14 +130,14 @@
                 @if ($product->is_varient == 1)
                     <a class="add" id="{{ $product->id }}" onclick="productView(this.id)"
                         data-bs-toggle="modal" data-bs-target="#quickViewModal"><i
-                            class="fi-rs-shopping-cart mr-5"></i>Add </a>
+                            class="fi-rs-shopping-cart mr-5"></i>কার্টে যুক্ত করুন </a>
                 @else
                     <input type="hidden" id="pfrom" value="direct">
                     <input type="hidden" id="product_product_id" value="{{ $product->id }}" min="1">
                     <input type="hidden" id="{{ $product->id }}-product_pname" value="{{ $product->name_en }}">
                     <input type="hidden" id="buyNowCheck" value="0">
-                    <button type="submit" class="button add_to_cart" onclick="addToCartDirect({{ $product->id }})"><i class="fi-rs-shoppi ng-cart"></i>Add to cart</button>
-                    <button type="submit" class="button buy_now ml-5 bg-danger" onclick="buyNow({{ $product->id }})"><i class="fi-rs-shoppi ng-cart"></i>Buy Now</button>
+                    <button type="submit" class="button add_to_cart" onclick="addToCartDirect({{ $product->id }})"><i class="fi-rs-shoppi ng-cart"></i>কার্টে যুক্ত করুন</button>
+                    <button type="submit" class="button buy_now ml-5 bg-danger" onclick="buyNow({{ $product->id }})"><i class="fi-rs-shoppi ng-cart"></i>এখনি কিনুন</button>
                 @endif
             </div>
             @if (auth()->check() && auth()->user()->role == 7)

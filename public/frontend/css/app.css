@@ -1043,25 +1043,25 @@ li.junayna__outlet a:hover {
 }
 
 button.slick-prev.slick-arrow {
-    width: 40px;
-    height: 40px;
-    background: transparent;
-    border: 1px solid #000;
-    position: absolute;
-    z-index: 9;
-    top: 50%;
-    transform: translateY(-50%);
+    width: 40px !important;
+    height: 40px !important;
+    background: transparent !important;
+    border: 1px solid #000 !important;
+    position: absolute !important;
+    z-index: 9 !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
 }
 
 button.slick-next.slick-arrow {
-    width: 40px;
-    height: 40px;
-    background: transparent;
-    border: 1px solid #000;
-    position: absolute;
-    z-index: 9;
-    top: 50%;
-    transform: translateY(-50%);
+    width: 40px !important;
+    height: 40px !important;
+    background: transparent !important;
+    border: 1px solid #000 !important;
+    position: absolute !important;
+    z-index: 9 !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
 }
 
 
@@ -1566,13 +1566,60 @@ button.slick-next.slick-arrow {
     .quick-view-product {
         display: block !important;
     }
-.special-product-active button, .announcement-active button, .hotdeal_slider button, .category_slider_wrapper button {
+.announcement-active button, .hotdeal_slider button, .category_slider_wrapper button {
     background: #fff;
     border: 2px solid #000;
     border-radius: 50%;
     width: 30px;
     height: 30px;
 }
+
+button.submit, button[type="submit"] {
+    font-size: 12px !important;
+    padding: 2px 0px !important;
+}
+
+.special-product-active button {
+    border: 2px solid #000;
+    width: 75px !important;
+    height: 30px !important;
+    padding: 2px 0px !important;
+    font-size: 12px !important;
+}
+
+button.slick-prev.slick-arrow {
+    width: 30px !important;
+    height: 30px !important;
+    background: transparent !important;
+    border: 1px solid #000 !important;
+    position: absolute !important;
+    z-index: 9 !important;
+    top: 40% !important;
+    transform: translateY(-50%) !important;
+}
+
+button.slick-next.slick-arrow {
+    width: 30px !important;
+    height: 30px !important;
+    background: transparent !important;
+    border: 1px solid #000 !important;
+    position: absolute !important;
+    z-index: 9 !important;
+    top: 40% !important;
+    transform: translateY(-50%) !important;
+}
+
+button.button.add_to_cart {
+    padding: 2px 20px !important;
+    font-size: 14px !important;
+    margin-bottom: 5px !important;
+}
+
+button.button.buy_now {
+    padding: 2px 30px !important;
+    font-size: 14px !important;
+}
+
 .product-tabs {
 	padding-top: 0 !important;
 }
