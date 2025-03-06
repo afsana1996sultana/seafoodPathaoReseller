@@ -153,13 +153,8 @@
 
                                 <div class="special-image-content">
                                     <a href="{{ route('product.details', $product->slug) }}">
-                                        @if (session()->get('language') == 'bangla')
-                                            <?php $p_name_bn = strip_tags(html_entity_decode($product->name_bn)); ?>
+                                            <?php $p_name_bn = strip_tags(html_entity_decode($product->name_bn ?? '$product->name_en')); ?>
                                             {{ Str::limit($p_name_bn, $limit = 30, $end = '. . .') }}
-                                        @else
-                                            <?php $p_name_en = strip_tags(html_entity_decode($product->name_en)); ?>
-                                            {{ Str::limit($p_name_en, $limit = 30, $end = '. . .') }}
-                                        @endif
                                     </a>
 
                                     @php
@@ -373,13 +368,8 @@
                         </div>
                         <div class="special-image-content">
                             <a href="{{ route('product.details', $product_recently_add->slug) }}">
-                                @if (session()->get('language') == 'bangla')
-                                    <?php $p_name_bn = strip_tags(html_entity_decode($product_recently_add->name_bn)); ?>
+                                    <?php $p_name_bn = strip_tags(html_entity_decode($product_recently_add->name_bn ?? '$product_recently_add->name_en')); ?>
                                     {{ Str::limit($p_name_bn, $limit = 30, $end = '. . .') }}
-                                @else
-                                    <?php $p_name_en = strip_tags(html_entity_decode($product_recently_add->name_en)); ?>
-                                    {{ Str::limit($p_name_en, $limit = 30, $end = '. . .') }}
-                                @endif
                             </a>
                             @php
                                 $reviews = \App\Models\Review::where('product_id', $product_recently_add->id)

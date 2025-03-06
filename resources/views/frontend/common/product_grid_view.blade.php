@@ -65,13 +65,8 @@
          <div class="product-content-wrap">
              <h2 class="mt-3">
                  <a href="{{ route('product.details', $product->slug) }}">
-                     @if (session()->get('language') == 'bangla')
-                         <?php $p_name_bn = strip_tags(html_entity_decode($product->name_bn)); ?>
-                         {{ Str::limit($p_name_bn, $limit = 30, $end = '. . .') }}
-                     @else
-                         <?php $p_name_en = strip_tags(html_entity_decode($product->name_en)); ?>
-                         {{ Str::limit($p_name_en, $limit = 30, $end = '. . .') }}
-                     @endif
+                        <?php $p_name_bn = strip_tags(html_entity_decode($product->name_bn ?? '$product->name_en')); ?>
+                        {{ Str::limit($p_name_bn, $limit = 30, $end = '. . .') }}
                  </a>
              </h2>
              @php
