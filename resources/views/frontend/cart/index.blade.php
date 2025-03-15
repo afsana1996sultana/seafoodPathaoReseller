@@ -13,7 +13,7 @@ Cart Nest Online Shop
                 </div>
             </div>
         </div>
-        <div class="container mb-80 mt-50">
+        <div class="container mb-50 mt-10">
             <div class="row">
                 <div class="col-lg-8 mb-40">
                     <h1 class="heading-2 mb-10">Your Cart</h1>

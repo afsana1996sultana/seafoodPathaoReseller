@@ -54,9 +54,9 @@
             @if ($product->discount_price > 0)
                 <div class="product-badges-right product-badges-position-right product-badges-mrg">
                     @if ($product->discount_type == 1)
-                        <span class="hot">৳{{ formatNumberInBengali($product->discount_price) }} ছাড়</span>
+                        <span class="hot">৳{{ $product->discount_price }} off</span>
                     @elseif($product->discount_type == 2)
-                        <span class="hot">{{ formatNumberInBengali($product->discount_price) }}% ছাড়</span>
+                        <span class="hot">{{ $product->discount_price }}% off</span>
                     @endif
                 </div>
              @endif
@@ -65,8 +65,13 @@
          <div class="product-content-wrap">
              <h2 class="mt-3">
                  <a href="{{ route('product.details', $product->slug) }}">
-                        <?php $p_name_bn = strip_tags(html_entity_decode($product->name_bn ?? '$product->name_en')); ?>
-                        {{ Str::limit($p_name_bn, $limit = 30, $end = '. . .') }}
+                    @if (session()->get('language') == 'bangla')
+                         <?php $p_name_bn = strip_tags(html_entity_decode($product->name_bn)); ?>
+                         {{ Str::limit($p_name_bn, $limit = 30, $end = '. . .') }}
+                     @else
+                         <?php $p_name_en = strip_tags(html_entity_decode($product->name_en)); ?>
+                         {{ Str::limit($p_name_en, $limit = 30, $end = '. . .') }}
+                     @endif
                  </a>
              </h2>
              @php
@@ -101,22 +106,22 @@
                 @if ($product->discount_price > 0)
                     @if (auth()->check() && auth()->user()->role == 7)
                         <div class="product-price">
-                            <span class="price">৳{{ formatNumberInBengali($product->reseller_price) }}</span>
+                            <span class="price">৳{{ $product->reseller_price }}</span>
                         </div>
                     @else
                         <div class="product-price">
-                            <span class="price">৳{{ formatNumberInBengali($price_after_discount) }}</span>
-                            <span class="old-price" style="color: #DD1D21;">৳{{ formatNumberInBengali($product->regular_price) }}</span>
+                            <span class="price">৳{{ $price_after_discount }}</span>
+                            <span class="old-price" style="color: #DD1D21;">৳{{ $product->regular_price }}</span>
                         </div>
                     @endif
                 @else
                     @if (auth()->check() && auth()->user()->role == 7)
                         <div class="product-price">
-                            <span class="price">৳{{ formatNumberInBengali($product->reseller_price) }}</span>
+                            <span class="price">৳{{ $product->reseller_price }}</span>
                         </div>
                     @else
                         <div class="product-price">
-                            <span class="price">৳{{ formatNumberInBengali($product->regular_price) }}</span>
+                            <span class="price">৳{{ $product->regular_price }}</span>
                         </div>
                     @endif
                 @endif
@@ -142,7 +147,7 @@
             </div>
             @if (auth()->check() && auth()->user()->role == 7)
                 <div>
-                    <span>Regular Price: <span class="text-info">৳ {{ formatNumberInBengali($product->regular_price) }}</span></span>
+                    <span>Regular Price: <span class="text-info">৳ {{ $product->regular_price }}</span></span>
                     <input type="hidden" id="regular_price" name="regular_price" value="{{ $product->regular_price }}" min="1">
                 </div>
             @endif

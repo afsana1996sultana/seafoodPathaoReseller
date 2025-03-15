@@ -10,8 +10,8 @@
                             </div>
                         </center>
                         <div class="banner-text">
-                            <h3 class="icon-box-title">সেরা দাম এবং অফার</h3>
-                            <p>৫০ টাকা বা তার বেশি অর্ডার</p>
+                            <h3 class="icon-box-title">Best prices & offers</h3>
+                            <p>Orders $50 or more</p>
                         </div>
                     </div>
                 </div>
@@ -23,8 +23,8 @@
                             </div>
                         </center>
                         <div class="banner-text">
-                            <h3 class="icon-box-title">বিনামূল্যে ডেলিভারি</h3>
-                            <p>২৪/৭ অসাধারণ পরিষেবা</p>
+                            <h3 class="icon-box-title">Free delivery</h3>
+                            <p>24/7 amazing services</p>
                         </div>
                     </div>
                 </div>
@@ -36,8 +36,8 @@
                             </div>
                         </center>
                         <div class="banner-text">
-                            <h3 class="icon-box-title">দারুন দৈনিক ডিল</h3>
-                            <p>যখন আপনি সাইন আপ করবেন</p>
+                            <h3 class="icon-box-title">Great daily deal</h3>
+                            <p>When you sign up</p>
                         </div>
                     </div>
                 </div>
@@ -49,8 +49,8 @@
                             </div>
                         </center>
                         <div class="banner-text">
-                            <h3 class="icon-box-title">বিস্তৃত ভাণ্ডার</h3>
-                            <p>মেগা ডিসকাউন্ট</p>
+                            <h3 class="icon-box-title">Wide assortment</h3>
+                            <p>Mega Discounts</p>
                         </div>
                     </div>
                 </div>
@@ -62,8 +62,8 @@
                             </div>
                         </center>
                         <div class="banner-text">
-                            <h3 class="icon-box-title">সহজ রিটার্ন</h3>
-                            <p>৩০ দিনের মধ্যে</p>
+                            <h3 class="icon-box-title">Easy returns</h3>
+                            <p>Within 30 days</p>
                         </div>
                     </div>
                 </div>
@@ -75,8 +75,8 @@
                             </div>
                         </center>
                         <div class="banner-text">
-                            <h3 class="icon-box-title">নিরাপদ ডেলিভারি</h3>
-                            <p>৩০ দিনের মধ্যে</p>
+                            <h3 class="icon-box-title">Safe delivery</h3>
+                            <p>Within 30 days</p>
                         </div>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
                 <div class="col-lg-6 ">
                     <div class="subscribe-contents ">
                         <img src="{{ asset('upload/subscribe.png') }}" alt="">
-                        <h5>অফার এবং আপডেটের জন্য নিউজলেটারের জন্য সাইন আপ করুন</h5>
+                        <h5>SIGN UP FOR NEWSLETTER FOR OFFER AND UPDATES</h5>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -100,7 +100,7 @@
                             class="d-flex align-items-center">
                             @csrf
                             <input type="email" name="email" placeholder="Your Email Address">
-                            <button type="submit">সাবস্ক্রাইব</button>
+                            <button type="submit">Subscribe</button>
                         </form>
                     </div>
                 </div>
@@ -114,29 +114,29 @@
             <div class="row">
                 <div class="col-md-4 col-sm-6 col-12">
                     <div class="footer-link-widget wow animate__animated animate__fadeInUp" data-wow-delay=".1s">
-                        <h4 class="widget-title">হাজার বাজার তথ্য</h4>
+                        <h4 class="widget-title">Hazar Bazar Info</h4>
                         <ul class="contact-infor">
                             <li>
                                 <img src="{{ asset('frontend/assets/imgs/theme/icons/icon-location.svg') }}"
-                                    alt="" /><strong>ঠিকানা: </strong>
+                                    alt="" /><strong>Address: </strong>
                                 <span>{{ get_setting('business_address')->value ?? 'null' }}</span>
                             </li>
 
                             <li>
                                 <img src="{{ asset('frontend/assets/imgs/theme/icons/icon-contact.svg') }}"
-                                    alt="" /><strong>আমাদের ফোন করুন: </strong><a
+                                    alt="" /><strong>Call Us: </strong><a
                                     href="tel:{{ get_setting('phone')->value ?? 'null' }}">{{ get_setting('phone')->value ?? 'null' }}</a>
                             </li>
 
                             <li>
                                 <img src="{{ asset('frontend/assets/imgs/theme/icons/icon-email-2.svg') }}"
-                                    alt="" /><strong>ইমেইল: </strong><a
+                                    alt="" /><strong>Email: </strong><a
                                     href="mailto:{{ get_setting('email')->value ?? 'null' }}">{{ get_setting('email')->value ?? 'null' }}</a>
                             </li>
 
                             <li>
                                 <img src="{{ asset('frontend/assets/imgs/theme/icons/icon-clock.svg') }}"
-                                    alt="" /><strong>কাজের সময়:</strong><span>
+                                    alt="" /><strong>Hours:</strong><span>
                                     {{ get_setting('business_hours')->value ?? 'null' }}</span>
                             </li>
                         </ul>
@@ -166,17 +166,17 @@
                         <div class="col-sm-6 col-md-3 col-12">
                             <div class="footer-link-widget wow animate__animated animate__fadeInUp"
                                 data-wow-delay=".2s">
-                                <h4 class="widget-title">হিসাব</h4>
+                                <h4 class="widget-title">Account</h4>
                                 <ul class="footer-list mb-sm-5 mb-md-0">
-                                    <li><a href="#">আমার প্রোফাইল</a></li>
-                                    <li><a href="{{ route('cart.show') }}">কার্ট</a></li>
+                                    <li><a href="#">My Profile</a></li>
+                                    <li><a href="{{ route('cart.show') }}">cart</a></li>
                                 </ul>
                             </div>
                         </div>
                         <div class="col-sm-6 col-md-3 col-12">
                             <div class="footer-link-widget wow animate__animated animate__fadeInUp"
                                 data-wow-delay=".1s">
-                                <h4 class="widget-title">নীতি</h4>
+                                <h4 class="widget-title">Policy</h4>
                                 <ul class="footer-list mb-sm-5 mb-md-0">
                                     @foreach (get_pages_both_footer()->take(3) as $page)
                                         <li>
@@ -191,7 +191,7 @@
                         <div class="ms-xl-auto col-md-5 col-12 mr-0">
                             <div class="footer-link-widget wow animate__animated animate__fadeInUp"
                                 data-wow-delay=".1s">
-                                <h4 class="widget-title">দ্রুত লিংক</h4>
+                                <h4 class="widget-title">Quick Links</h4>
                                 <ul class="footer-list mb-sm-5 mb-md-0">
                                     @foreach (get_pages_both_footer()->skip(3)->take(4) as $page)
                                         <li>
@@ -214,6 +214,10 @@
             <div class="row align-items-center copyright__content">
                  <div class="col-12 text-center">
                       <p class="m-0">&copy; {{ get_setting('copy_right')->value ?? 'null' }} All rights reserved </p>
+                    <span>
+                       Developed by:
+                       <a target="_blank" href="https://codehouseit.com/">CodeHouse IT</a>
+                    </span>
                 </div>
             </div>
         </div>

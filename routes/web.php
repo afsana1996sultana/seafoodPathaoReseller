@@ -91,14 +91,13 @@ Route::Post('/order-track',[FrontendController::class, 'orderTrack'])->name('ord
 /* =============== Start Product View Modal With Ajax ============== */
 Route::get('/product/view/modal/{id}',[FrontendController::class,'ProductViewAjax']);
 /* ============ Start Add To Cart Store Data Withn Ajax  ============= */
-Route::post('/cart/data/store/{id}',[CartController::class, 'AddToCart'])->name('cart.add');
+Route::post('/cart/data/store/{id}', [CartController::class, 'AddToCart'])->name('cart.add');
 /* ============ Start Mini Cart With Ajax  ============= */
-Route::get('/product/mini/cart',[CartController::class,'AddMiniCart'])->name('minicart.add');
-Route::get('/minicart/product-remove/{rowId}',[CartController::class,'RemoveMiniCart'])->name('minicart.remove');
-
+Route::get('/product/mini/cart', [CartController::class, 'AddMiniCart'])->name('minicart.add');
+Route::get('/minicart/product-remove/{rowId}', [CartController::class, 'RemoveMiniCart'])->name('minicart.remove');
 
 /* ============ Cart Show   ============= */
-Route::get('/cart',[CartController::class,'index'])->name('cart.show');
+Route::get('/cart', [CartController::class, 'index'])->name('cart.show');
 /* ============ Cart Get Product   ============= */
 Route::get('/get-cart-product', [CartController::class, 'getCartProduct'])->name('getcart.product');
 /* ============  Cart Increment  ============= */
@@ -108,7 +107,9 @@ Route::get('/cart-decrement/{rowId}', [CartController::class, 'cartDecrement'])-
 /* ============ Cart Remove   ============= */
 Route::get('/cart-remove/{rowId}', [CartController::class, 'removeCartProduct'])->name('cart.remove');
 /* ============ All Cart Remove   ============= */
-Route::get('/cart/all-delete',[CartController::class,'destroy'])->name('cart.remove.all');
+Route::get('/cart/all-delete', [CartController::class, 'destroy'])->name('cart.remove.all');
+
+
 /* ============  Cart Checkout   ============= */
 Route::get('/checkout',[CheckoutController::class,'index'])->name('checkout');
 Route::post('/checkout/payment',[CheckoutController::class,'payment'])->name('checkout.payment');

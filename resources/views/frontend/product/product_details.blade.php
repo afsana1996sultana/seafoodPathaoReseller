@@ -39,7 +39,11 @@
 
 	        <div class="breadcrumb">
 	            <a href="{{ route('product.category', $product->category->slug) }}" rel="nofollow"><i class="fi-rs-home mr-5"></i>
-                    {{ $product->category->name_bn ?? '$product->category->name_en'}}
+					@if(session()->get('language') == 'bangla')
+                        {{ $product->category->name_bn ?? 'No Category'}}
+                    @else
+                        {{ $product->category->name_en ?? 'No Category'}}
+                    @endif
 	            </a>
 	        </div>
 	    </div>
@@ -98,29 +102,33 @@
 
 		                          		@if ($product->discount_price > 0)
 		                          			@if ($product->discount_type == 1)
-	                                			<span class="stock-status out-stock"> ৳{{  formatNumberInBengali($discount) }} ছাড় </span>
+	                                			<span class="stock-status out-stock"> ৳{{ $discount }} Off </span>
 	                                		@elseif ($product->discount_type == 2)
-	                                			<span class="stock-status out-stock"> {{  formatNumberInBengali($product->discount_price) }}% ছাড় </span>
+	                                			<span class="stock-status out-stock"> {{ $product->discount_price }}% Off </span>
 	                                		@endif
 			                            @endif
 
 			                            <input type="hidden" id="discount_amount" value="{{ $discount }}">
 
 	                                    <h2 class="title-detail">
-			                                {{ $product->name_bn ?? '$product->name_en' }}
+											@if(session()->get('language') == 'bangla')
+			                                    {{ $product->name_bn }}
+			                                @else
+			                                    {{ $product->name_en }}
+			                                @endif
 	                                    </h2>
 	                                    <div class="clearfix product-price-cover">
 	                                        <div class="product-price primary-color float-left">
 	                                        	@if($product->discount_price <= 0)
-	                                        	 	<span class="current-price text-brand">৳{{ formatNumberInBengali($product->regular_price) }}</span>
+	                                        	 	<span class="current-price text-brand">৳{{ $product->regular_price }}</span>
 					                            @else
-	                                                <span class="current-price text-brand">৳{{ formatNumberInBengali($amount) }}</span>
+	                                                <span class="current-price text-brand">৳{{ $amount }}</span>
 			                                            @if ($product->discount_type == 1)
-					                                		<span class="save-price font-md color3 ml-15"> ৳{{ formatNumberInBengali($discount) }} ছাড় </span>
+					                                		<span class="save-price font-md color3 ml-15"> ৳{{ $discount }} Off </span>
 							                            @elseif ($product->discount_type == 2)
-							                             	<span class="save-price font-md color3 ml-15">{{ formatNumberInBengali($product->discount_price) }}% ছাড়</span>
+							                             	<span class="save-price font-md color3 ml-15">{{ $product->discount_price }}% Off</span>
 							                            @endif
-	                                                <span class="old-price font-md ml-15">৳{{ formatNumberInBengali($product->regular_price) }}</span>
+	                                                <span class="old-price font-md ml-15">৳{{ $product->regular_price }}</span>
 					                            @endif
 	                                        </div>
 	                                    </div>
@@ -158,7 +166,7 @@
 
 	                                    <div class="detail-extralink mb-20 align-items-baseline d-flex">
 	                                    	<div class="mr-10">
-	                                    		<span class="">পরিমাণ:</span>
+	                                    		<span class="">Quantity:</span>
 	                                    	</div>
 	                                        <div class="detail-qty border radius">
 	                                            <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
@@ -193,17 +201,17 @@
 										<div class="row mb-3" id="stock_alert" class="stockAlert"></div>
 	                                    <div class="font-xs">
 	                                        <ul class="mr-50 float-start">
-	                                            <li class="mb-5">নিয়মিত মূল্য: <span class="text-brand">{{ formatNumberInBengali($product->regular_price) }}</span></li>
+	                                            <li class="mb-5">Regular Price: <span class="text-brand">{{ $product->regular_price }}</span></li>
 	                                            {{-- <li class="mb-5">Stock: <span class="text-brand">{{ $product->stock_qty}}</span></li> --}}
 	                                            <li class="mb-5">Category:<span class="text-brand">
-	                                            	{{ $product->category->name_bn ?? '$product->category->name_en'}}
+													{{ $product->category->name_en ?? 'No Category'}}
 	                                            </span></li>
 	                                        </ul>
 	                                        <ul class="float-start">
 												@if($product->wholesell_price > 0)
 													<li class="mb-5">
 														Whole Sell Price:
-														<a href="#">{{ formatNumberInBengali($product->wholesell_price) }}</a>
+														<a href="#">{{ $product->wholesell_price }}</a>
 													</li>
 													<li class="mb-5">
 														Whole Sell Quantity:
@@ -225,7 +233,7 @@
 	                            <div class="tab-style3">
 	                                <ul class="nav nav-tabs text-uppercase">
 	                                    <li class="nav-item">
-	                                        <a class="nav-link active" id="Description-tab" data-bs-toggle="tab" href="#Description">বিবরণ</a>
+	                                        <a class="nav-link active" id="Description-tab" data-bs-toggle="tab" href="#Description">Description</a>
 	                                    </li>
 										<li class="nav-item">
 											@php
@@ -238,7 +246,11 @@
 	                                    <div class="tab-pane fade show active" id="Description">
 	                                        <div class="">
 	                                            <p>
-													{!! $product->description_bn ?? '$product->description_en' !!}
+													@if(session()->get('language') == 'bangla')
+														{!! $product->description_en ?? 'No Product Long Descrption' !!}
+								                    @else
+														{!! $product->description_bn ?? 'No Product Logn Descrption' !!}
+								                    @endif
 	                                            </p>
 	                                        </div>
 	                                    </div>
@@ -246,7 +258,11 @@
 											<div class="product__review__system">
 												<h6>Youre reviewing:</h6>
 												<h5>
-													{{ $product->name_bn ?? '$product->name_en' }}
+													@if(session()->get('language') == 'bangla')
+														{{ $product->name_bn }}
+													@else
+														{{ $product->name_en }}
+													@endif
 												</h5>
 												<form action="{{route('review.store')}}" method="post">
 													@csrf
@@ -366,7 +382,7 @@
 	                        </div>
 	                        <div class="row mt-60">
 	                            <div class="col-12">
-	                                <h2 class="section-title style-1 mb-30">সংশ্লিষ্ট পণ্য</h2>
+	                                <h2 class="section-title style-1 mb-30">Related products</h2>
 	                            </div>
 	                            <div class="col-12">
 	                                <div class="row related-products">
@@ -395,9 +411,9 @@
                                                     @if($product->discount_price > 0)
                                                     <div class="product-badges-right product-badges-position-right product-badges-mrg">
                                                             @if($product->discount_type == 1)
-                                                                <span class="hot">৳{{ formatNumberInBengali($product->discount_price) }} off</span>
+                                                                <span class="hot">৳{{ $product->discount_price }} off</span>
                                                             @elseif($product->discount_type == 2)
-                                                                <span class="hot">{{ formatNumberInBengali($product->discount_price) }}% off</span>
+                                                                <span class="hot">{{ $product->discount_price }}% off</span>
                                                             @endif
                                                     </div>
                                                     @endif
@@ -406,13 +422,22 @@
 	                                            <div class="product-content-wrap">
                                                     <h2 class="mt-3" style="height: 40px;">
                                                         <a href="{{ route('product.details',$product->slug) }}">
-															<?php $p_name_bn =  strip_tags(html_entity_decode($product->name_bn ?? '$product->name_en'))?>
-															{{ Str::limit($p_name_bn, $limit = 30, $end = '. . .') }}
+															@if(session()->get('language') == 'bangla')
+                                                                <?php $p_name_bn =  strip_tags(html_entity_decode($product->name_bn))?>
+                                                                {{ Str::limit($p_name_bn, $limit = 30, $end = '. . .') }}
+                                                            @else
+                                                                <?php $p_name_en =  strip_tags(html_entity_decode($product->name_en))?>
+                                                                {{ Str::limit($p_name_en, $limit = 30, $end = '. . .') }}
+                                                            @endif
                                                         </a>
                                                     </h2>
                                                     <div class="product-category">
                                                         <a href="{{ route('product.category', $product->category->slug) }}">
-                                                            {{ $product->category->name_bn ?? '$product->category->name_en' }}
+															@if(session()->get('language') == 'bangla')
+                                                                {{ $product->category->name_bn }}
+                                                            @else
+                                                                {{ $product->category->name_en }}
+                                                            @endif
                                                         </a>
                                                     </div>
 													@php
@@ -445,12 +470,12 @@
                                                     <div class="product-card-bottom">
                                                     	@if ($product->discount_price > 0)
                                                             <div class="product-price">
-                                                              	<span class="price">৳{{ formatNumberInBengali($price_after_discount) }}</span>
-                                                              	<span class="old-price">৳{{ formatNumberInBengali($product->regular_price) }}</span>
+                                                              	<span class="price">৳{{ $price_after_discount }}</span>
+                                                              	<span class="old-price">৳{{ $product->regular_price }}</span>
                                                             </div>
                                                         @else
                                                             <div class="product-price">
-                                                            	<span class="price">৳{{ formatNumberInBengali($product->regular_price) }}</span>
+                                                            	<span class="price">৳{{ $product->regular_price }}</span>
                                                             </div>
                                                         @endif
                                                         <div class="add-cart">
@@ -468,7 +493,11 @@
 	                                        </div>
 	                                    </div>
 	                                    @empty
-						                    <h5 class="text-danger">এখানে কোন পণ্য খুঁজে পাওয়া যায়নি!</h5>
+											@if(session()->get('language') == 'bangla')
+						                        <h5 class="text-danger">এখানে কোন পণ্য খুঁজে পাওয়া যায়নি!</h5>
+						                    @else
+						                       <h5 class="text-danger">No products were found here!</h5>
+						                    @endif
 					                  	@endforelse
 	                                </div>
 	                            </div>

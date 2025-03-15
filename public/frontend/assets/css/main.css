@@ -5695,7 +5695,7 @@ table.no-border thead {
 }
 
 .cart-totals {
-    border-radius: 0x;
+    border-radius: 15px;
     -webkit-box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.05);
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.05);
     padding: 30px 40px;
@@ -5809,10 +5809,9 @@ table.no-border thead {
 }
 
 .order_table table .product-thumbnail img {
-    max-width: 120px;
-    border-radius: 15px;
-    border: 1px solid #ececec;
-    padding: 5px;
+    max-width: 40px;
+    border-radius: 0;
+    padding: 3px;
 }
 
 .order_table table .w-160 {
@@ -12875,4 +12874,17 @@ footer .hotline img {
 
 .bg-lite-main {
     background-color: #dcf1d2 !important;
+}
+
+.form-check-input[type=radio] {
+    border-radius: 50% !important;
+}
+
+.detail-extralink.mr-15 button {
+    padding: 4px !important;
+    width: 35px;
+}
+
+.table-responsive.order_table.checkout tr td {
+    border: 1px solid #ddd;
 }
