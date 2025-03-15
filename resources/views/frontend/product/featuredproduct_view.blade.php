@@ -20,7 +20,11 @@
 	            	@forelse($products as $product)
 	                   @include('frontend.common.product_grid_view',['product' => $product])
 	                @empty
-	                    <h5 class="text-danger">এখানে কোন পণ্য খুঁজে পাওয়া যায়নি!</h5> 
+                        @if(session()->get('language') == 'bangla') 
+	                        <h5 class="text-danger">এখানে কোন পণ্য খুঁজে পাওয়া যায়নি!</h5> 
+	                    @else 
+	                       	<h5 class="text-danger">No products were found here!</h5> 
+	                    @endif
 	                @endforelse
 	                <!--end product card-->
 	            </div>
@@ -65,7 +69,11 @@
                                     />
                                     <label class="form-check-label" for="category_{{$category->id}}">
                                         <span>
-                                            {{ $category->name_bn ?? '$category->name_en'}}
+                                            @if(session()->get('language') == 'bangla') 
+                                                {{ $category->name_bn }}
+                                            @else 
+                                                {{ $category->name_en }} 
+                                            @endif 
                                         </span>
                                     </label>
                                     <span class="float-end">{{ count($category->products) }}</span>

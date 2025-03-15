@@ -213,61 +213,57 @@ class CartController extends Controller
     /* ================= End GetCartProduct Method =================== */
 
     /* ================= Start CartIncrement Method =================== */
-    public function cartIncrement($rowId){
+    public function cartIncrement($rowId)
+    {
         $row = Cart::get($rowId);
-        //dd($row);
-        $id = $row->id;
 
-        $product = Product::findOrFail($id);
-
-        if(!$product->is_varient){
-            $prev_cart_qty = 0;
-            $carts = Cart::content();
-            foreach($carts as $cart){
-                if($cart->id == $id) {
-                    $prev_cart_qty += $cart->qty;
-                }
-            }
-
-            $qty = $prev_cart_qty + $row->qty;
-
-            // if($qty > $product->stock_qty){
-            //     return response()->json(['error'=> 'Not enough stock']);
-            // }
-        }else{
-            $prev_cart_qty = 0;
-            $carts = Cart::content();
-            foreach($carts as $cart){
-                if($cart->id == $id) {
-                    if($cart->options->varient == $row->product_varient){
-                        $prev_cart_qty += $cart->qty;
-                    }
-                }
-            }
-
-            $qty = $prev_cart_qty + $row->qty;
-            $stock = ProductStock::where('product_id', $id)->where('varient', $row->options->varient)->first();
-
-            // if($qty > $stock->qty){
-            //     return response()->json(['error'=> 'Not enough stock']);
-            // }
+        if (!$row) {
+            return response()->json(['error' => 'Invalid cart item.']);
         }
 
-        Cart::update($rowId, $row->qty + 1);
+        $product = Product::findOrFail($row->id);
+        $newQty = $row->qty + 1;
 
-        return response()->json(['success'=> 'Successfully Added on Your Cart']);
+        // if ($newQty > $product->stock_qty) {
+        //     return response()->json(['error' => 'Insufficient stock available.']);
+        // }
 
-    } // end mehtod
+        Cart::update($rowId, $newQty);
+
+        return response()->json([
+            'success' => 'Cart updated successfully.',
+            'newQty' => $newQty,
+            'subtotal' => Cart::get($rowId)->subtotal(0, '', ''), // Subtotal for the specific item
+            'cartTotal' => Cart::subtotal(0, '', '') // Total cart subtotal
+        ]);
+    }
 
     /* ================= End CartIncrement Method =================== */
 
     /* ================= Start CartDecrement Method =================== */
-    public function cartDecrement($rowId){
-
+    public function cartDecrement($rowId)
+    {
         $row = Cart::get($rowId);
-        Cart::update($rowId, $row->qty - 1);
-        return response()->json($row->qty);
-    } // end method
+
+        if (!$row) {
+            return response()->json(['error' => 'Invalid cart item.']);
+        }
+    
+        $newQty = $row->qty - 1;
+    
+        if ($newQty < 1) {
+            return response()->json(['error' => 'Quantity cannot be less than 1.']);
+        }
+    
+        Cart::update($rowId, $newQty);
+    
+        return response()->json([
+            'success' => 'Cart updated successfully.',
+            'newQty' => $newQty,
+            'subtotal' => Cart::get($rowId)->subtotal(0, '', ''), // Subtotal for the specific item
+            'cartTotal' => Cart::subtotal(0, '', '') // Total cart subtotal
+        ]);
+    }
 
     /* ================= End CartDecrement Method =================== */
 

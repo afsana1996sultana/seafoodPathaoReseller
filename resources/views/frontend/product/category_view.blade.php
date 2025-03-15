@@ -8,12 +8,20 @@
                 <div class="row align-items-center">
                     <div class="col-12">
                         <h4 class="mb-5">
-                            {{ $category->name_bn ?? '$category->name_en' }}
+                            @if (session()->get('language') == 'bangla')
+                                {{ $category->name_bn }}
+                            @else
+                                {{ $category->name_en }}
+                            @endif
                         </h4>
                         <div class="breadcrumb">
-                            <a href="{{ route('home') }}" rel="nofollow"><i class="fi-rs-home mr-5"></i>হোম</a>
+                            <a href="{{ route('home') }}" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
                             <span></span>
-                            {{ $category->name_bn ?? '$category->name_en' }}
+                            @if (session()->get('language') == 'bangla')
+                                {{ $category->name_bn }}
+                            @else
+                                {{ $category->name_en }}
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -77,8 +85,13 @@
     
                             <div class="special-image-content">
                                 <a href="{{ route('product.details', $product->slug) }}">
-                                    <?php $p_name_bn = strip_tags(html_entity_decode($product->name_bn ?? '$product->name_en')); ?>
-                                    {{ Str::limit($p_name_bn, $limit = 30, $end = '. . .') }}
+                                    @if (session()->get('language') == 'bangla')
+                                        <?php $p_name_bn = strip_tags(html_entity_decode($product->name_bn)); ?>
+                                        {{ Str::limit($p_name_bn, $limit = 30, $end = '. . .') }}
+                                    @else
+                                        <?php $p_name_en = strip_tags(html_entity_decode($product->name_en)); ?>
+                                        {{ Str::limit($p_name_en, $limit = 30, $end = '. . .') }}
+                                    @endif
                                 </a>
                                 @php
                                    $reviews = \App\Models\Review::where('product_id', $product->id)
@@ -130,22 +143,22 @@
                                         @if ($product->discount_price > 0)
                                             @if (auth()->check() && auth()->user()->role == 7)
                                                 <div class="product-price">
-                                                    <span class="price">৳{{ formatNumberInBengali($product->reseller_price) }}</span>
+                                                    <span class="price">৳{{ $product->reseller_price }}</span>
                                                 </div>
                                             @else
                                                 <div class="product-price">
-                                                    <span class="price">৳{{ formatNumberInBengali($price_after_discount) }}</span>
-                                                    <span class="old-price" style="color: #DD1D21;">৳{{ formatNumberInBengali($product->regular_price) }}</span>
+                                                    <span class="price">৳{{ $price_after_discount }}</span>
+                                                    <span class="old-price" style="color: #DD1D21;">৳{{ $product->regular_price }}</span>
                                                 </div>
                                             @endif
                                         @else
                                             @if (auth()->check() && auth()->user()->role == 7)
                                                 <div class="product-price">
-                                                    <span class="price">৳{{ formatNumberInBengali($product->reseller_price) }}</span>
+                                                    <span class="price">৳{{ $product->reseller_price }}</span>
                                                 </div>
                                             @else
                                                 <div class="product-price">
-                                                    <span class="price">৳{{ formatNumberInBengali($product->regular_price) }}</span>
+                                                    <span class="price">৳{{ $product->regular_price }}</span>
                                                 </div>
                                             @endif
                                         @endif
@@ -157,7 +170,7 @@
                                 </div>
                                 @if (auth()->check() && auth()->user()->role == 7)
                                     <div>
-                                        <span>Regular Price: <span class="text-info">৳ {{ formatNumberInBengali($product->regular_price) }}</span></span>
+                                        <span>Regular Price: <span class="text-info">৳ {{ $product->regular_price }}</span></span>
                                         <input type="hidden" id="regular_price" name="regular_price" value="{{ $product->regular_price }}" min="1">
                                     </div>
                                 @endif

@@ -744,12 +744,12 @@
 
     <script type="text/javascript">
         /* ============= Start MiniCart Add ========== */
-        function miniCart() {
+        function miniCart(){
             $.ajax({
                 type: 'GET',
                 url: '/product/mini/cart',
-                dataType: 'json',
-                success: function(response) {
+                dataType:'json',
+                success:function(response){
                     // alert(response);
                     //checkout();
                     $('span[id="cartSubTotal"]').text(response.cartTotal);
@@ -759,44 +759,44 @@
 
                     var miniCart = "";
 
-                    if (Object.keys(response.carts).length > 0) {
-                        $.each(response.carts, function(key, value) {
+                    if(Object.keys(response.carts).length > 0){
+                        $.each(response.carts, function(key,value){
                             //console.log(value);
                             var slug = value.options.slug;
                             var base_url = window.location.origin;
-                            miniCart += `
+                          miniCart += `
                             <ul>
                                 <li>
                                     <div class="shopping-cart-img">
-                                        <a href="#"><img alt="" src="/${value.options.image}" /></a>
+                                        <a href="${base_url}/product-details/${slug}"><img alt="" src="/${value.options.image}" /></a>
                                     </div>
                                     <div class="shopping-cart-title">
                                         <h4><a href="${base_url}/product-details/${slug}">${value.name}</a></h4>
-                                        <h6 class="align-items-center d-flex">
-                                        <div class="d-inline-flex flex-column cart-product-quantity">
+                                        <h4 class="align-items-center d-flex">
+                                        <div class="d-inline-flex flex-column">
 
                                             <span>
-                                                <button type="submit" class="minicart_btn " id="${value.rowId}" onclick="cartIncrement(this.id)" ><i class="fa-solid fa-plus"></i>
+                                                <button type="submit" class="minicart_btn minicart_btn_success" id="${value.rowId}" onclick="cartIncrement(this.id)" ><i class="fa-solid fa-plus"></i>
                                                 </button>
                                             </span>
                                         ${value.qty > 1
                                             ? `<span>
-                                                    <button type="submit" class="minicart_btn " id="${value.rowId}" onclick="cartDecrement(this.id)" ><i class="fa-solid fa-minus"></i>
-                                                    </button>
-                                                 </span>`
+                                                <button type="submit" class="minicart_btn minicart_btn_danger" id="${value.rowId}" onclick="cartDecrement(this.id)" ><i class="fa-solid fa-minus"></i>
+                                                </button>
+                                             </span>`
 
                                             :`<span>
-                                                    <button type="submit" class="minicart_btn  disabled" ><i class="fa-solid fa-minus"></i>
-                                                    </button>
-                                                </span>`
+                                                <button type="submit" class="minicart_btn minicart_btn_danger disabled" ><i class="fa-solid fa-minus"></i>
+                                                </button>
+                                            </span>`
                                         }
                                         </div>
                                         <span>${value.qty} × </span>
                                         ${value.price}
-                                        </h6>
+                                        </h4>
                                     </div>
                                     <div class="shopping-cart-delete">
-                                        <a  id="${value.rowId}" onclick="miniCartRemove(this.id)"><i class="fa fa-trash"></i></a>
+                                        <a  id="${value.rowId}" onclick="miniCartRemove(this.id)"><i class="fi-rs-cross-small"></i></a>
                                     </div>
                                 </li>
                             </ul>
@@ -808,7 +808,7 @@
                         $('#miniCart').html(miniCart);
                         $('#miniCart_empty_btn').hide();
                         $('#miniCart_btn').show();
-                    } else {
+                    }else{
                         html = '<h4 class="text-center">Cart empty!</h4>';
                         $('#miniCart').html(html);
                         $('#miniCart_btn').hide();
@@ -821,153 +821,139 @@
         miniCart();
 
         /* ==================== Start MiniCart Remove =============== */
-        function miniCartRemove(rowId) {
+        function miniCartRemove(rowId){
             $.ajax({
-                type: 'GET',
-                url: '/minicart/product-remove/' + rowId,
-                dataType: 'json',
-                success: function(data) {
+               type:'GET',
+               url: '/minicart/product-remove/' +rowId,
+               dataType: 'json',
+               success:function(data){
 
-                    miniCart();
-                    cart();
+                miniCart();
+                cart();
 
-                    // Start Message
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'success',
-                        showConfirmButton: false,
-                        timer: 2000
+                // Start Message
+                const Toast = Swal.mixin({
+                      toast: true,
+                      position: 'top-end',
+                      icon: 'success',
+                      showConfirmButton: false,
+                      timer: 2000
                     })
-                    if ($.isEmptyObject(data.error)) {
-                        Toast.fire({
-                            type: 'success',
-                            title: data.success
-                        })
-                    } else {
-                        Toast.fire({
-                            type: 'error',
-                            title: data.error
-                        })
-                    }
-                    // End Message
+                if ($.isEmptyObject(data.error)) {
+                    Toast.fire({
+                        type: 'success',
+                        title: data.success
+                    })
+                }else{
+                    Toast.fire({
+                        type: 'error',
+                        title: data.error
+                    })
                 }
+                // End Message
+               }
             });
-        }
+          }
         /* ==================== End MiniCart Remove =============== */
 
-        function cart() {
+        function cart(){
             $.ajax({
                 type: 'GET',
                 url: '/get-cart-product',
-                dataType: 'json',
-                success: function(response) {
+                dataType:'json',
+                success:function(response){
                     // console.log(response);
-                    var rows = "";
-                    // alert(Object.keys(response.carts).length);
-                    $('#total_cart_qty').text(Object.keys(response.carts).length);
-                    if (Object.keys(response.carts).length > 0) {
-                        $.each(response.carts, function(key, value) {
-                            var slug = value.options.slug;
-                            var base_url = window.location.origin;
-                            rows +=
-                                `
-                            <tr class="pt-30">
-                                <td class="custome-checkbox pl-30">
-                                    <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox1" value="">
-                                    <label class="form-check-label" for="exampleCheckbox1"></label>
-                                </td>
-                                <td class="image product-thumbnail pt-40"><img src="/${value.options.image}" alt="#"></td>
-                                <td class="product-des product-name">
-                                    <h6 class="mb-5"><a class="product-name mb-10 text-heading" href="${base_url}/product-details/${slug}">${value.name}</a></h6>`;
-                            $.each(value.options.attribute_names, function(index, val) {
-                                rows += `<span>` + val + `: ` + value.options.attribute_values[
-                                    index] + `</span><br/>`;
-                            });
-                            rows += `</td>
-                                <td class="price" data-title="Price">
-                                    <h6 class="text-body">৳${value.price} </h6>
-                                </td>
-                                <td class="text-center detail-info" data-title="Stock">
-                                    <div class="detail-extralink mr-15">
-                                        <div class="align-items-center d-flex justify-content-center">
+                var rows = "";
+                // alert(Object.keys(response.carts).length);
+                $('#total_cart_qty').text(Object.keys(response.carts).length);
+                if(Object.keys(response.carts).length > 0){
+                    $.each(response.carts, function(key,value){
+                                var slug = value.options.slug;
+                                var base_url = window.location.origin;
+                        rows += `
+                                    <tr>
+                                        <td class="product-des product-name">
+                                            <div class="d-flex align-items-center small_device">
+                                                <a href="${base_url}/product-details/${slug}"><img src="/${value.options.image}" alt="#"></a>
+                                            <a class="product-name text-heading" href="${base_url}/product-details/${slug}">${value.name}</a></div>`;
+                        
+                        rows +=       `</td>
+                                        <td class="price" >
+                                            <h4 class="text-body">৳${value.price} </h4>
+                                        </td>
+                                        <td class="text-center detail-info" >
+                                            <div class="detail-extralink mr-15">
+                                                <div class="align-items-center d-flex justify-content-center">
 
-                                        ${value.qty > 1
+                                                ${value.qty > 1
 
-                                          ? `<button type="submit" style="margin-right: 5px; background-color: #2dc5cc !important; font-size: 12px;" class="btn btn-sm" id="${value.rowId}" onclick="cartDecrement(this.id)" ><i class='fa-solid fa-minus'></i></button>`
+                                                ? `<button type="submit" style="background-color: #4757fb !important; font-size: 12px;" class="btn btn-sm" id="${value.rowId}" onclick="cartDecrement(this.id)" ><i class="fa fa-minus"></i></button>`
 
-                                          : `  <button type="submit" style="margin-right: 5px;" class="btn btn-danger btn-sm" disabled >-</button> `
+                                                : `  <button type="submit" class="btn btn-danger btn-sm" disabled ><i class="fa fa-minus"></i></button> `
 
-                                        }
+                                                }
 
-                                        <input type="text" value="${value.qty}" min="1" max="100" disabled="" style="width: 36px; height:40px; text-align: center; padding-left:0px;">
+                                                <input type="text" value="${value.qty}" min="1" max="100" disabled="" style="width: 36px; height:29px; text-align: center; padding-left:0px;">
 
-                                        <button type="submit" style="margin-left: 5px; font-size: 12px;" class="btn btn-success btn-sm" id="${value.rowId}" onclick="cartIncrement(this.id)" ><i class='fa-solid fa-plus'></i></button>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="price text-center" width="100px;" data-title="Price">
-                                    <h6 class="text-brand">৳${value.subtotal} </h6>
-                                </td>
-                                <td class="action text-center" data-title="Remove"><a  id="${value.rowId}" onclick="cartRemove(this.id)" class="text-body"><i class="fi-rs-trash"></i></a></td>
-                            </tr>`;
+                                                <button type="submit" style="font-size: 12px;" class="btn btn-success btn-sm" id="${value.rowId}" onclick="cartIncrement(this.id)" ><i class="fa fa-plus"></i></button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="action text-center" ><a  id="${value.rowId}" onclick="cartRemove(this.id)" class="text-body"><i class="fi-rs-trash"></i></a></td>
+                                    </tr>`;
                         });
 
-                        $('#cartPage').html(rows);
+                    $('#cartPage').html(rows);
 
-                    } else {
-                        html =
-                            '<tr><td class="text-center" colspan="6" style="font-size: 18px; font-weight: bold;">Cart empty!</td></tr>';
+                    }else{
+                        html = '<tr><td class="text-center" colspan="6" style="font-size: 18px; font-weight: bold;">Cart empty!</td></tr>';
                         $('#cartPage').html(html);
                     }
                 }
             });
-        }
-        cart();
+            }
+            cart();
 
         /* ================ Start My Cart Checkout  =========== */
-        function checkout() {
+        function checkout(){
             $.ajax({
                 type: 'GET',
                 url: '/checkout-product',
-                dataType: 'json',
-                success: function(response) {
+                dataType:'json',
+                success:function(response){
                     // console.log(response);
-                    var rows = "";
+                var rows = "";
 
                     // cart();
                     // miniCart();
                     $('#total_cart_qty').text(Object.keys(response.carts).length);
 
-                    if (Object.keys(response.carts).length > 0) {
-                        $.each(response.carts, function(key, value) {
+                    if(Object.keys(response.carts).length > 0){
+                        $.each(response.carts, function(key,value){
                             var slug = value.options.slug;
                             var base_url = window.location.origin;
-                            rows +=
+                            rows += `
+                                    <tr>
+                                        <td class="image product-thumbnail"><img src="/${value.options.image}" alt="#"></td>
+                                        <td>
+                                            <h6 class="w-160 mb-5"><a href="${base_url}/product-details/${slug}" class="text-heading">${value.name}</a></h6></span>`;
+                                        $.each(value.options.attribute_names, function(index,val){
+                        rows +=               `<span>`+val+`: `+value.options.attribute_values[index]+`</span><br/>`;
+                    });
+                    rows +=       `</td>
+                                    <td>
+                                            <h6 class="text-muted pl-20 pr-20">x ${value.qty}</h6>
+                                        </td>
+                                        <td>
+                                            <h4 class="text-brand">৳${value.subtotal}</h4>
+                                        </td>
+                                    </tr>
                                 `
-                                <tr>
-                                    <td class="image product-thumbnail"><img src="/${value.options.image}" alt="#"></td>
-                                    <td>
-                                        <h6 class="w-160 mb-5"><a href="${base_url}/product-details/${slug}" class="text-heading">${value.name}</a></h6></span>`;
-                            $.each(value.options.attribute_names, function(index, val) {
-                                rows += `<span>` + val + `: ` + value.options.attribute_values[
-                                    index] + `</span><br/>`;
-                            });
-                            rows += `</td>
-                                <td>
-                                        <h6 class="text-muted pl-20 pr-20">x ${value.qty}</h6>
-                                    </td>
-                                    <td>
-                                        <h4 class="text-brand">৳${value.subtotal}</h4>
-                                    </td>
-                                </tr>
-                            `
                         });
 
-                        $('#cartCheckout').html(rows);
-                    } else {
-                        html =
-                            '<h3 class="text-center text-danger" style="font-size:18px; font-weight:bold;">Cart empty!</h3>';
+                    $('#cartCheckout').html(rows);
+                    }else{
+                        html = '<h3 class="text-center text-danger" style="font-size:18px; font-weight:bold;">Cart empty!</h3>';
                         $('#cartCheckout').html(html);
                     }
                 }
@@ -977,69 +963,158 @@
         /* ================ End My Cart Checkout =========== */
 
         /* ================ Start My Cart Remove Product =========== */
-        function cartRemove(id) {
+        function cartRemove(rowId) {
             $.ajax({
                 type: 'GET',
-                url: '/cart-remove/' + id,
+                url: `/cart-remove/${rowId}`,
                 dataType: 'json',
-                success: function(data) {
-                    cart();
-                    miniCart();
+                success: function (data) {
+                    if (data.success) {
+                        // Remove the cart row from the DOM
+                        $(`#cart-item-${rowId}`).remove();
 
+                        // Update the cart totals
+                        $('#cartSubTotal').text(data.cartTotal);
+                        $('#cartSubTotalShi').val(data.cartTotal);
 
-                    // Start Message
-                    const Toast = Swal.mixin({
+                        // Show success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.success,
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 1200
+                        });
+                        window.location.reload();
+                    } else if (data.error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: data.error,
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 1200
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Something went wrong. Please try again.'
+                    });
+                }
+            });
+        }
+        /* ==================== End My Cart Remove Product ================== */
+
+        /* ==================== My Cart Update ================== */
+        function updateCart(action, rowId) {
+            const url = action === 'increment' ? `/cart-increment/${rowId}` : `/cart-decrement/${rowId}`;
+            const button = $(`button[onclick="updateCart('${action}', '${rowId}')"]`);
+        
+            // Disable buttons to prevent multiple clicks
+            button.prop('disabled', true);
+        
+            $.ajax({
+                type: 'GET',
+                url: url,
+                dataType: 'json',
+                success: function (data) {
+                    if (data.success) {
+                        // Update item quantity
+                        $(`#cart-qty-${rowId}`).val(data.newQty);
+        
+                        // Enable or disable decrement button based on quantity
+                        if (data.newQty <= 1) {
+                            $(`button[onclick="updateCart('decrement', '${rowId}')"]`).prop('disabled', true);
+                        } else {
+                            $(`button[onclick="updateCart('decrement', '${rowId}')"]`).prop('disabled', false);
+                        }
+        
+                        // Update item subtotal and cart totals
+                        $(`#cart-subtotal-${rowId}`).text(`৳${data.subtotal}`);
+                        $('#cartSubTotals').text(data.cartTotal);
+                        $('#cartSubTotalShi').val(data.cartTotal);
+        
+                        // Recalculate and update grand total
+                        updateGrandTotal();
+        
+                        // Remove the row if item quantity is zero
+                        if (data.newQty === 0) {
+                            $(`#cart-row-${rowId}`).remove();
+                        }
+                    } else if (data.error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.error,
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An unexpected error occurred. Please try again.',
                         toast: true,
                         position: 'top-end',
                         showConfirmButton: false,
                         timer: 2000
-                    })
-                    if ($.isEmptyObject(data.error)) {
-                        Toast.fire({
-                            type: 'success',
-                            icon: 'success',
-                            title: data.success
-                        })
-                    } else {
-                        Toast.fire({
-                            type: 'error',
-                            icon: 'error',
-                            title: data.error
-                        })
-                    }
-                    // End Message
+                    });
+                },
+                complete: function () {
+                    // Re-enable buttons
+                    button.prop('disabled', false);
                 }
             });
         }
+        /* ==================== End My Cart Update ================== */
 
-        /* ==================== End My Cart Remove Product ================== */
+        // Function to update grand total when shipping charges change
+        function updateGrandTotal() {
+            const cartSubTotal = parseFloat($('#cartSubTotalShi').val()) || 0;
+            const shippingCharge = parseFloat($('.ship_amount').val()) || 0;
+            const grandTotal = (cartSubTotal + shippingCharge).toFixed(2);
+
+            $('#grand_total_set').text(`৳${grandTotal}`);
+            $('#grand_total').val(grandTotal);
+
+            // Update collectable amount
+            $('#collectable_amount').val(grandTotal);
+        }
 
         /* ==================== Start  cartIncrement ================== */
-        function cartIncrement(rowId) {
+        function cartIncrement(rowId){
             $.ajax({
-                type: 'GET',
-                url: "/cart-increment/" + rowId,
-                dataType: 'json',
-                success: function(data) {
+                type:'GET',
+                url: "/cart-increment/"+rowId,
+                dataType:'json',
+                success:function(data){
                     // console.log(data)
                     cart();
                     miniCart();
 
                     const Toast = Swal.mixin({
-                        toast: true,
+                        toast:true,
                         position: 'top-end',
                         icon: 'success',
                         showConfirmButton: false,
                         timer: 1200
                     })
                     Toast.fire({
-                        type: 'success',
-                        title: data.success
+                    type:'success',
+                    title: data.success
                     })
 
-                    if ($.isEmptyObject(data.error)) {
+                    if($.isEmptyObject(data.error)){
                         const Toast = Swal.mixin({
-                            toast: true,
+                            toast:true,
                             position: 'top-end',
                             icon: 'success',
                             showConfirmButton: false,
@@ -1047,13 +1122,13 @@
                         })
 
                         Toast.fire({
-                            type: 'success',
-                            title: data.success
+                        type:'success',
+                        title: data.success
                         })
 
-                    } else {
+                    }else{
                         const Toast = Swal.mixin({
-                            toast: true,
+                            toast:true,
                             position: 'top-end',
                             icon: 'error',
                             showConfirmButton: false,
@@ -1061,8 +1136,8 @@
                         })
 
                         Toast.fire({
-                            type: 'error',
-                            title: data.error
+                        type:'error',
+                        title: data.error
                         })
                     }
 
@@ -1072,22 +1147,16 @@
         /* ==================== End  cartIncrement ================== */
 
         /* ==================== Start  Cart Decrement ================== */
-        function cartDecrement(rowId) {
-            $.ajax({
-                type: 'GET',
-                url: "/cart-decrement/" + rowId,
-                dataType: 'json',
-                success: function(data) {
-                    // console.log(data)
-                    //console.log(data);
-                    // if(data == 2){
-                    //     alert("#"+rowId);
-                    //     $("#"+rowId).attr("disabled", "true");
-                    // }
-                    cart();
-                    miniCart();
-                }
-            });
+        function cartDecrement(rowId){
+          $.ajax({
+              type:'GET',
+              url: "/cart-decrement/"+rowId,
+              dataType:'json',
+              success:function(data){
+                cart();
+                miniCart();
+              }
+          });
         }
         /* ==================== End  Cart Decrement ================== */
 

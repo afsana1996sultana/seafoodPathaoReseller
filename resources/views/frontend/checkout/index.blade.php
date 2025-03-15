@@ -3,32 +3,67 @@
     <style>
         /*Address select design*/
         .address_select_custom .custom_select .select2-container {
-            width: 97% !important;
-            max-width: 97%;
+            width: 95% !important;
+            max-width: 95%;
         }
+
         .address_select_custom .custom_select .select2-container--default .select2-selection--single {
-            height: 50px;
-            border-radius: 0px !important
+            height: 59px;
         }
+
         .address_select_custom .custom_select .select2-container--default .select2-selection--single .select2-selection__arrow {
             top: 16px;
         }
+
         .address_select_custom .custom_select .select2-container--default .select2-selection--single .select2-selection__rendered {
-            line-height:40px;
+            line-height: 59px;
         }
+
         /*Model select design*/
         .custom_address_modal.custom_select .select2-container {
-            width: 100% !important;
-            max-width: 100%;
+            width: 95% !important;
+            max-width: 95%;
         }
+
         .custom_address_modal.custom_select .select2-container--default .select2-selection--single {
-            height: 50px;
+            height: 59px;
         }
+
         .custom_address_modal.custom_select .select2-container--default .select2-selection--single .select2-selection__arrow {
             top: 16px;
         }
+
         .custom_address_modal.custom_select .select2-container--default .select2-selection--single .select2-selection__rendered {
-            line-height: 40px;
+            line-height: 59px;
+        }
+
+
+        .row.cart-totals.border .form-group input {
+            height: auto !important;
+        }
+
+        .row.cart-totals.border .fieldInput input {
+            height: 50px !important;
+        }
+
+        .row.cart-totals.border .form-group input:focus {
+            box-shadow: none;
+        }
+
+        .checkout__radio .form-check-input:checked {
+            background: #0f1528;
+        }
+
+        .checkout__radio input[type="radio"] {
+            padding: 6px !important;
+            width: auto;
+        }
+
+        button.btn.place_order_btn {
+            width: auto;
+            padding: 15px;
+            margin: auto;
+            line-height: 1;
         }
     </style>
 @endpush
@@ -44,216 +79,183 @@
                 </div>
             </div>
         </div>
-        <div class="container mb-20 mt-20">
-            <div class="row">
-                <div class="col-lg-8 mb-40">
-                    <h1 class="heading-2 mb-10">Checkout</h1>
-                    <div class="d-flex justify-content-between">
-                        <h6 class="text-body">There are <span class="text-brand" id="total_cart_qty"></span> products in your cart</h6>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-7">
-                    <div class="row mb-50">
-                        <div class="col-lg-6 mb-sm-15 mb-lg-0 mb-md-3">
-                            @if(!auth()->check())
-                                <div class="toggle_info">
-                                    <span><i class="fi-rs-user mr-10"></i><span class="text-muted font-lg">Already have an account?</span> <a href="{{ route('login') }}">Click here to login</a></span>
+
+        <div class="container mb-30 mt-30" style="max-width:1300px">
+            <form action="{{ route('checkout.payment') }}" method="post">
+                @csrf
+                <div class="row p-2 p-md-0">
+                    <div class="col-lg-6">
+                        <div class="row cart-totals border">
+                            <div class="d-flex">
+                                <h6 class="mb-30 col-9">আপনার অর্ডারটি কনফার্ম করতে তথ্যগুলো পূরণ করে "অর্ডার করুন" বাটন এ ক্লিক করুন</h6>
+                            </div>
+                            <div class="divider-2 mb-30"></div>
+                            <div class="row">
+                                <div class="form-group fieldInput col-lg-12">
+                                    <label for="name" class="fw-bold text-black"><span class="text-danger">*</span> নাম
+                                    </label>
+                                    <input type="text" required="" id="name" name="name"
+                                        placeholder="নাম" value="{{ Auth::user()->name ?? old('name') }}">
+                                    @error('name')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
                                 </div>
-                            @endif
-                            <div class="panel-collapse collapse login_form" id="loginform">
-                                <div class="panel-body">
-                                    <p class="mb-30 font-sm">If you have shopped with us before, please enter your details below. If you are a new customer, please proceed to the Billing &amp; Shipping section.</p>
-                                    <form method="post">
-                                        <div class="form-group">
-                                            <input type="text" name="email" placeholder="Username Or Email">
+                                <div class="form-group fieldInput col-lg-12">
+                                    <label for="phone" class="fw-bold text-black"><span
+                                            class="required text-danger">*</span> ফোন </label>
+                                    <input required="" type="number" name="phone" placeholder="ফোন" id="phone"
+                                        value="{{ Auth::user()->phone ?? old('phone') }}">
+                                    @error('phone')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div class="form-group fieldInput col-lg-12">
+                                    <label for="address" class="fw-bold text-black"><span
+                                            class="required text-danger">*</span> ঠিকানা </label>
+                                    <input required="" type="text" name="address" placeholder="এরিয়া , থানা , জেলা" id="phone"
+                                        value="{{ Auth::user()->address ?? old('address') }}">
+                                    @error('address')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div class="form-group col-lg-12 address_select_custom">
+                                    <div class="custom_select">
+                                        <label for="shipping_id" class="fw-bold text-black col-12"><span class="text-danger">*</span> ডেলিভারি অপশন</label>
+                                        <select class="form-control select-active col-12" name="shipping_id" id="shipping_id" required>
+
+                                            @foreach ($shippings as $key => $shipping)
+                                                <option value="{{ $shipping->id }}">@if ($shipping->type == 1) ঢাকার ভিতরে @else ঢাকার বাইরে @endif </option>
+                                            @endforeach
+                                        </select>
+                                        @error('shipping_id')
+                                            <p class="text-danger">{{$message}}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group col-12 checkout__radio">
+                                    <label for="" class="fw-bold text-black col-12">
+                                        <span class="text-danger">*</span> পেমেন্ট মেথড
+                                    </label>
+                                    <div class="d-flex">
+                                        <div class="form-check me-3">
+                                            <input class="form-check-input" type="radio" name="payment_option" id="payment_cod" value="cod" checked>
+                                            <label class="form-check-label" for="payment_cod">
+                                                Cash On Delivery
+                                            </label>
                                         </div>
-                                        <div class="form-group">
-                                            <input type="password" name="password" placeholder="Password">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="payment_option" id="payment_bkash" value="bkash">
+                                            <label class="form-check-label" for="payment_bkash">
+                                                Bkash
+                                            </label>
                                         </div>
-                                        <div class="login_footer form-group">
-                                            <div class="chek-form">
-                                                <div class="custome-checkbox">
-                                                    <input class="form-check-input" type="checkbox" name="checkbox" id="remember" value="">
-                                                    <label class="form-check-label" for="remember"><span>Remember me</span></label>
-                                                </div>
-                                            </div>
-                                            <a href="#">Forgot password?</a>
-                                        </div>
-                                        <div class="form-group">
-                                            <button class="btn btn-md" name="login">Log in</button>
-                                        </div>
-                                    </form>
+                                    </div>
+
+                                    @error('payment_option')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
                                 </div>
                             </div>
+                            <button type="submit" class="btn btn-fill-out btn-block mt-30" name="checkout_payment">অর্ডার করুন<i class="fi-rs-sign-out ml-15"></i></button>
                         </div>
                     </div>
-                <form action="{{ route('checkout.payment') }}" method="post">
-                    @csrf
-                    <div class="row card">
-                        <div class="d-flex mt-3">
-                            <h4 class="mb-30 col-9">Billing Details</h4>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-lg-12">
-                                <label for="name" class="fw-bold text-black"><span class="text-danger">*</span> Name </label>
-                                <input type="text" required="" id="name" name="name" placeholder="Full Name" value="{{ Auth::user()->name ?? old('name') }}">
-                                @error('name')
-                                    <p class="text-danger">{{$message}}</p>
-                                @enderror
+                    <div class="col-lg-6   p-0 mt-4 mt-md-0 ">
+                        <div class="border p-40 cart-totals ml-30 mb-50">
+                            <div class="d-flex align-items-end justify-content-between mb-30">
+                                <h5>অর্ডার</h5>
+                                <h6 class="text-muted">আইটেম <span class="text-brand" id="total_cart_qty"></span> টি</h6>
                             </div>
-                            <div class="form-group col-lg-12">
-                                <label for="phone" class="fw-bold text-black"><span class="required text-danger">*</span> Phone </label>
-                                <input required="" type="number" name="phone" placeholder="Phone" id="phone" value="{{ Auth::user()->phone ?? old('phone') }}">
-                                @error('phone')
-                                    <p class="text-danger">{{$message}}</p>
-                                @enderror
-                            </div>
+                            <div class="divider-2 mb-30"></div>
+                            <div class="table-responsive order_table checkout">
+                                <table class="table no-border table-striped table-bordered">
+                                    <tbody id="">
+                                        @foreach ($carts as $cart)
+                                            <tr>
+                                                <td class="action text-center"><a id="{{ $cart->rowId }}" onclick="cartRemove(this.id)" class="text-body"><i class="fi-rs-trash"></i></a></td>
+                                                <td class="image product-thumbnail"><img src="/{{ $cart->options->image }}"
+                                                        alt="#"></td>
+                                                <td>
+                                                    <h6 class="w-160 mb-5"><a
+                                                            href="{{ route('product.details', $cart->options->slug) }}"
+                                                            class="text-heading">{{ $cart->name }}</a></h6></span>
+                                                </td>
+                                                <td>
+                                                    <div class="text-center detail-info">
+                                                        <div class="detail-extralink mr-15">
+                                                            <div class="align-items-center d-flex justify-content-center">
+                                                                <button type="button" 
+                                                                        style="background-color: #4757fb !important; font-size: 12px;" 
+                                                                        class="btn btn-sm decrement-btn" 
+                                                                        onclick="updateCart('decrement', '{{ $cart->rowId }}')" 
+                                                                        {{ $cart->qty == 1 ? 'disabled' : '' }}>
+                                                                    <i class="fa fa-minus"></i>
+                                                                </button>
+                                                                <input id="cart-qty-{{ $cart->rowId }}" type="text" value="{{ $cart->qty }}" min="1" max="100" disabled style="width: 36px; height:29px; text-align: center; padding-left:0px;">
+                                                                <button type="button" 
+                                                                        style="font-size: 12px;" 
+                                                                        class="btn btn-success btn-sm" 
+                                                                        onclick="updateCart('increment', '{{ $cart->rowId }}')">
+                                                                    <i class="fa fa-plus"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
 
-                            <!-- <div class="form-group col-lg-6">
-                                <label for="email" class="fw-bold text-black">Email</label>
-                                <input id="email" type="email" name="email" placeholder="Email address *" value="{{ Auth::user()->email ?? old('email') }}">
-                            </div> -->
-                        </div>
-
-                        <div class="row shipping_calculator">
-                            <!-- <div class="form-group col-lg-6 address_select_custom">
-                                <div class="custom_select custom_address_modal">
-                                    <label for="division_id" class="fw-bold text-black"><span class="text-danger">*</span> City</label>
-                                    <select class="form-select select-active select__active" name="division_id" id="division_id" required>
-                                        <option value="">Select City</option>
-                                        @foreach ($cities as $key => $city)
-                                            <option value="{{ $city->city_id }}">
-                                                {{ $city->city_name }}</option>
+                                                <td>
+                                                    <h4 class="text-brand" id="cart-subtotal-{{ $cart->rowId }}">৳{{ number_format($cart->subtotal) }}</h4>
+                                                </td>
+                                            </tr>
                                         @endforeach
-                                    </select>
-                                </div>
-                            </div> -->
-                            <!-- <div class="form-group col-lg-6 address_select_custom">
-                                <div class="custom_select custom_address_modal">
-                                    <label for="district_id" class="fw-bold text-black"><span class="text-danger">*</span> Zone</label>
-                                    <select class="form-select select-active select__active" name="district_id"
-                                        id="district_id" required>
-                                        <option selected="" value="">Select Zone</option>
-                                    </select>
-                                </div>
-                            </div> -->
-                            <!-- <div class="form-group col-lg-6 address_select_custom">
-                                <div class="custom_select custom_address_modal">
-                                    <label for="upazilla_id" class="fw-bold text-black"> Area</label>
-                                    <select class="form-control select-active select__active" name="upazilla_id"
-                                        id="upazilla_id">
-                                        <option selected="" value="">Select Area</option>
-                                    </select>
-                                </div>
-                            </div> -->
-                            <div class="form-group col-lg-12">
-                                <label for="address" class="fw-bold text-black"><span class="text-danger">*</span>
-                                    House/Road/Area</label>
-                                <textarea name="address" id="address" class="form-control" placeholder="Address" required>{{ old('address') }}</textarea>
-                                @error('address')
-                                    <p class="text-danger">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        </div>
+                                        <tr>
+                                            <td colspan="4" style="text-align: end">মোট</td>
+                                            <td><span class="text-brand text-end" style="color: #000 !important">৳<span id="cartSubTotals">{{ number_format($cartTotal, 0) }}</span></span></td>
+                                        </tr>
 
-                        <div class="form-group col-lg-12 address_select_custom">
-                            <div class="custom_select">
-                                <label for="shipping_id" class="fw-bold text-black col-12"><span class="text-danger">*</span> Shipping</label>
-                                <select class="form-control select-active col-12" name="shipping_id" id="shipping_id" required>
-                                    <option value="">--Select--</option>
-                                    @foreach ($shippings as $key => $shipping)
-                                        <option value="{{ $shipping->id }}">@if($shipping->type == 1) Inside Dhaka @else Outside Dhaka @endif </option>
-                                    @endforeach
-                                </select>
-                                @error('shipping_id')
-                                    <p class="text-danger">{{$message}}</p>
-                                @enderror
+                                        <tr>
+                                            <td colspan="4" style="text-align: end">ডেলিভারি চার্জ :</td>
+                                            <td><span class="text-brand text-end" style="color: #000 !important">৳<span id="ship_amount">0.00</span></span></td>
+                                        </tr>
+
+                                        <tr>
+                                            <input type="hidden" value="" name="shipping_charge" class="ship_amount" />
+                                            <input type="hidden" value="" name="shipping_type" class="shipping_type" />
+                                            <input type="hidden" value="" name="shipping_name" class="shipping_name" />
+                                            <input type="hidden" value="{{ $cartTotal }}" name="sub_total" id="cartSubTotalShi" />
+                                            <input type="hidden" value="{{ $cartTotal }}" name="grand_total" id="grand_total" />
+                                            <td colspan="4" style="text-align: end">সর্বমোট :</td>
+                                            <td><span class="text-brand" style="color: #000 !important"><span id="grand_total_set">{{ $cartTotal }}</span></span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
+
+                            @if (auth()->check() && auth()->user()->role == 7)
+                                <div class="mt-30">
+                                    <label for="collectable_amount" class="fw-bold text-black col-12"><span
+                                            class="text-danger">*</span> Collectable Amount (৳)</label>
+                                    <input type="text" name="collectable_amount" id="collectable_amount"
+                                        class="form-control" value="{{ $cartTotal }}"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+
+                                    <p class="collect-alert" style="color:red"></p>
+                                    <input type="hidden" id="prepaid_amount" name="prepaid_amount"
+                                        value="@if (auth()->check() && auth()->user()->prepaid_amount > 0) {{ auth()->user()->prepaid_amount }}@else 0 @endif">
+                                    @if (auth()->check() && auth()->user()->prepaid_amount > 0)
+                                        <p class="mt-30">Pre Paid Amount: <span class="text-brand fw-bold"
+                                                style="font-size: 20px;">৳{{ auth()->user()->prepaid_amount }}</span></p>
+                                    @endif
+                                </div>
+                            @else
+                                <input type="hidden" name="collectable_amount" id="collectable_amount"
+                                    value="@if (session()->has('collectable_amount') && session()->get('collectable_amount') > 0) {{ number_format(session()->get('collectable_amount')) }}@else{{ number_format($cartTotal) }} @endif">
+                                <input type="hidden" id="prepaid_amount" name="prepaid_amount"
+                                    value="@if (auth()->check() && auth()->user()->prepaid_amount > 0) {{ auth()->user()->prepaid_amount }}@else 0 @endif">
+                            @endif
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-5">
-                    <div class="border p-40 cart-totals ml-30 mb-50">
-                        <div class="d-flex align-items-end justify-content-between mb-30">
-                            <h4>Your Order</h4>
-                            <h6 class="text-muted">Subtotal</h6>
-                        </div>
-                        <div class="divider-2 mb-30"></div>
-                        <div class="table-responsive order_table checkout">
-                            <table class="table no-border">
-                                <tbody id="">
-                                    @foreach ($carts as $cart)
-                                    <tr>
-                                        <td class="image product-thumbnail"><img src="/{{$cart->options->image}}" alt="#"></td>
-                                        <td>
-                                            <h6 class="w-160 mb-5"><a href="{{ route('product.details', $cart->options->slug) }}" class="text-heading">{{$cart->name}}</a></h6></span>
-                                            @if($cart->options->attribute_names)
-                                                @for($i=0; $i<sizeof($cart->options->attribute_names); $i++)
-                                                    <span>{{ $cart->options->attribute_names[$i] }}: {{ $cart->options->attribute_values[$i] }}</span><br/>
-                                                @endfor
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <h6 class="text-muted pl-20 pr-20">x {{$cart->qty}}</h6>
-                                        </td>
-                                        <td>
-                                            <h4 class="text-brand">৳{{$cart->subtotal}}</h4>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            <tfoot>
-                                <tr>
-                                    <td><h6 class="d-flex justify-content-between mb-2">Subtotal : <span class="text-brand text-end">৳<span id="cartSubTotal">{{ $cartTotal }}</span></span></h6></td>
-                                    <td><h6 class="d-flex justify-content-between mb-2">Shipping : <span class="text-brand text-end">৳<span id="ship_amount">0.00</span></span><h6></td>
-                                    <input type="hidden" value="" name="shipping_charge" class="ship_amount" />
-                                    <input type="hidden" value="" name="shipping_type" class="shipping_type" />
-                                    <input type="hidden" value="" name="shipping_name" class="shipping_name" />
-                                    <input type="hidden" value="{{ $cartTotal }}" name="sub_total" id="cartSubTotalShi" />
-                                    <input type="hidden" value="" name="grand_total" id="grand_total" />
-                                    <td><h4 class="d-flex justify-content-between">Total : <span class="text-brand text-end">৳<span id="grand_total_set">{{ $cartTotal }}</span></span><h4></td>
-                                </tr>
-                            </tfoot>
-                        </div>
-                    </div>
-                    <div class="payment ml-30">
-                        <h4 class="mb-30">Payment</h4>
-                            <div class="row gutters-5">
-                                <div class="col-4 col-sm-3">
-                                    <lavel class="cit-megabox d-block mb-3">
-                                        <input class="form-check-input" required="" type="radio" name="payment_option" id="cash_on_delivery" value="cod">
-                                        <span class="d-block cit-megabox-elem p-3">
-                                            <img src="{{asset('frontend')}}/assets/imgs/theme/cod.png" alt="" class="img-fluid mb-2">
-                                            <span class="d-block text-center">
-                                                <span class="d-block fs-15">Cash On Delivery</span>
-                                            </span>
-                                        </span>
-                                    </lavel>
-                                </div>
-
-
-
-                                <div class="col-4 col-sm-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    <lavel class="cit-megabox d-block mb-3">
-                                        <input class="form-check-input" required="" type="radio" name="payment_option" id="bkash_manual" value="bmp">
-                                        <span class="d-block cit-megabox-elem p-3">
-                                            <img src="{{asset('frontend')}}/assets/imgs/theme/bkash.png" alt="" class="img-fluid mb-2">
-                                            <span class="d-block text-center">
-                                                <span class="d-block fs-15">Bkash</span>
-                                            </span>
-                                        </span>
-                                    </lavel>
-                                </div>
-                            </div>
-                        <button type="submit" class="btn btn-fill-out btn-block mt-30">Place an Order<i class="fi-rs-sign-out ml-15"></i></button>
-                    </div>
-                </div>
-                </form>
-            </div>
+            </form>
         </div>
     </main>
 
@@ -277,14 +279,43 @@
 @push('footer-script')
     <script>
         $(document).ready(function() {
-            $('select[name="shipping_id"]').on('change', function(){
-                var shipping_cost = $(this).val();
-                if(shipping_cost) {
+
+            var grand_total = parseFloat($('#grand_total').val());
+            var collectable_amount = parseFloat($('#collectable_amount').val());
+            var prepaid_amount = parseFloat($('#prepaid_amount').val());
+            $('#collectable_amount').on('change', function() {
+                grand_total = parseFloat($('#grand_total').val());
+                collectable_amount = parseFloat($('#collectable_amount').val());
+
+                if (collectable_amount < grand_total || collectable_amount === '') {
+                    Math.min(grand_total, collectable_amount);
+                    parseFloat($('#collectable_amount').val(grand_total));
+                    $('.collect-alert').text('Collectable amount not less than Grand Total Amount');
+                } else {
+                    $('.collect-alert').text('');
+                }
+            });
+
+            // Check if a shipping option is already selected
+            var shipping_id = $('select[name="shipping_id"]').val();
+            if (shipping_id) {
+                inputCall(shipping_id); // Call function with pre-selected shipping_id
+            }
+
+            // Trigger inputCall function when the shipping option changes
+            $('select[name="shipping_id"]').on('change', function() {
+                var shipping_id = $(this).val();
+                inputCall(shipping_id);
+            });
+
+
+            function inputCall(shipping_id) {
+                if (shipping_id) {
                     $.ajax({
-                        url: "{{  url('/checkout/shipping/ajax') }}/"+shipping_cost,
-                        type:"GET",
-                        dataType:"json",
-                        success:function(data) {
+                        url: "{{ url('/checkout/shipping/ajax') }}/" + shipping_id,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
                             // console.log(data);
                             $('#ship_amount').text(data.shipping_charge);
                             $('.ship_amount').val(data.shipping_charge);
@@ -297,40 +328,64 @@
                             grand_total_price += shipping_price;
                             $('#grand_total_set').html(grand_total_price);
                             $('#grand_total').val(grand_total_price);
+
+                            prepaid_amount = parseFloat($('#prepaid_amount').val());
+                            $('#collectable_amount').val(grand_total_price - prepaid_amount);
+
+                            grand_total = parseFloat($('#grand_total').val());
+                            collectable_amount = parseFloat($('#collectable_amount').val());
+
+                            if ((collectable_amount + prepaid_amount) < grand_total) {
+                                $('#payment_prepayment').show();
+                                $('#payment_checkout').hide();
+
+                                var pay_amount = grand_total - (collectable_amount + prepaid_amount);
+                                if (pay_amount < 10) {
+                                    pay_amount = 10;
+                                }
+
+                                $('#prepayment_amount').val(pay_amount);
+                                $('#prepayment_amount_txt').html(pay_amount);
+                            } else {
+                                $('#payment_prepayment').hide();
+                                $('#payment_checkout').show();
+
+                                $('#prepayment_amount').val(0);
+                                $('#prepayment_amount_txt').html('');
+                            }
+                            updateGrandTotal();
                         },
                     });
                 } else {
                     alert('danger');
                 }
-            });
+            }
         });
     </script>
 
-   <!--  Division To District Show Ajax -->
+    <!--  Division To District Show Ajax -->
     <script type="text/javascript">
         $(document).ready(function() {
             $('select[name="division_id"]').on('change', function() {
                 var division_id = $(this).val();
                 if (division_id) {
-                    $('select[name="district_id"]').prop("disabled", true);
                     $.ajax({
-                        url: "{{ url('/get-zones/ajax') }}/" + division_id,
+                        url: "{{ url('/division-district/ajax') }}/" + division_id,
                         type: "GET",
                         dataType: "json",
                         success: function(data) {
                             $('select[name="district_id"]').html(
-                                '<option value="" selected="" disabled="">Select Zone</option>'
-                            );
+                                '<option value="" selected="" disabled="">Select District</option>'
+                                );
                             $.each(data, function(key, value) {
                                 $('select[name="district_id"]').append(
-                                    '<option value="' + value.zone_id + '">' +
-                                    value.zone_name +
+                                    '<option value="' + value.id + '">' +
+                                    capitalizeFirstLetter(value.district_name_en) +
                                     '</option>');
                             });
-                            $('select[name="district_id"]').prop("disabled", false);
-                            // $('select[name="upazilla_id"]').html(
-                            //     '<option value="" selected="" disabled="">Select Upazila</option>'
-                            // );
+                            $('select[name="upazilla_id"]').html(
+                                '<option value="" selected="" disabled="">Select District</option>'
+                                );
                         },
                     });
                 } else {
@@ -352,6 +407,7 @@
                         type: "GET",
                         dataType: "json",
                         success: function(data) {
+
                             $('#dynamic_division').text(capitalizeFirstLetter(data
                                 .division_name_en));
                             $('#dynamic_division_input').val(data.division_id);
@@ -363,8 +419,6 @@
                             $('#dynamic_upazilla_input').val(data.upazilla_id);
                             $("#dynamic_address").text(data.address);
                             $('#dynamic_address_input').val(data.address);
-
-
                         },
                     });
                 } else {
@@ -380,22 +434,17 @@
             $('select[name="district_id"]').on('change', function() {
                 var district_id = $(this).val();
                 if (district_id) {
-                    $('select[name="upazilla_id"]').prop("disabled", true);
                     $.ajax({
-                        url: "{{ url('/get-areas/ajax') }}/" + district_id,
+                        url: "{{ url('/district-upazilla/ajax') }}/" + district_id,
                         type: "GET",
                         dataType: "json",
                         success: function(data) {
-                            //var d = $('select[name="upazilla_id"]').empty();
-                            $('select[name="upazilla_id"]').html(
-                                '<option value="" selected="" disabled="">Select Area</option>'
-                            );
+                            var d = $('select[name="upazilla_id"]').empty();
                             $.each(data, function(key, value) {
                                 $('select[name="upazilla_id"]').append(
-                                    '<option value="' + value.area_id + '">' + value
-                                    .area_name + '</option>');
+                                    '<option value="' + value.id + '">' + value
+                                    .name_en + '</option>');
                             });
-                            $('select[name="upazilla_id"]').prop("disabled", false);
                         },
                     });
                 } else {

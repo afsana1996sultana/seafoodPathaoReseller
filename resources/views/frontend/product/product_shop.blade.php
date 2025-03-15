@@ -53,14 +53,23 @@
                                 <div class="product-content-wrap">
                                     <h2>
                                         <a href="{{ route('product.details',$product->slug) }}">
-                                            <?php $p_name_bn =  strip_tags(html_entity_decode($product->name_bn ?? '$product->name_en'))?>
-                                            {{ Str::limit($p_name_bn, $limit = 30, $end = '. . .') }}
+                                            @if(session()->get('language') == 'bangla')
+                                                <?php $p_name_bn =  strip_tags(html_entity_decode($product->name_bn))?>
+                                                {{ Str::limit($p_name_bn, $limit = 30, $end = '. . .') }}
+                                            @else
+                                                <?php $p_name_en =  strip_tags(html_entity_decode($product->name_en))?>
+                                                {{ Str::limit($p_name_en, $limit = 30, $end = '. . .') }}
+                                            @endif
                                         </a>
                                     </h2>
                                     
                                     <div class="product-category">
                                         <a href="{{ route('product.category', $product->category->slug) }}">
-    			                            {{ $product->category->name_bn ?? '$product->category->name_en'}}
+                                            @if(session()->get('language') == 'bangla') 
+    			                                {{ $product->category->name_bn }}
+    			                            @else 
+    			                                {{ $product->category->name_en }} 
+    			                            @endif
                                         </a>
                                     </div>
                                     @php
@@ -135,7 +144,11 @@
                             </div>
     	                </div>
     	                @empty
-    	                    <h5 class="text-danger">এখানে কোন পণ্য খুঁজে পাওয়া যায়নি!</h5> 
+                            @if(session()->get('language') == 'bangla') 
+    	                        <h5 class="text-danger">এখানে কোন পণ্য খুঁজে পাওয়া যায়নি!</h5> 
+    	                    @else 
+    	                       	<h5 class="text-danger">No products were found here!</h5> 
+    	                    @endif
     	                @endforelse
     	                <!--end product card-->
     	            </div>
@@ -184,7 +197,11 @@
                                         />
                                         <label class="form-check-label" for="category_{{$category->id}}">
                                             <span>
-                                                {{ $category->name_bn ?? '$category->name_en'}}
+                                                @if(session()->get('language') == 'bangla') 
+                                                    {{ $category->name_bn }}
+                                                @else 
+                                                    {{ $category->name_en }} 
+                                                @endif
                                             </span>
                                         </label>
                                         @php
